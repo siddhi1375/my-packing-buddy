@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Desert Books - MyPackingBuddy{% endblock %}
+
+{% block content %}
+<style>
+body { background: linear-gradient(135deg,#fff1e0,#ffd5b5); }
+.flip-card { width:200px; height:300px; perspective:1000px; margin:20px auto; }
+.flip-card-inner { position:relative; width:100%; height:100%; text-align:center; transition:transform 0.8s; transform-style:preserve-3d; }
+.flip-card:hover .flip-card-inner { transform:rotateY(180deg); }
+.flip-card-front, .flip-card-back { position:absolute; width:100%; height:100%; border-radius:15px; backface-visibility:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.2); }
+.flip-card-front { display:flex; justify-content:center; align-items:center; }
+.flip-card-front img { width:150px; height:220px; border-radius:10px; }
+.flip-card-back { background:#fff0e6cc; color:#333; transform:rotateY(180deg); padding:15px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; }
+.books-row { display:flex; flex-wrap:wrap; justify-content:center; }
+</style>
+
+<div class="container my-5">
+<h2 class="text-center mb-5" style="color:#6a1b9a;">Top Desert Books</h2>
+<div class="books-row">
+
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/desert1.jpg" alt="Desert Book 1"></div><div class="flip-card-back">A gripping tale of survival in harsh desert lands.</div></div></div>
+
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/desert2.jpg" alt="Desert Book 2"></div><div class="flip-card-back">An epic adventure across endless sands and dunes.</div></div></div>
+
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/desert3.jpg" alt="Desert Book 3"></div><div class="flip-card-back">A story of courage and friendship in desert survival.</div></div></div>
+
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/desert4.jpg" alt="Desert Book 4"></div><div class="flip-card-back">Exploring hidden oases and desert mysteries.</div></div></div>
+
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/desert5.jpg" alt="Desert Book 5"></div><div class="flip-card-back">A love story blooming amidst the arid sands.</div></div></div>
+
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/desert6.jpg" alt="Desert Book 6"></div><div class="flip-card-back">Adventure, danger, and discovery in the desert sun.</div></div></div>
+
+</div></div>
+{% endblock %}

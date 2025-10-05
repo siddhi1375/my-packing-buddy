@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Desert Packing List - Baby{% endblock %}
+{% block content %}
+<div class="container" style="max-width:700px; margin:auto;">
+<div class="card p-5" style="background:#ffffffcc; border-radius:20px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+<h2 class="text-center mb-4" style="color:#6a1b9a;">Baby Desert Packing List</h2>
+<form>
+<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="lightClothes" checked><label class="form-check-label" for="lightClothes">Light Clothes (Essential)</label></div>
+<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="hat" checked><label class="form-check-label" for="hat">Sun Hat (Essential)</label></div>
+<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="sunscreen" checked><label class="form-check-label" for="sunscreen">Baby Sunscreen (Essential)</label></div>
+<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="diapers" checked><label class="form-check-label" for="diapers">Diapers (Essential)</label></div>
+<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="toys"><label class="form-check-label" for="toys">Favorite Toys</label></div>
+</form>
+</div></div>
+{% endblock %}

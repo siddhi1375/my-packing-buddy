@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Mountain Books - MyPackingBuddy{% endblock %}
+{% block content %}
+<style>
+body { background: linear-gradient(135deg,#e0f0ff,#b5d5ff); }
+.flip-card { width:200px; height:300px; perspective:1000px; margin:20px auto; }
+.flip-card-inner { position:relative; width:100%; height:100%; text-align:center; transition:transform 0.8s; transform-style:preserve-3d; }
+.flip-card:hover .flip-card-inner { transform:rotateY(180deg); }
+.flip-card-front, .flip-card-back { position:absolute; width:100%; height:100%; border-radius:15px; backface-visibility:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.2); }
+.flip-card-front { display:flex; justify-content:center; align-items:center; }
+.flip-card-front img { width:150px; height:220px; border-radius:10px; }
+.flip-card-back { background:#e6f0ffcc; color:#333; transform:rotateY(180deg); padding:15px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; }
+.books-row { display:flex; flex-wrap:wrap; justify-content:center; }
+</style>
+
+<div class="container my-5">
+<h2 class="text-center mb-5" style="color:#1565c0;">Top Mountain Books</h2>
+<div class="books-row">
+
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/mountain1.jpg" alt="Mountain Book 1"></div><div class="flip-card-back">Epic mountaineering adventure across towering peaks.</div></div></div>
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/mountain2.jpg" alt="Mountain Book 2"></div><div class="flip-card-back">Survival and exploration in snowy mountains.</div></div></div>
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/mountain3.jpg" alt="Mountain Book 3"></div><div class="flip-card-back">A story of courage and resilience on rugged trails.</div></div></div>
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/mountain4.jpg" alt="Mountain Book 4"></div><div class="flip-card-back">Discover hidden mountain valleys and scenic wonders.</div></div></div>
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/mountain5.jpg" alt="Mountain Book 5"></div><div class="flip-card-back">Friendship and adventure amidst breathtaking heights.</div></div></div>
+<div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="/static/images/mountain6.jpg" alt="Mountain Book 6"></div><div class="flip-card-back">An inspiring tale of perseverance and discovery.</div></div></div>
+
+</div></div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Your Profile - MyPackingBuddy{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 700px; margin: auto;">
+    <div class="card p-5" style="background: #ffffffcc; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h2 class="text-center mb-4" style="color: #6a1b9a;">Your Profile</h2>
+
+        <!-- Display Current Profile -->
+        <div class="mb-4">
+            <h5>Current Information:</h5>
+            <p><strong>Name:</strong> Siddhi Rajole</p>
+            <p><strong>Email:</strong> siddhi1357rajole@gmail.com</p>
+            <p><strong>Age:</strong> 25</p>
+            <p><strong>Gender:</strong> Female</p>
+        </div>
+
+        <hr>
+
+        <!-- Edit Profile Form -->
+        <h5 class="mb-3">Edit Your Profile</h5>
+        <form method="POST" action="/profile/update">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="Siddhi Rajole" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="siddhi1357rajole@gmail.com" required>
+            </div>
+            <div class="mb-3">
+                <label for="age" class="form-label">Age</label>
+                <input type="number" class="form-control" id="age" name="age" value="25" min="1" required>
+            </div>
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender</label>
+                <select class="form-select" id="gender" name="gender" required>
+                    <option value="Female" selected>Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn" style="background-color: #f8bbd0; color: white; border-radius: 10px; padding: 10px 20px;">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

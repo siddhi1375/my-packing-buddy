@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Destination - MyPackingBuddy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3e5f5;
+            font-family: Arial, sans-serif;
+            padding: 50px;
+        }
+        .destination-card {
+            border-radius: 20px;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .destination-card:hover {
+            transform: scale(1.05);
+        }
+        .destination-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .destination-card h3 {
+            margin: 10px;
+            color: #6a1b9a;
+        }
+        .destination-card p {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Choose Your Destination</h1>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="destination-card">
+                    <img src="beach.jpg" alt="Beach">
+                    <h3>Beach</h3>
+                    <p>Sun, sand, and sea essentials.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="destination-card">
+                    <img src="mountain.jpg" alt="Mountain">
+                    <h3>Mountain</h3>
+                    <p>Gear up for trekking and adventure.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="destination-card">
+                    <img src="forest.jpg" alt="Forest">
+                    <h3>Forest</h3>
+                    <p>Prepare for a nature-filled journey.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Lake & River Books - MyPackingBuddy{% endblock %}
+
+{% block content %}
+<style>
+body { background: linear-gradient(135deg,#e0f7ff,#b5ebff); }
+
+.flip-card {
+    width: 200px;
+    height: 300px;
+    perspective: 1000px;
+    margin: 20px auto;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    backface-visibility: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.flip-card-front {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flip-card-front img {
+    width: 150px;
+    height: 220px;
+    border-radius: 10px;
+}
+
+.flip-card-back {
+    background: #e0ffffcc;
+    color: #333;
+    transform: rotateY(180deg);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.books-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+</style>
+
+<div class="container my-5">
+<h2 class="text-center mb-5" style="color:#02897b;">Top Lake & River Books</h2>
+<div class="books-row">
+
+<!-- Book 1 -->
+<div class="flip-card">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <img src="/static/images/lake1.jpg" alt="Lake Book 1">
+        </div>
+        <div class="flip-card-back">
+            Relaxing summer reads near lakes and rivers.
+        </div>
+    </div>
+</div>
+
+<!-- Book 2 -->
+<div class="flip-card">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <img src="/static/images/lake2.jpg" alt="Lake Book 2">
+        </div>
+        <div class="flip-card-back">
+            Mystery and suspense by the water’s edge.
+        </div>
+    </div>
+</div>
+
+<!-- Book 3 -->
+<div class="flip-card">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <img src="/static/images/lake3.jpg" alt="Lake Book 3">
+        </div>
+        <div class="flip-card-back">
+            Adventure stories set along serene rivers.
+        </div>
+    </div>
+</div>
+
+<!-- Book 4 -->
+<div class="flip-card">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <img src="/static/images/lake4.jpg" alt="Lake Book 4">
+        </div>
+        <div class="flip-card-back">
+            A romantic tale unfolding near beautiful lakes.
+        </div>
+    </div>
+</div>
+
+<!-- Book 5 -->
+<div class="flip-card">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <img src="/static/images/lake5.jpg" alt="Lake Book 5">
+        </div>
+        <div class="flip-card-back">
+            Friendship and discovery on river expeditions.
+        </div>
+    </div>
+</div>
+
+<!-- Book 6 -->
+<div class="flip-card">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <img src="/static/images/lake6.jpg" alt="Lake Book 6">
+        </div>
+        <div class="flip-card-back">
+            Inspiring tales of nature and lakeside adventures.
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Mountain Packing List - Male{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:700px; margin:auto;">
+    <div class="card p-5" style="background:#ffffffcc; border-radius:20px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+        <h2 class="text-center mb-4" style="color:#6a1b9a;">Male Mountain Packing List</h2>
+        <form>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" value="" id="jacket" checked>
+                <label class="form-check-label" for="jacket">Warm Jacket (Essential)</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" value="" id="hikingBoots" checked>
+                <label class="form-check-label" for="hikingBoots">Hiking Boots (Essential)</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" value="" id="sweater">
+                <label class="form-check-label" for="sweater">Sweaters / Thermals</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" value="" id="hat">
+                <label class="form-check-label" for="hat">Hat / Beanie</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" value="" id="gloves">
+                <label class="form-check-label" for="gloves">Gloves</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" value="" id="backpack">
+                <label class="form-check-label" for="backpack">Backpack</label>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
