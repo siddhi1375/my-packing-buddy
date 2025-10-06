@@ -1,51 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - MyPackingBuddy</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #e0f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-        }
-        .login-box {
-            background: #fff;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0px 0px 20px rgba(0,0,0,0.1);
-            width: 350px;
-        }
-        .login-box h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #00796b;
-        }
-        .btn-primary {
-            background-color: #00796b;
-            border: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-box">
-        <h2>Login</h2>
-        <form action="/login" method="POST">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
-    </div>
-</body>
-</html>
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+
+        if user:
+            # Check hashed password
+            from werkzeug.security import check_password_hash
+            if check_password_hash(user['password'], password):
+                session['user_id'] = user['id']
+                session['username'] = user['username']
+                flash('Logged in successfully!', 'success')
+                return redirect(url_for('dashboard'))  # Or 'index' if you use home page
+            else:
+                flash('Invalid password.', 'danger')
+        else:
+            flash('Invalid email.', 'danger')
+
+    return render_template('auth/login.html')

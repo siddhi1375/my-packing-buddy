@@ -5,90 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MyPackingBuddy{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a2d9d5c52f.js" crossorigin="anonymous"></script>
     <style>
         body {
-            background: linear-gradient(135deg, #ffe4e1, #e3f2fd);
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background-color: #fff8f0; /* soft pastel background */
+            font-family: Arial, sans-serif;
         }
+
         .navbar {
-            background-color: #f8bbd0 !important;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            background-color: #ffe4e1; /* pastel pink navbar */
         }
+
         .navbar-brand {
+            margin-left: 0;
             font-weight: bold;
-            color: white !important;
-            font-size: 1.5em;
-            letter-spacing: 1px;
+            color: #333;
         }
+
+        .navbar-nav {
+            margin-left: auto; /* push all nav items to right */
+        }
+
         .nav-link {
-            color: white !important;
+            color: #555;
             font-weight: 500;
-            margin-right: 10px;
-            transition: all 0.3s;
+            padding-left: 20px;
+            padding-right: 20px;
         }
+
         .nav-link:hover {
-            color: #6a1b9a !important;
-            background: white;
-            border-radius: 10px;
-            padding: 5px 10px;
+            color: #ff7f50;
         }
-        footer {
-            background-color: #f8bbd0;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-            border-radius: 50% 50% 0 0 / 20%;
-            margin-top: auto;
-        }
-        footer a {
-            color: white;
-            text-decoration: underline;
-        }
-        .content {
-            flex: 1;
-            padding: 40px 20px;
+
+        .container {
+            padding-top: 50px;
         }
     </style>
 </head>
 <body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">MyPackingBuddy 🧳</a>
+            <a class="navbar-brand" href="{{ url_for('home') }}">MyPackingBuddy</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/destination">Destinations</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/books">Books</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/usertrips">User Trips</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/profile">Your Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('destination') }}">Destinations</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('books') }}">Books</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('user_trips') }}">UserTrips</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">ContactUs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Your Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Page Content -->
-    <main class="content">
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <p>© 2025 MyPackingBuddy | Created with 💕 by Siddhi Rajole, Digital Nomad 🌍</p>
-        <p><a href="/contact">Contact Us</a></p>
-    </footer>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

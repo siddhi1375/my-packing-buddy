@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
+import re
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
@@ -26,30 +27,58 @@ def signup():
         phone = request.form.get('phone')
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT * FROM user WHERE email=%s", (email,))
-        existing_user = cursor.fetchone()
 
-        if existing_user:
-            flash("Email already registered!", "danger")
-            cursor.close()
+        # Check if email already exists
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        account = cursor.fetchone()
+        if account:
+            flash('Email already registered! Please log in.', 'danger')
             return redirect(url_for('signup'))
 
+        # Backend validation using regex
+        import re
+        if not re.match(r'^[A-Za-z0-9_]{3,20}$', username):
+            flash('Username must be 3–20 chars long and contain only letters, numbers, or underscores.', 'danger')
+            return redirect(url_for('signup'))
+
+        if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]{2,}$', email):
+            flash('Invalid email format.', 'danger')
+            return redirect(url_for('signup'))
+
+        if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) \
+           or not re.search(r'[0-9]', password) or not re.search(r'[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\'",.<>\/\\|`~]', password):
+            flash('Password must have 8+ chars with uppercase, lowercase, number, and special symbol.', 'danger')
+            return redirect(url_for('signup'))
+
+        if not age.isdigit() or not (1 <= int(age) <= 120):
+            flash('Please enter a valid age between 1 and 120.', 'danger')
+            return redirect(url_for('signup'))
+
+        if gender not in ['Male', 'Female', 'Other']:
+            flash('Please select a valid gender.', 'danger')
+            return redirect(url_for('signup'))
+
+        if not re.match(r'^(\+?\d{1,3}[- ]?)?\d{7,15}$', phone):
+            flash('Invalid phone number format.', 'danger')
+            return redirect(url_for('signup'))
+
+        # Hash password
+        from werkzeug.security import generate_password_hash
         hashed_password = generate_password_hash(password)
 
-        cursor.execute(
-            "INSERT INTO user (username, email, password, age, gender, phone) VALUES (%s, %s, %s, %s, %s, %s)",
-            (username, email, hashed_password, age, gender, phone)
-        )
+        # Insert user
+        cursor.execute("""
+            INSERT INTO users (username, email, password, age, gender, phone)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (username, email, hashed_password, age, gender, phone))
         mysql.connection.commit()
-        cursor.close()
 
-        flash("Signup successful! Login now.", "success")
+        flash('Account created successfully! You can now log in.', 'success')
         return redirect(url_for('login'))
 
+    # Use correct path for template
     return render_template('auth/signup.html')
-
-
-# ---------------- Login ----------------
+#-----------------login----------------------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -57,44 +86,42 @@ def login():
         password = request.form.get('password')
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT * FROM user WHERE email=%s", (email,))
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
         cursor.close()
 
-        if user and check_password_hash(user['password'], password):
-            session['user_id'] = user['id']
-            session['user_name'] = user['username']
-            flash("Login successful!", "success")
-            return redirect(url_for('dashboard'))
+        if user:
+            # Check password
+            if check_password_hash(user['password'], password):
+                session['user_id'] = user['id']
+                session['username'] = user['username']
+                flash(f"Welcome back, {user['username']}!", "success")
+                return redirect(url_for('dashboard'))
+            else:
+                flash("Incorrect password!", "danger")
+                return redirect(url_for('login'))
         else:
-            flash("Invalid email or password!", "danger")
+            flash("Email not registered!", "danger")
             return redirect(url_for('login'))
+
+    # GET request
     return render_template('auth/login.html')
-
-
-# ---------------- Logout ----------------
+#-----------------logout-------------------------
 @app.route('/logout')
 def logout():
     session.clear()
     flash("Logged out successfully!", "success")
     return redirect(url_for('login'))
-
-
-# ---------------- Dashboard ----------------
+#------------------home---------------------------
 @app.route('/')
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('main/dashboard.html')
+def index():
+    # This will show the home page when user visits '/'
+    return render_template('destination/home.html')
 
-
-# ---------------- Nomad Dashboard ----------------
-@app.route('/nomad_dashboard')
-def nomad_dashboard():
-    return render_template('main/nomad_dashboard.html')
-
-
+@app.route('/home')
+def home():
+    # Optional: another route if you want '/home' to work too
+    return render_template('destination/home.html')
 # ---------------- Books Pages --------------------
 @app.route('/books')
 def books():
@@ -144,14 +171,12 @@ def general_books():
         return redirect(url_for('login'))
     return render_template('main/general_books.html')
 
-
 # ---------------- About Page ----------------
 @app.route('/about')
 def about():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     return render_template('main/about.html')
-
 
 # ---------------- User Trips ----------------
 @app.route('/user_trips', methods=['GET', 'POST'])
@@ -175,7 +200,7 @@ def user_trips():
         review_id = request.form['review_id']
         new_experience = request.form['experience']
         cursor.execute(
-            "Update user_trips SET experience=%s WHERE id=%s AND user_id=%s",
+            "UPDATE user_trips SET experience=%s WHERE id=%s AND user_id=%s",
             (new_experience, review_id, session['user_id'])
         )
         mysql.connection.commit()
@@ -195,7 +220,6 @@ def user_trips():
     cursor.close()
 
     return render_template("main/usertrips.html", reviews=reviews, current_user_id=session['user_id'])
-
 
 # ---------------- Destination Page ----------------
 @app.route('/destination')
@@ -228,7 +252,6 @@ def destination():
     return render_template("destination/destination.html",
                            user_categories=user_categories,
                            destinations=destinations)
-
 
 # ---------------- Create / Edit Category ----------------
 @app.route('/create_category', methods=['GET', 'POST'])
@@ -267,7 +290,6 @@ def create_category():
 
     return render_template('destination/createcategory.html', categories=categories)
 
-
 # ---------------- Delete Category ----------------
 @app.route('/delete_category/<int:category_id>', methods=['GET'])
 def delete_category(category_id):
@@ -284,14 +306,12 @@ def delete_category(category_id):
     flash("Category deleted successfully!", "success")
     return redirect(url_for('create_category'))
 
-
 # ---------------- Packing List ----------------
 @app.route('/packinglist')
 def packinglist():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     return render_template('destination/packinglist.html')
-
 
 # ---------------- Profile ----------------
 @app.route('/profile', methods=['GET', 'POST'])
@@ -318,7 +338,6 @@ def profile():
 
     return render_template('main/profile.html', user=user)
 
-
 # ---------------- Weather Pages ----------------
 @app.route('/male_weather')
 def male_weather(): return render_template('destination/maleweather.html')
@@ -326,7 +345,6 @@ def male_weather(): return render_template('destination/maleweather.html')
 def female_weather(): return render_template('destination/femaleweather.html')
 @app.route('/baby_weather')
 def baby_weather(): return render_template('destination/babyweather.html')
-
 
 # ---------------- Gender Selection Pages ----------------
 @app.route('/beachgender')
@@ -344,7 +362,6 @@ def mountaingender(): return render_template('destination/mountaingender.html')
 @app.route('/ingeneralgender')
 def ingeneralgender(): return render_template('destination/ingeneralgender.html')
 
-
 # ---------------- Male Pages ----------------
 @app.route('/malebeach')
 def malebeach(): return render_template('destination/malebeach.html')
@@ -360,7 +377,6 @@ def malelakeandriver(): return render_template('destination/malelakeandriver.htm
 def malemountain(): return render_template('destination/malemountain.html')
 @app.route('/maleingeneral')
 def maleingeneral(): return render_template('destination/maleingeneral.html')
-
 
 # ---------------- Female Pages ----------------
 @app.route('/femalebeach')
@@ -378,7 +394,6 @@ def femalemountain(): return render_template('destination/femalemountain.html')
 @app.route('/femaleingeneral')
 def femaleingeneral(): return render_template('destination/femaleingeneral.html')
 
-
 # ---------------- Infant Pages ----------------
 @app.route('/infantbeach')
 def infantbeach(): return render_template('destination/babybeach.html')
@@ -395,6 +410,5 @@ def infantmountain(): return render_template('destination/babymountain.html')
 @app.route('/infantingeneral')
 def infantingeneral(): return render_template('destination/babyingeneral.html')
 
-
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5003)
