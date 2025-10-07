@@ -289,6 +289,10 @@ def create_category():
     cursor.close()
 
     return render_template('destination/createcategory.html', categories=categories)
+#-----------------contact us-----------------------
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')  
 
 # ---------------- Delete Category ----------------
 @app.route('/delete_category/<int:category_id>', methods=['GET'])
@@ -337,6 +341,248 @@ def profile():
     cursor.close()
 
     return render_template('main/profile.html', user=user)
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mysqldb import MySQL
+import MySQLdb.cursors
+import re
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
+
+# ---------------- MySQL Configuration ----------------
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'mypackingbuddy'
+app.config['MYSQL_DB'] = 'my_packing_buddy'
+
+mysql = MySQL(app)
+
+# ---------------- Signup ----------------
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        age = request.form.get('age')
+        gender = request.form.get('gender')
+        phone = request.form.get('phone')
+
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        account = cursor.fetchone()
+        if account:
+            flash('Email already registered! Please log in.', 'danger')
+            return redirect(url_for('signup'))
+
+        if not re.match(r'^[A-Za-z0-9_]{3,20}$', username):
+            flash('Username must be 3–20 chars long and contain only letters, numbers, or underscores.', 'danger')
+            return redirect(url_for('signup'))
+
+        if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]{2,}$', email):
+            flash('Invalid email format.', 'danger')
+            return redirect(url_for('signup'))
+
+        if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) \
+           or not re.search(r'[0-9]', password) or not re.search(r'[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\'",.<>\/\\|`~]', password):
+            flash('Password must have 8+ chars with uppercase, lowercase, number, and special symbol.', 'danger')
+            return redirect(url_for('signup'))
+
+        if not age.isdigit() or not (1 <= int(age) <= 120):
+            flash('Please enter a valid age between 1 and 120.', 'danger')
+            return redirect(url_for('signup'))
+
+        if gender not in ['Male', 'Female', 'Other']:
+            flash('Please select a valid gender.', 'danger')
+            return redirect(url_for('signup'))
+
+        if not re.match(r'^(\+?\d{1,3}[- ]?)?\d{7,15}$', phone):
+            flash('Invalid phone number format.', 'danger')
+            return redirect(url_for('signup'))
+
+        hashed_password = generate_password_hash(password)
+        cursor.execute("""
+            INSERT INTO users (username, email, password, age, gender, phone)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (username, email, hashed_password, age, gender, phone))
+        mysql.connection.commit()
+        flash('Account created successfully! You can now log in.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('auth/signup.html')
+
+#-----------------login----------------------
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+
+        if user:
+            if check_password_hash(user['password'], password):
+                session['user_id'] = user['id']
+                session['username'] = user['username']
+                flash(f"Welcome back, {user['username']}!", "success")
+                return redirect(url_for('dashboard'))
+            else:
+                flash("Incorrect password!", "danger")
+                return redirect(url_for('login'))
+        else:
+            flash("Email not registered!", "danger")
+            return redirect(url_for('login'))
+    return render_template('auth/login.html')
+
+#-----------------logout-------------------------
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash("Logged out successfully!", "success")
+    return redirect(url_for('login'))
+
+#------------------home---------------------------
+@app.route('/')
+def index():
+    return render_template('destination/home.html')
+
+@app.route('/home')
+def home():
+    return render_template('destination/home.html')
+
+# ---------------- Books Pages --------------------
+@app.route('/books')
+def books():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/books.html')
+
+@app.route('/beach_books')
+def beach_books():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/beach_books.html')
+
+@app.route('/forest_books')
+def forest_books():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/forest_books.html')
+
+@app.route('/desert_books')
+def desert_books():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/desert_books.html')
+
+@app.route('/snowvalley_books')
+def snowvalley_books():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/snowvalley_books.html')
+
+@app.route('/lake_river_books')
+def lake_river_books():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/lake_river_books.html')
+
+@app.route('/mountain_books')
+def mountain_books():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/mountain_books.html')
+
+@app.route('/general_books')
+def general_books():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/general_books.html')
+
+# ---------------- About Page ----------------
+@app.route('/about')
+def about():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('main/about.html')
+
+# ---------------- User Trips ----------------
+@app.route('/user_trips', methods=['GET', 'POST'])
+def user_trips():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    if request.method == 'POST' and request.form.get('action') == 'add':
+        username = request.form['username']
+        experience = request.form['experience']
+        cursor.execute(
+            "INSERT INTO user_trips (user_id, username, experience) VALUES (%s, %s, %s)",
+            (session['user_id'], username, experience)
+        )
+        mysql.connection.commit()
+        flash("Review added successfully!", "success")
+
+    if request.method == 'POST' and request.form.get('action') == 'edit':
+        review_id = request.form['review_id']
+        new_experience = request.form['experience']
+        cursor.execute(
+            "UPDATE user_trips SET experience=%s WHERE id=%s AND user_id=%s",
+            (new_experience, review_id, session['user_id'])
+        )
+        mysql.connection.commit()
+        flash("Review updated successfully!", "success")
+
+    if request.method == 'POST' and request.form.get('action') == 'delete':
+        review_id = request.form['review_id']
+        cursor.execute(
+            "DELETE FROM user_trips WHERE id=%s AND user_id=%s",
+            (review_id, session['user_id'])
+        )
+        mysql.connection.commit()
+        flash("Review deleted successfully!", "success")
+
+    cursor.execute("SELECT id, user_id, username, experience FROM user_trips ORDER BY id DESC")
+    reviews = cursor.fetchall()
+    cursor.close()
+
+    return render_template("main/usertrips.html", reviews=reviews, current_user_id=session['user_id'])
+
+# ---------------- Destination Page ----------------
+@app.route('/destination')
+def destination():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT * FROM usercategorys WHERE user_id=%s", (session['user_id'],))
+    user_categories = cursor.fetchall() or []
+    cursor.close()
+
+    for cat in user_categories:
+        items_val = cat.get('items')
+        if items_val and isinstance(items_val, str):
+            cat['item_list'] = [item.strip() for item in items_val.split(',') if item.strip()]
+        else:
+            cat['item_list'] = []
+
+    destinations = [
+        {"name": "Beach", "img": url_for('static', filename='beach.jpg')},
+        {"name": "Forest", "img": url_for('static', filename='forest.jpg')},
+        {"name": "Desert", "img": url_for('static', filename='desert.jpeg')},
+        {"name": "Snow Valley", "img": url_for('static', filename='snowvalley.jpg')},
+        {"name": "Lake & River", "img": url_for('static', filename='lake.jpg')},
+        {"name": "Mountain", "img": url_for('static', filename='mountain.jpg')},
+        {"name": "In General", "img": url_for('static', filename='ingeneral.jpg')}
+    ]
+
+    return render_template("destination/destination.html",
+                           user_categories=user_categories,
+                           destinations=destinations)
 
 # ---------------- Weather Pages ----------------
 @app.route('/male_weather')
@@ -412,3 +658,4 @@ def infantingeneral(): return render_template('destination/babyingeneral.html')
 
 if __name__ == "__main__":
     app.run(debug=True, port=5003)
+

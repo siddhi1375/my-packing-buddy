@@ -1,50 +1,71 @@
 {% extends "main/base.html" %}
 
+{% block title %}Home - MyPackingBuddy{% endblock %}
+
 {% block content %}
 <style>
-    body {
-        background: url('{{ url_for('static', filename='images/home_bg.jpg') }}') no-repeat center center fixed;
-        background-size: cover;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Arial', sans-serif;
-    }
-    .home-box {
-        background-color: rgba(255, 255, 255, 0.7); /* transparent white */
-        padding: 50px 60px;
-        border-radius: 15px;
-        text-align: center;
-        max-width: 600px;
-    }
-    .home-box h1 {
-        color: #333;
-        margin-bottom: 20px;
-        font-size: 48px;
-    }
-    .home-box p {
-        color: #555;
-        font-size: 18px;
-        margin-bottom: 30px;
-    }
-    .home-box a.button {
-        background-color: #ffb6c1; /* pastel pink */
-        color: white;
-        padding: 15px 30px;
-        text-decoration: none;
-        font-size: 20px;
-        border-radius: 10px;
-        transition: 0.3s;
-    }
-    .home-box a.button:hover {
-        background-color: #ff69b4;
-    }
+/* Content Wrapper */
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 60px; /* space for navbar */
+    min-height: calc(100vh - 60px); /* full height minus navbar */
+}
+
+/* Heading */
+.content-wrapper h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #000; /* black text */
+}
+
+/* Paragraph */
+.content-wrapper p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 600px;
+    color: #000; /* black text */
+}
+
+/* Button */
+.content-wrapper a.button {
+    display: inline-block;
+    margin-top: 25px;
+    background-color: #ff6f91;
+    color: white;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.content-wrapper a.button:hover {
+    background-color: #ff4f81;
+    transform: translateY(-3px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content-wrapper h1 { font-size: 2.2rem; }
+    .content-wrapper p { font-size: 1rem; }
+    .content-wrapper a.button { padding: 12px 30px; font-size: 1rem; }
+}
 </style>
 
-<div class="home-box">
-    <h1>My Packing Buddy</h1>
-    <p>Plan your trips smarter! Keep all your packing lists, books, and travel tips in one place. Explore destinations, organize your trips, and make traveling fun and hassle-free!</p>
-    <a href="{{ url_for('destination') }}" class="button">Let's Go</a>
+<div class="content-wrapper">
+    <div>
+        <h1>Welcome to My Packing Buddy</h1>
+        <p>
+            Plan your trips smarter! Keep all your packing lists, books, and travel tips in one place. 
+            Explore destinations, organize your trips, and make traveling fun and hassle-free!
+        </p>
+        <a href="{{ url_for('destination') }}" class="button">Start Your Journey</a>
+    </div>
 </div>
 {% endblock %}
