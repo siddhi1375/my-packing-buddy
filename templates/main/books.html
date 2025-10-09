@@ -1,156 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Books - MyPackingBuddy</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a2d9d5c52f.js" crossorigin="anonymous"></script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #ffe4e1, #e3f2fd);
-            font-family: 'Poppins', sans-serif;
-            color: #333;
-        }
-        header {
-            background-color: #f8bbd0;
-            color: white;
-            text-align: center;
-            padding: 60px 20px;
-            border-radius: 0 0 50% 50% / 20%;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-        }
-        header h1 {
-            font-size: 3em;
-            font-weight: bold;
-        }
-        header p {
-            font-size: 1.2em;
-        }
-        .category-container {
-            padding: 60px 20px;
-        }
-        .category-box {
-            background: #ffffffcc;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            text-align: center;
-            padding: 40px 20px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        .category-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-        }
-        .category-box i {
-            font-size: 40px;
-            color: #ff80ab;
-            margin-bottom: 15px;
-        }
-        .category-box h3 {
-            font-weight: 600;
-            color: #6a1b9a;
-        }
-        .footer {
-            background-color: #f8bbd0;
-            color: white;
-            text-align: center;
-            padding: 30px 0;
-            border-radius: 50% 50% 0 0 / 20%;
-            margin-top: 60px;
-        }
-        .footer a {
-            color: white;
-            text-decoration: underline;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Cool Travel Books</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    margin:0;
+    padding:0;
+    background: linear-gradient(135deg, #dff6ff 0%, #fff0ea 100%);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  h1 {margin:40px 0 20px; color:#444; text-align:center;}
+  
+  .categories {
+    margin-bottom:30px;
+  }
+
+  .categories button {
+    background:#a8edea;
+    border:none;
+    padding:8px 16px;
+    margin:5px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+  }
+
+  .categories button:hover { background:#7dd3fc; color:white; }
+
+  .book-of-day {
+    background: rgba(255,255,255,0.9);
+    border-radius:20px;
+    padding:25px;
+    width:80%;
+    max-width:800px;
+    margin-bottom:40px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    box-shadow:0 10px 26px rgba(16,24,40,0.06);
+    transition:transform 0.3s ease;
+  }
+
+  .book-of-day:hover { transform: scale(1.02); }
+  .book-of-day img { width:130px; height:180px; object-fit:cover; border-radius:12px; }
+  .book-info h2 { margin:0 0 6px; font-size:1.5em; color:#333; }
+  .book-info p { margin:6px 0; color:#555; font-size:0.95em; }
+
+  .books-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap:24px;
+    width:85%;
+    margin-bottom:50px;
+  }
+
+  .book-card {
+    background:white;
+    border-radius:16px;
+    padding:14px;
+    box-shadow:0 6px 20px rgba(16,24,40,0.06);
+    text-align:center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .book-card:hover { transform: translateY(-5px); box-shadow:0 12px 26px rgba(16,24,40,0.1); }
+  .book-card img { width:100%; height:200px; object-fit:cover; border-radius:12px; }
+  .book-card h3 { margin:10px 0 4px; color:#333; }
+  .book-card p { color:#666; font-size:0.88em; }
+  .read-btn { background:#7dd3fc; border:none; padding:8px 16px; border-radius:8px; color:#05202b; font-weight:600; cursor:pointer; transition: background 0.25s ease; margin-top:8px; }
+  .read-btn:hover { background:#6ec1e4; }
+  .hidden { display:none; }
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>Travel Books & Guides</h1>
-        <p>Explore handpicked travel books for every destination 🌍✨</p>
-    </header>
+<h1>📚 Cool Travel Books</h1>
 
-    <section class="category-container container">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <a href="books_beach.html" style="text-decoration: none;">
-                    <div class="category-box">
-                        <i class="fas fa-umbrella-beach"></i>
-                        <h3>Beach</h3>
-                        <p>Feel the breeze and dive into seaside adventures 🏖️</p>
-                    </div>
-                </a>
-            </div>
+<!-- Categories -->
+<div class="categories">
+  <button onclick="filterBooks('all')">All</button>
+  <button onclick="filterBooks('adventure')">Adventure</button>
+  <button onclick="filterBooks('mindfulness')">Mindfulness</button>
+  <button onclick="filterBooks('nomads')">Nomads</button>
+  <button onclick="filterBooks('inspiration')">Inspiration</button>
+</div>
 
-            <div class="col-md-4">
-                <a href="books_desert.html" style="text-decoration: none;">
-                    <div class="category-box">
-                        <i class="fas fa-sun"></i>
-                        <h3>Desert</h3>
-                        <p>Golden sands and stories from the dunes 🐪</p>
-                    </div>
-                </a>
-            </div>
+<!-- Book of the Day -->
+<div class="book-of-day">
+  <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300" alt="Book of the Day">
+  <div class="book-info">
+    <h2>Book of the Day: The Alchemist</h2>
+    <p><strong>By Paulo Coelho</strong></p>
+    <p>A timeless story about following your dreams, destiny, and travel as a journey of self-discovery.</p>
+  </div>
+</div>
 
-            <div class="col-md-4">
-                <a href="books_forest.html" style="text-decoration: none;">
-                    <div class="category-box">
-                        <i class="fas fa-tree"></i>
-                        <h3>Forest</h3>
-                        <p>Discover the whispers of the wild 🌲</p>
-                    </div>
-                </a>
-            </div>
+<!-- Books Grid -->
+<div class="books-grid">
+  <div class="book-card" data-category="adventure">
+    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400" alt="Into the Wild">
+    <h3>Into the Wild</h3>
+    <p>A young man’s real-life adventure into Alaska’s wilderness. Inspiring, raw, and life-changing.</p>
+    <button class="read-btn">Read More</button>
+  </div>
 
-            <div class="col-md-4">
-                <a href="books_lake.html" style="text-decoration: none;">
-                    <div class="category-box">
-                        <i class="fas fa-water"></i>
-                        <h3>Lake & River</h3>
-                        <p>Flow with peace and serenity 💧</p>
-                    </div>
-                </a>
-            </div>
+  <div class="book-card" data-category="mindfulness">
+    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" alt="Eat Pray Love">
+    <h3>Eat, Pray, Love</h3>
+    <p>A woman’s journey across Italy, India, and Bali to rediscover herself. Perfect for soulful travelers.</p>
+    <button class="read-btn">Read More</button>
+  </div>
 
-            <div class="col-md-4">
-                <a href="books_mountain.html" style="text-decoration: none;">
-                    <div class="category-box">
-                        <i class="fas fa-mountain"></i>
-                        <h3>Mountain</h3>
-                        <p>Climb higher and explore the peaks 🏔️</p>
-                    </div>
-                </a>
-            </div>
+  <div class="book-card" data-category="nomads">
+    <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400" alt="Vagabonding">
+    <h3>Vagabonding</h3>
+    <p>A practical guide to long-term travel. A must-read for digital nomads.</p>
+    <button class="read-btn">Read More</button>
+  </div>
 
-            <div class="col-md-4">
-                <a href="books_snowvalley.html" style="text-decoration: none;">
-                    <div class="category-box">
-                        <i class="fas fa-snowflake"></i>
-                        <h3>Snow Valley</h3>
-                        <p>Chill vibes and frosty adventures ❄️</p>
-                    </div>
-                </a>
-            </div>
+  <div class="book-card" data-category="adventure">
+    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400" alt="Wild">
+    <h3>Wild</h3>
+    <p>Cheryl Strayed's memoir of hiking the Pacific Crest Trail, healing, and self-discovery.</p>
+    <button class="read-btn">Read More</button>
+  </div>
+</div>
 
-            <div class="col-md-12">
-                <a href="books_general.html" style="text-decoration: none;">
-                    <div class="category-box">
-                        <i class="fas fa-globe"></i>
-                        <h3>In General</h3>
-                        <p>Books that inspire every traveler 🌏</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <div class="footer">
-        <p>© 2025 MyPackingBuddy | Curated by Siddhi Rajole 💕</p>
-        <p><a href="/index.html">Back to Home</a></p>
-    </div>
+<script>
+function filterBooks(category) {
+  const books = document.querySelectorAll(".book-card");
+  books.forEach(book => {
+    if(category === "all") {
+      book.classList.remove("hidden");
+    } else {
+      book.classList.toggle("hidden", book.dataset.category !== category);
+    }
+  });
+}
+</script>
 
 </body>
 </html>
+
+
+
+
+
+
