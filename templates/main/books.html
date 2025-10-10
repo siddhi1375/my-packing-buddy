@@ -1,157 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Cool Travel Books</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Books • My Packing Buddy</title>
 <style>
-  body {
-    font-family: "Poppins", sans-serif;
-    margin:0;
-    padding:0;
-    background: linear-gradient(135deg, #dff6ff 0%, #fff0ea 100%);
+  :root{
+    --nav-pink:#ffc0cb;
+    --accent:#1d3557;
+    --card-front:#ffe8d6;
+    --card-back:#bfeaf0;
+  }
+
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{
     min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+    margin:0;
+    color:#222;
+    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat fixed;
+    transition: background 600ms ease;
   }
 
-  h1 {margin:40px 0 20px; color:#444; text-align:center;}
-  
-  .categories {
-    margin-bottom:30px;
-  }
-
-  .categories button {
-    background:#a8edea;
-    border:none;
-    padding:8px 16px;
-    margin:5px;
-    border-radius:12px;
-    cursor:pointer;
-    font-weight:600;
-    transition:0.3s;
-  }
-
-  .categories button:hover { background:#7dd3fc; color:white; }
-
-  .book-of-day {
-    background: rgba(255,255,255,0.9);
-    border-radius:20px;
-    padding:25px;
-    width:80%;
-    max-width:800px;
-    margin-bottom:40px;
+  /* header + navbar */
+  header{
     display:flex;
     align-items:center;
-    gap:20px;
-    box-shadow:0 10px 26px rgba(16,24,40,0.06);
-    transition:transform 0.3s ease;
+    justify-content:space-between;
+    padding:14px 22px;
+    background:var(--nav-pink);
+    color:var(--accent);
+    position:sticky;
+    top:0;
+    z-index:40;
+    box-shadow:0 6px 18px rgba(13,13,13,0.08);
   }
-
-  .book-of-day:hover { transform: scale(1.02); }
-  .book-of-day img { width:130px; height:180px; object-fit:cover; border-radius:12px; }
-  .book-info h2 { margin:0 0 6px; font-size:1.5em; color:#333; }
-  .book-info p { margin:6px 0; color:#555; font-size:0.95em; }
-
-  .books-grid {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap:24px;
-    width:85%;
-    margin-bottom:50px;
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+  .logo .suit{font-size:22px}
+  nav{display:flex;gap:10px;align-items:center}
+  nav a{
+    text-decoration:none;color:var(--accent);
+    padding:8px 12px;border-radius:10px;font-weight:600;
   }
+  nav a:hover{background:#f4a261;color:#fff;transition:background 160ms}
 
-  .book-card {
-    background:white;
-    border-radius:16px;
-    padding:14px;
-    box-shadow:0 6px 20px rgba(16,24,40,0.06);
+  /* main area keeps a blurred translucent overlay so cards read well */
+  main{max-width:1200px;margin:28px auto;padding:0 20px}
+  .hero{
+    margin:18px 0 8px;
+    padding:24px;border-radius:14px;
+    background:rgba(255,255,255,0.18);
+    backdrop-filter: blur(6px) saturate(1.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+  }
+  .hero p{margin:0;color:#2b2b2b;font-style:italic;font-size:16px}
+  .hero input{
+    width:80%;max-width:720px;padding:12px 16px;border-radius:10px;border:1px solid rgba(0,0,0,0.12);
+    font-size:16px;outline:none;
+    background:rgba(255,255,255,0.85);
+  }
+  .hero input::placeholder{color:#666}
+
+  /* grid and cards */
+  .books-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:18px}
+  @media(max-width:980px){.books-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:620px){.books-grid{grid-template-columns:1fr}}
+
+  .flip-card{perspective:1100px;height:260px;border-radius:12px}
+  .flip-card-inner{
+    position:relative;width:100%;height:100%;transition:transform .9s cubic-bezier(.2,.9,.26,1);transform-style:preserve-3d;border-radius:12px;
+  }
+  .flip-card:hover .flip-card-inner{transform:rotateY(180deg)}
+
+  .flip-front,.flip-back{
+    position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;
+    box-shadow:0 8px 18px rgba(10,10,10,0.08);
     text-align:center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
+  .flip-front{background:linear-gradient(135deg,var(--card-front),#ffdcd0);color:var(--accent)}
+  .flip-back{background:linear-gradient(135deg,var(--card-back),#d7f7fb);color:var(--accent);transform:rotateY(180deg)}
 
-  .book-card:hover { transform: translateY(-5px); box-shadow:0 12px 26px rgba(16,24,40,0.1); }
-  .book-card img { width:100%; height:200px; object-fit:cover; border-radius:12px; }
-  .book-card h3 { margin:10px 0 4px; color:#333; }
-  .book-card p { color:#666; font-size:0.88em; }
-  .read-btn { background:#7dd3fc; border:none; padding:8px 16px; border-radius:8px; color:#05202b; font-weight:600; cursor:pointer; transition: background 0.25s ease; margin-top:8px; }
-  .read-btn:hover { background:#6ec1e4; }
-  .hidden { display:none; }
+  .book-title{font-size:16px;font-weight:700;margin:4px 0 6px}
+  .book-author{font-size:13px;color:rgba(29,53,87,0.9);margin:0}
+  .book-description{font-size:14px;margin:8px 6px;color:#06202a}
+
+  .save-button{
+    margin-top:10px;padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;
+  }
+  .save-button:hover{opacity:.95}
+
+  /* toast */
+  .toast{
+    position:fixed;right:18px;bottom:18px;background:rgba(29,53,87,0.95);color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.2);z-index:80;
+    transform:translateY(12px);opacity:0;transition:opacity .28s,transform .28s;
+  }
+  .toast.show{opacity:1;transform:none}
+
+  /* small helper for empty result */
+  .no-books{padding:40px;border-radius:12px;background:rgba(255,255,255,0.18);backdrop-filter:blur(6px);text-align:center;color:#053146;font-weight:600}
 </style>
 </head>
 <body>
 
-<h1>📚 Cool Travel Books</h1>
+<header>
+  <div class="logo"><span class="suit">🧳</span><span>My Packing Buddy</span></div>
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="destination.html">Destination</a>
+    <a href="books.html">Books</a>
+    <a href="usertrips.html">User Trips</a>
+    <a href="saved_lists.html">Saved Lists</a>
+    <a href="create_list.html">Create Your Own List</a>
+    <a href="contactus.html">Contact Us</a>
+    <a href="logout.html">Logout</a>
+  </nav>
+</header>
 
-<!-- Categories -->
-<div class="categories">
-  <button onclick="filterBooks('all')">All</button>
-  <button onclick="filterBooks('adventure')">Adventure</button>
-  <button onclick="filterBooks('mindfulness')">Mindfulness</button>
-  <button onclick="filterBooks('nomads')">Nomads</button>
-  <button onclick="filterBooks('inspiration')">Inspiration</button>
-</div>
+<main>
+  <section class="hero" aria-labelledby="hero-label">
+    <p id="hero-label">Tell us the destination you're going to travel — type anything (e.g. "Japan", "trip to iceland", "goa beaches")</p>
+    <input id="destinationText" placeholder="Type your destination here..." autocomplete="off" />
+  </section>
 
-<!-- Book of the Day -->
-<div class="book-of-day">
-  <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300" alt="Book of the Day">
-  <div class="book-info">
-    <h2>Book of the Day: The Alchemist</h2>
-    <p><strong>By Paulo Coelho</strong></p>
-    <p>A timeless story about following your dreams, destiny, and travel as a journey of self-discovery.</p>
-  </div>
-</div>
+  <section id="booksGrid" class="books-grid" aria-live="polite">
+    <div class="no-books">Type your destination above to see related books — we show 6 suggestions every time.</div>
+  </section>
+</main>
 
-<!-- Books Grid -->
-<div class="books-grid">
-  <div class="book-card" data-category="adventure">
-    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400" alt="Into the Wild">
-    <h3>Into the Wild</h3>
-    <p>A young man’s real-life adventure into Alaska’s wilderness. Inspiring, raw, and life-changing.</p>
-    <button class="read-btn">Read More</button>
-  </div>
-
-  <div class="book-card" data-category="mindfulness">
-    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" alt="Eat Pray Love">
-    <h3>Eat, Pray, Love</h3>
-    <p>A woman’s journey across Italy, India, and Bali to rediscover herself. Perfect for soulful travelers.</p>
-    <button class="read-btn">Read More</button>
-  </div>
-
-  <div class="book-card" data-category="nomads">
-    <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400" alt="Vagabonding">
-    <h3>Vagabonding</h3>
-    <p>A practical guide to long-term travel. A must-read for digital nomads.</p>
-    <button class="read-btn">Read More</button>
-  </div>
-
-  <div class="book-card" data-category="adventure">
-    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400" alt="Wild">
-    <h3>Wild</h3>
-    <p>Cheryl Strayed's memoir of hiking the Pacific Crest Trail, healing, and self-discovery.</p>
-    <button class="read-btn">Read More</button>
-  </div>
-</div>
+<div id="toast" class="toast" aria-hidden="true"></div>
 
 <script>
-function filterBooks(category) {
-  const books = document.querySelectorAll(".book-card");
-  books.forEach(book => {
-    if(category === "all") {
-      book.classList.remove("hidden");
-    } else {
-      book.classList.toggle("hidden", book.dataset.category !== category);
+/* ---------------------------
+   Data: known books + backgrounds
+   --------------------------- */
+const known = {
+  goa: {
+    bg:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"Goa Travel Guide", author:"John Doe", desc:"Complete guide to beaches, nightlife, and hidden gems."},
+      {title:"Hidden Goa", author:"Jane Smith", desc:"Offbeat places and local tips."},
+      {title:"Goa Adventures", author:"R. K.", desc:"Water sports and adventure ideas."},
+      {title:"Goa Food & Culture", author:"S. Fernandes", desc:"Festivals, cuisine and traditions."},
+      {title:"Goa Beaches Guide", author:"Anita Ray", desc:"Best beaches and quiet coves."},
+      {title:"Goa Hidden Trails", author:"T. Gomes", desc:"Nature trails, waterfalls and escapes."}
+    ]
+  },
+  china: {
+    bg:"https://images.unsplash.com/photo-1511300967564-1d13f2b5fcd9?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"China Travel Essentials", author:"Li Wei", desc:"Practical tips & top sights across China."},
+      {title:"Discover China", author:"Wang Shu", desc:"Cultural highlights and local routes."},
+      {title:"China Adventures", author:"Zhang Wei", desc:"Outdoor and offbeat adventures."},
+      {title:"The Flavours of China", author:"Ming Li", desc:"Regional cuisine and markets."},
+      {title:"Backpacking China", author:"Chen Yu", desc:"Budget routes and local insights."},
+      {title:"Historic China", author:"Hua Zhang", desc:"Temples, palaces and ancient routes."}
+    ]
+  },
+  japan: {
+    bg:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"Japan Travel Guide", author:"Hiro Tanaka", desc:"Culture, food and must-see cities."},
+      {title:"Hidden Japan", author:"Yuki Sato", desc:"Offbeat towns and local secrets."},
+      {title:"Japan by Rail", author:"R. Matsuda", desc:"Epic rail journeys and itineraries."},
+      {title:"Japan Food Trail", author:"A. Kobayashi", desc:"Sushi, street food and regional dishes."},
+      {title:"Hiking Japan", author:"S. Nakamura", desc:"Mountains, trails and nature escapes."},
+      {title:"Tokyo After Dark", author:"M. Ito", desc:"Nightlife, tiny bars and late-night eats."}
+    ]
+  },
+  srilanka: {
+    bg:"https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"Srilanka Travel Guide", author:"Nimal Fernando", desc:"Top destinations and cultural spots."},
+      {title:"Srilanka Adventures", author:"Sunil Perera", desc:"Hiking, surfing and wildlife."},
+      {title:"Srilanka Food & Culture", author:"L. Raj", desc:"Cultural deep-dive and dishes."},
+      {title:"Srilanka Beaches", author:"Kumar Silva", desc:"Island beaches and coastal tips."},
+      {title:"Srilanka Hidden Gems", author:"P. De Silva", desc:"Secret spots and local experiences."},
+      {title:"Srilanka Backpacker Guide", author:"R. Perera", desc:"Budget tips and routes."}
+    ]
+  },
+  paris: {
+    bg:"https://images.unsplash.com/photo-1522098543979-ffc7f79d26f1?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"Paris in a Week", author:"E. Claire", desc:"Plan the perfect week in Paris."},
+      {title:"Hidden Paris", author:"L. Dupont", desc:"Small cafes and secret streets."},
+      {title:"Paris Art & Culture", author:"A. Moreau", desc:"Museums, galleries and shows."},
+      {title:"Paris Food Journey", author:"J. Renault", desc:"Bakeries, bistros and markets."},
+      {title:"Romantic Paris", author:"S. Bernard", desc:"Itineraries for couples."},
+      {title:"Paris on a Budget", author:"M. Lefevre", desc:"See Paris without breaking the bank."}
+    ]
+  },
+  thailand: {
+    bg:"https://images.unsplash.com/photo-1507120410856-1f35574c3b45?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"Thailand Travel Guide", author:"Somchai", desc:"Temples, islands and street food."},
+      {title:"Thailand Beaches & Islands", author:"N. Chan", desc:"Best islands and resorts."},
+      {title:"Thai Street Food", author:"P. K.", desc:"Markets and must-eat dishes."},
+      {title:"Northern Thailand", author:"S. L.", desc:"Hills, tribes and trekking."},
+      {title:"Thailand Budget Guide", author:"Jet Traveler", desc:"Stretch your rupee further."},
+      {title:"Thai Festivals", author:"A. Som", desc:"Culture through colorful festivals."}
+    ]
+  },
+  maldives: { bg:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"Maldives Escape", author:"Ali R.", desc:"Islands, resorts and reef tips."},
+      {title:"Maldives Diving Guide", author:"S. Ahmed", desc:"Top dive spots and safety."},
+      {title:"Luxury Maldives", author:"G. Patel", desc:"Resorts and island experiences."},
+      {title:"Budget Maldives", author:"E. Trav", desc:"Affordable island stays."},
+      {title:"Maldives Photography", author:"Cam Click", desc:"Capture the blue paradise."},
+      {title:"Maldives Culture", author:"L. Noor", desc:"Island life and traditions."}
+    ]
+  },
+  iceland: {
+    bg:"https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"Iceland Roadtrips", author:"E. Walker", desc:"Drive the ring road and beyond."},
+      {title:"Icelandic Nature", author:"S. Bjorn", desc:"Glaciers, waterfalls and volcanoes."},
+      {title:"Northern Lights Guide", author:"A. North", desc:"Best times and places."},
+      {title:"Iceland Budget Travel", author:"P. Fr", desc:"Tips for saving on Iceland trips."},
+      {title:"Hiking Iceland", author:"Trek Author", desc:"Top trails for explorers."},
+      {title:"Iceland Hot Springs", author:"M. Soak", desc:"Thermal baths and relaxing spots."}
+    ]
+  },
+  seychelles: {
+    bg:"https://images.unsplash.com/photo-1509706325966-7b5a3306cf88?auto=format&fit=crop&w=1600&q=80",
+    books:[
+      {title:"Seychelles Beaches", author:"A. Blue", desc:"Island beaches and reefs."},
+      {title:"Seychelles Travel Guide", author:"K. Shore", desc:"Islands, resorts and how to explore."},
+      {title:"Seychelles Diving", author:"D. Reef", desc:"Dive sites and tips."},
+      {title:"Seychelles Photography", author:"Cam Click", desc:"Capture island beauty."},
+      {title:"Seychelles Culture", author:"R. Loc", desc:"Local life and cuisine."},
+      {title:"Seychelles On A Budget", author:"Backpacker B", desc:"Affordable island tips."}
+    ]
+  }
+};
+
+/* small pool of author names used when generating new book entries */
+const authorPool = ["A. Traveler","Sam Wander","Lily Globe","Nina Solo","Rick Trek","Cam Click","M. Roe","K. Singh","D. Lane","O. Park"];
+
+/* default background if none found */
+const DEFAULT_BG = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80";
+
+/* helper: capitalise first letter */
+function uc(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+
+/* generate realistic titles for unknown destinations */
+function generateTitlesFor(dest){
+  const D = uc(dest);
+  const templates = [
+    `${D} Travel Guide`,
+    `Hidden ${D}`,
+    `${D} on a Budget`,
+    `The ${D} Food Guide`,
+    `${D} Adventures`,
+    `${D} Photo Guide`
+  ];
+  return templates.map((t,i)=>({
+    title:t,
+    author: authorPool[i % authorPool.length],
+    desc: `${t} — practical tips, local highlights and must-see spots.`
+  }));
+}
+
+/* find best matching known key (exact or fuzzy startsWith) */
+function findKnownKey(input){
+  if(!input) return null;
+  const key = input.toLowerCase().trim();
+  // exact match
+  if(known[key]) return key;
+  // try to match contains or starts
+  for(const k of Object.keys(known)){
+    if(key.includes(k) || k.includes(key) || key.startsWith(k) || k.startsWith(key)) return k;
+  }
+  return null;
+}
+
+/* save to localStorage */
+function saveBook(title, author){
+  const key = "mpb_saved_books_v1";
+  const prev = JSON.parse(localStorage.getItem(key) || "[]");
+  // avoid duplicates
+  if(prev.some(b => b.title === title && b.author === author)){
+    showToast("Already saved");
+    return;
+  }
+  prev.unshift({title,author,when:new Date().toISOString()});
+  localStorage.setItem(key, JSON.stringify(prev.slice(0,200)));
+  showToast("Saved ✔");
+}
+
+/* toast helper */
+let toastTimer;
+function showToast(txt){
+  const el = document.getElementById("toast");
+  el.textContent = txt; el.classList.add("show"); el.setAttribute("aria-hidden","false");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.classList.remove("show"); el.setAttribute("aria-hidden","true"); },2200);
+}
+
+/* main render function */
+function loadBooks(){
+  const raw = document.getElementById("destinationText").value || "";
+  const input = raw.toLowerCase().trim();
+  const grid = document.getElementById("booksGrid");
+  grid.innerHTML = "";
+
+  if(!input){
+    // default landing
+    grid.innerHTML = `<div class="no-books">Type your destination above to see related books — we always show 6 suggestions.</div>`;
+    document.body.style.backgroundImage = `url(${DEFAULT_BG})`;
+    return;
+  }
+
+  const matchedKey = findKnownKey(input);
+
+  let books = [];
+  let bg = DEFAULT_BG;
+
+  if(matchedKey){
+    // use known entries (take up to 6)
+    const entry = known[matchedKey];
+    bg = entry.bg || bg;
+    books = (entry.books || []).slice(0,6);
+  } else {
+    // Not a known key — generate 6 realistic books using destination name
+    const gen = generateTitlesFor(input);
+    books = gen.slice(0,6);
+    // try to choose a background by searching known by containing words — quick heuristic:
+    for(const k of Object.keys(known)){
+      if(k && input.includes(k)){ bg = known[k].bg; break; }
     }
+  }
+
+  // ensure bg covers full page
+  document.body.style.backgroundImage = `url(${bg})`;
+
+  // render 6 cards (if less than 6 in books, fill from generated generic ones)
+  if(books.length < 6){
+    const add = generateTitlesFor(input).slice(0, 6 - books.length);
+    books = books.concat(add);
+  }
+
+  // create cards
+  books.slice(0,6).forEach(b => {
+    const card = document.createElement("div");
+    card.className = "flip-card";
+    const inner = document.createElement("div");
+    inner.className = "flip-card-inner";
+
+    // front
+    const front = document.createElement("div");
+    front.className = "flip-front";
+    front.innerHTML = `<div class="book-title">${escapeHtml(b.title)}</div><div class="book-author">by ${escapeHtml(b.author)}</div>`;
+
+    // back
+    const back = document.createElement("div");
+    back.className = "flip-back";
+    back.innerHTML = `<div class="book-description">${escapeHtml(b.desc)}</div>
+      <button class="save-button" aria-label="Save ${escapeHtml(b.title)}">Save</button>`;
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+    grid.appendChild(card);
+
+    // hook save click
+    back.querySelector(".save-button").addEventListener("click", () => saveBook(b.title, b.author));
   });
 }
+
+/* small helper to avoid XSS when injecting text */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); }); }
+
+/* init: wire input with slight debounce */
+const destInput = document.getElementById("destinationText");
+let debounce;
+destInput.addEventListener("input", () => {
+  clearTimeout(debounce);
+  debounce = setTimeout(loadBooks, 180);
+});
+
+/* initial call */
+loadBooks();
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
