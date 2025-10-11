@@ -1,21 +1,48 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">MyPackingBuddy</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('destination') }}">Destination</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('books') }}">Books</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('create_category') }}">Create Your Category</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('saved_lists') }}">Saved Lists</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact Us</a></li>
-        <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a></li>
-      </ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPackingBuddy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- ---------------- Navbar ---------------- -->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">MyPackingBuddy</a></li>
+
+            {% if session.get('user_id') %}
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('destination') }}">Destination</a></li>
+                <li><a href="{{ url_for('books') }}">Books</a></li>
+                <li><a href="{{ url_for('create_category') }}">Create Your Category</a></li>
+                <li><a href="{{ url_for('saved_lists') }}">Saved Lists</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('signup') }}">Signup</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- ---------------- Flash Messages ---------------- -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- ---------------- Main Content ---------------- -->
+    <div class="container">
+        {% block content %}
+        {% endblock %}
     </div>
-  </div>
-</nav>
+</body>
+</html>

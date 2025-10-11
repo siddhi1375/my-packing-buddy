@@ -1,134 +1,150 @@
-{% extends "base.html" %}
-{% block content %}
-<style>
-    body {
-        background: #fce4ec; /* pastel pink background */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - MyPackingBuddy</title>
+    <style>
+        /* Full-screen background image */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('/static/images/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
 
-    .signup-box {
-        background: rgba(255, 255, 255, 0.85); /* transparent box */
-        padding: 30px;
-        border-radius: 15px;
-        width: 350px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
+        /* Centered pastel box */
+        .signup-box {
+            background: rgba(255, 255, 255, 0.85); /* soft pastel-white */
+            width: 350px;
+            margin: 80px auto;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
 
-    .signup-box h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #333;
-    }
+        .signup-box h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
 
-    .signup-box input, .signup-box select {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 12px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 14px;
-    }
+        /* Form fields */
+        .signup-box input, .signup-box select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
 
-    .signup-box .error {
-        color: red;
-        font-size: 12px;
-        height: 12px;
-        margin-bottom: 5px;
-    }
+        /* Submit button */
+        .signup-box button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background-color: #a0c4ff; /* soft blue pastel */
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            color: #fff;
+        }
 
-    .signup-box button {
-        width: 100%;
-        padding: 10px;
-        background-color: #ff80ab; /* pastel pink button */
-        border: none;
-        border-radius: 8px;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-    }
+        .signup-box button:hover {
+            background-color: #70a1ff;
+        }
 
-    .signup-box button:hover {
-        background-color: #ff4081;
-    }
-</style>
+        /* Toggle password */
+        .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #555;
+            font-size: 14px;
+            user-select: none;
+        }
 
-<div class="signup-box">
-    <h2>Sign Up</h2>
-    <form method="POST" id="signupForm">
-        <input type="text" name="username" placeholder="Username" required>
-        <div class="error" id="usernameError"></div>
+        /* Error messages */
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: -5px;
+        }
 
-        <input type="email" name="email" placeholder="Email" required>
-        <div class="error" id="emailError"></div>
+        /* Flash message */
+        .flash-success {
+            color: green;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-box">
+        <h2>Create Account</h2>
 
-        <input type="password" name="password" placeholder="Password" required>
-        <div class="error" id="passwordError"></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-        <input type="number" name="age" placeholder="Age" required>
-        <div class="error" id="ageError"></div>
+        {% if errors %}
+            <ul class="error">
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
 
-        <select name="gender" required>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-        </select>
-        <div class="error" id="genderError"></div>
+        <form method="POST" action="{{ url_for('signup') }}">
+            <input type="text" name="name" placeholder="Full Name" required
+                   pattern=".{3,50}" title="Name must be 3-50 characters">
 
-        <input type="tel" name="phone" placeholder="Phone Number" required>
-        <div class="error" id="phoneError"></div>
+            <input type="email" name="email" placeholder="Email" required
+                   pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" title="Enter a valid email">
 
-        <button type="submit">Sign Up</button>
-    </form>
-</div>
+            <div class="password-container">
+                <input type="password" name="password" placeholder="Password (min 8 chars)" id="password" required
+                       pattern=".{8,}" title="Password must be at least 8 characters">
+                <span class="toggle-password" onclick="togglePassword()">Show</span>
+            </div>
 
-<script>
-    const form = document.getElementById('signupForm');
+            <input type="number" name="age" placeholder="Age" min="1" max="120" required
+                   pattern="\d+" title="Age must be between 1 and 120">
 
-    form.addEventListener('input', () => {
-        // Username: 3-20 chars, letters, numbers, underscores
-        const username = form.username.value.trim();
-        const usernameRegex = /^[A-Za-z0-9_]{3,20}$/;
-        document.getElementById('usernameError').innerText = usernameRegex.test(username) ? '' : '3–20 chars, letters, numbers or _';
+            <select name="gender" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
 
-        // Email
-        const email = form.email.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-        document.getElementById('emailError').innerText = emailRegex.test(email) ? '' : 'Invalid email';
+            <button type="submit">Create Account</button>
+        </form>
+    </div>
 
-        // Password: 8+ chars, upper, lower, number, special
-        const password = form.password.value;
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:'",.<>\/\\|`~]).{8,}$/;
-        document.getElementById('passwordError').innerText = passwordRegex.test(password) ? '' : '8+ chars, upper, lower, number, special';
-
-        // Age: 1-120
-        const age = form.age.value.trim();
-        document.getElementById('ageError').innerText = (age && age >=1 && age <=120) ? '' : 'Age 1-120';
-
-        // Gender
-        const gender = form.gender.value;
-        document.getElementById('genderError').innerText = ['Male','Female','Other'].includes(gender) ? '' : 'Select gender';
-
-        // Phone: 7-15 digits, optional +country
-        const phone = form.phone.value.trim();
-        const phoneRegex = /^(\+?\d{1,3}[- ]?)?\d{7,15}$/;
-        document.getElementById('phoneError').innerText = phoneRegex.test(phone) ? '' : 'Invalid phone';
-    });
-
-    form.addEventListener('submit', (e) => {
-        // prevent submit if any error visible
-        const errors = document.querySelectorAll('.error');
-        for (let err of errors) {
-            if (err.innerText !== '') {
-                e.preventDefault();
-                alert("Please fix errors before submitting!");
-                return;
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggle = document.querySelector('.toggle-password');
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggle.textContent = "Hide";
+            } else {
+                passwordInput.type = "password";
+                toggle.textContent = "Show";
             }
         }
-    });
-</script>
-{% endblock %}
+    </script>
+</body>
+</html>

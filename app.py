@@ -33,75 +33,87 @@ def index():
     return redirect(url_for('login'))
 
 # ---------------------- LOGIN ----------------------
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method=='POST':
-        email=request.form.get('email'); password=request.form.get('password')
-        cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor); cursor.execute("SELECT * FROM users WHERE email=%s",(email,))
-        user=cursor.fetchone(); cursor.close()
-        if user:
-            if check_password_hash(user['password'],password):
-                session['user_id']=user['id']; session['username']=user['username']
-                flash('Logged in successfully!','success'); return redirect(url_for('dashboard'))
-            else: flash('Invalid password.','danger')
-        else: flash('Invalid email.','danger')
-    return render_template('auth/login.html')
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
 
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM user WHERE email=%s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+
+        if user:
+            if check_password_hash(user['password'], password):
+                session['user_id'] = user['id']
+                session['username'] = user['username']
+                flash('Logged in successfully!', 'success')
+                return redirect(url_for('home'))  # redirect to home instead of dashboard
+            else:
+                flash('Invalid password.', 'danger')
+        else:
+            flash('Invalid email.', 'danger')
+
+    return render_template('auth/login.html')
 
 # ---------------------- SIGNUP ----------------------
 @app.route('/signup', methods=['GET', 'POST'])
+
+
 def signup():
     if request.method == 'POST':
-        username = request.form.get('username', '').strip()
+        name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '')
         age = request.form.get('age', '')
         gender = request.form.get('gender', '')
-        phone = request.form.get('phone', '').strip()
 
         errors = []
 
-        # Backend validation
-        if not re.match(r'^[A-Za-z0-9_]{3,20}$', username):
-            errors.append("Username invalid")
+        # Name: 3-50 characters
+        if not re.match(r'^.{3,50}$', name):
+            errors.append("Name must be 3-50 characters long.")
+
+        # Email: simple regex
         if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]{2,}$', email):
-            errors.append("Email invalid")
-        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\'",.<>\/\\|`~]).{8,}$', password):
-            errors.append("Password invalid")
+            errors.append("Email is invalid.")
+
+        # Password: min 8 characters
+        if not re.match(r'^.{8,}$', password):
+            errors.append("Password must be at least 8 characters long.")
+
+        # Age: 1-120
         try:
             age = int(age)
             if not (1 <= age <= 120):
-                errors.append("Age invalid")
-        except:
-            errors.append("Age invalid")
-        if gender not in ['Male', 'Female', 'Other']:
-            errors.append("Gender invalid")
-        if not re.match(r'^(\+?\d{1,3}[- ]?)?\d{7,15}$', phone):
-            errors.append("Phone invalid")
+                errors.append("Age must be between 1 and 120.")
+        except ValueError:
+            errors.append("Age must be a number.")
+
+        # Gender validation
+        if gender not in ['Male','Female','Other']:
+            errors.append("Gender invalid.")
 
         if errors:
-            return render_template('auth/signup.html', errors=errors)
+            return render_template('signup.html', errors=errors)
 
-        # Hash password
+        # Hash the password
         hashed_password = generate_password_hash(password)
 
-        # Save to database
+        # Insert user into database
         cursor = mysql.connection.cursor()
         cursor.execute(
-            "INSERT INTO users (username, email, password, age, gender, phone) VALUES (%s,%s,%s,%s,%s,%s)",
-            (username, email, hashed_password, age, gender, phone)
+            "INSERT INTO user (name, email, password, age, gender) VALUES (%s, %s, %s, %s, %s)",
+            (name, email, hashed_password, age, gender)
         )
         mysql.connection.commit()
-        last_id = cursor.lastrowid
         cursor.close()
 
-        session['user_id'] = last_id
-        session['username'] = username
-        flash('Signup successful!', 'success')
-        return redirect(url_for('home'))
+        flash("Signup successful! Please login.", "success")
+        return redirect(url_for('login'))
 
     return render_template('auth/signup.html')
-
 # ---------------------- LOGOUT ----------------------
 @app.route('/logout')
 @login_required
@@ -109,7 +121,7 @@ def logout():
     session.pop('user_id', None)
     session.pop('username', None)
     flash('Logged out successfully!', 'success')
-    return redirect(url_for('login'))
+    return redirect(url_for('auth/login'))
 
 # ---------------------- HOME ----------------------
 @app.route('/home')
