@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Category | Packing Buddy</title>
+<style>
+/* ---------- General ---------- */
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height:100vh;
+    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+    width:100%; height:65px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+    display:flex; justify-content:space-between; align-items:center;
+    padding:0 40px; position:fixed; top:0; left:0;
+    z-index:10;
+}
+.navbar h1 { font-size:22px; font-weight:600; color:#444; }
+.nav-links { display:flex; gap:22px; }
+.nav-links a { text-decoration:none; color:#555; font-weight:500; font-size:15px; transition:0.3s; }
+.nav-links a:hover { color:#7b1fa2; transform:translateY(-2px); }
+
+/* ---------- Main ---------- */
+.main-content {
+    display:flex; gap:40px; justify-content:center; align-items:flex-start;
+    padding-top:100px; padding-bottom:30px; flex-wrap:wrap;
+    min-height:calc(100vh - 100px);
+}
+
+/* ---------- Form ---------- */
+.category-form {
+    background: rgba(255,255,255,0.95);
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    padding:30px 35px;
+    width:400px;
+    text-align:center;
+    transition:transform 0.3s ease;
+}
+.category-form:hover { transform:translateY(-5px); }
+.category-form h2 { font-size:1.5rem; margin-bottom:20px; color:#4b4b4b; }
+.category-form input, .category-form textarea {
+    width:100%; padding:12px 15px; margin-bottom:15px;
+    border:1.5px solid #ddd; border-radius:12px; font-size:1rem;
+    outline:none; transition:0.3s;
+}
+.category-form input:focus, .category-form textarea:focus {
+    border-color:#81d4fa;
+    box-shadow:0 0 0 3px rgba(129,212,250,0.3);
+}
+.category-form button {
+    background: linear-gradient(135deg,#b39ddb,#81d4fa);
+    border:none; color:white; font-weight:600; padding:12px 20px;
+    border-radius:12px; cursor:pointer; transition:0.3s;
+}
+.category-form button:hover {
+    background:linear-gradient(135deg,#9575cd,#4fc3f7);
+    transform:translateY(-2px);
+}
+
+/* ---------- Category Cards ---------- */
+.category-container {
+    display:flex; flex-wrap:wrap; gap:18px;
+    justify-content:flex-start; align-content:flex-start;
+    width:600px; max-height:80vh; overflow-y:auto; padding:5px;
+}
+.category-card {
+    background: rgba(255,255,255,0.95); border-radius:20px; padding:18px;
+    width:260px; min-height:150px; word-wrap:break-word; overflow-wrap:break-word;
+    box-shadow:0 6px 18px rgba(0,0,0,0.1); transition:transform 0.2s ease;
+}
+.category-card:hover { transform:translateY(-4px); }
+.category-card h3 { font-size:1.1rem; font-weight:600; margin-bottom:10px; color:#374151; word-break:break-word; }
+.category-card p { font-size:0.95rem; color:#6b7280; line-height:1.4; word-wrap:break-word; white-space:normal; max-height:5em; overflow:hidden; }
+
+/* ---------- Buttons inside cards ---------- */
+.category-actions { margin-top:12px; display:flex; gap:8px; }
+.category-actions button {
+    flex:1; border:none; padding:7px; border-radius:10px;
+    font-size:0.9rem; cursor:pointer; transition:0.2s ease;
+}
+.category-actions .edit { background:#a7f3d0; }
+.category-actions .delete { background:#fecaca; }
+.category-actions button:hover { opacity:0.9; transform:scale(1.03); }
+
+/* ---------- Responsive ---------- */
+@media(max-width:950px){
+    .main-content { flex-direction:column; align-items:center; }
+    .category-container { width:90%; justify-content:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h1>My Packing Buddy</h1>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Destination</a>
+        <a href="#">Books</a>
+        <a href="#">Your Trips</a>
+        <a href="#">Category</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+        <a href="#">Logout</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Form -->
+    <div class="category-form">
+        <h2>Create Your Packing Category ✨</h2>
+        <input type="text" id="categoryName" placeholder="Category Name" required>
+        <textarea id="categoryItems" placeholder="Enter items (comma-separated)" rows="3" required></textarea>
+        <button onclick="addCategory()">Create</button>
+    </div>
+
+    <!-- Category Cards -->
+    <div class="category-container" id="categoryContainer">
+        <!-- Cards will appear here -->
+    </div>
+
+</div>
+
+<script>
+let categories = [];
+
+function addCategory() {
+    const name = document.getElementById('categoryName').value.trim();
+    const items = document.getElementById('categoryItems').value.trim();
+    if(!name || !items) {
+        alert("Please fill all fields!");
+        return;
+    }
+    const category = {id:Date.now(), name, items};
+    categories.push(category);
+    displayCategories();
+    document.getElementById('categoryName').value = '';
+    document.getElementById('categoryItems').value = '';
+}
+
+function displayCategories() {
+    const container = document.getElementById('categoryContainer');
+    container.innerHTML = '';
+    categories.forEach(cat => {
+        const div = document.createElement('div');
+        div.classList.add('category-card');
+        div.innerHTML = `
+            <h3>${cat.name}</h3>
+            <p>${cat.items}</p>
+            <div class="category-actions">
+                <button onclick="editCategory(${cat.id})" class="edit">Edit</button>
+                <button onclick="deleteCategory(${cat.id})" class="delete">Delete</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function deleteCategory(id) {
+    categories = categories.filter(c => c.id !== id);
+    displayCategories();
+}
+
+function editCategory(id) {
+    const cat = categories.find(c => c.id === id);
+    if(!cat) return;
+    const newName = prompt("Edit category name:", cat.name);
+    const newItems = prompt("Edit items:", cat.items);
+    if(newName && newItems) {
+        cat.name = newName;
+        cat.items = newItems;
+        displayCategories();
+    }
+}
+</script>
+
+</body>
+</html>

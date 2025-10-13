@@ -1,0 +1,46 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<div class="viewport" style="display:flex; justify-content:center; align-items:center; min-height:90vh; padding:20px;">
+  <div class="card-wrap" style="max-width:700px; width:100%; padding:30px; display:flex; flex-direction:column; gap:25px; background: linear-gradient(135deg, #f8e9f9, #e0f7fa); border-radius:20px; box-shadow:0 15px 35px rgba(0,0,0,0.15);">
+
+    <h1 style="text-align:center; margin-bottom:5px; color:#401029;">Contact Us</h1>
+    <p style="text-align:center; color:var(--muted); font-size:15px;">We’d love to hear from you! Fill out the form and we’ll get back to you promptly.</p>
+
+    <!-- Form Section -->
+    <form style="display:flex; flex-direction:column; gap:15px;">
+      <input type="text" placeholder="Your Name" required style="padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.1); font-size:14px; transition:0.3s;">
+      <input type="email" placeholder="Your Email" required style="padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.1); font-size:14px; transition:0.3s;">
+      <input type="text" placeholder="Subject" style="padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.1); font-size:14px; transition:0.3s;">
+      <textarea placeholder="Your Message" rows="6" style="padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.1); font-size:14px; transition:0.3s;"></textarea>
+      <button type="submit" class="btn" style="margin-top:10px; background:var(--accent); color:#05202b; border-radius:10px; padding:12px; font-size:15px;">Send Message</button>
+    </form>
+
+    <!-- Contact Info Section -->
+    <div style="display:flex; flex-direction:column; gap:12px; text-align:center; margin-top:15px;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; color:var(--muted);">
+        <span>📧</span> <a href="mailto:email.siddhi@gmail.com" style="color:var(--muted); text-decoration:none;">email.siddhi@gmail.com</a>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; color:var(--muted);">
+        <span>📞</span> 1234567890
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; color:var(--muted);">
+        <span>📍</span> 123 Travel Street, Goa, India
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Hover/focus animation on inputs */
+form input, form textarea {
+  outline:none;
+}
+form input:focus, form textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 4px 15px rgba(160, 228, 255, 0.4);
+}
+</style>
+{% endblock %}

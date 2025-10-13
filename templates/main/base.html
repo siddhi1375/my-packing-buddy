@@ -1,48 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyPackingBuddy</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}MyPackingBuddy{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --muted:#6b7280;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Poppins',sans-serif;
+    color:#0f172a;
+    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed;
+    background-size: cover;
+  }
+
+  body::before{
+    content:'';
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background: rgba(255,255,255,0.4);
+    z-index:-1;
+  }
+
+  /* Header + Navbar */
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 24px;
+    background: rgba(255,182,193,0.5); /* pink transparent */
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top:0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  header .logo{font-weight:600;font-size:20px;color:#ff6f91;}
+  nav a{
+    margin-left:18px;
+    text-decoration:none;
+    font-weight:500;
+    transition:0.2s;
+    color:black; /* link color */
+  }
+  nav a:hover{color:#ff6f91;}
+
+  .content{
+    padding:20px;
+    min-height: 80vh;
+  }
+
+  @media(max-width:640px){
+    header{flex-direction:column;align-items:flex-start;}
+    nav a{margin-left:0;margin-right:12px;margin-top:6px;}
+  }
+</style>
 </head>
 <body>
-    <!-- ---------------- Navbar ---------------- -->
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('index') }}">MyPackingBuddy</a></li>
 
-            {% if session.get('user_id') %}
-                <li><a href="{{ url_for('home') }}">Home</a></li>
-                <li><a href="{{ url_for('destination') }}">Destination</a></li>
-                <li><a href="{{ url_for('books') }}">Books</a></li>
-                <li><a href="{{ url_for('create_category') }}">Create Your Category</a></li>
-                <li><a href="{{ url_for('saved_lists') }}">Saved Lists</a></li>
-                <li><a href="{{ url_for('about') }}">About</a></li>
-                <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            {% else %}
-                <li><a href="{{ url_for('login') }}">Login</a></li>
-                <li><a href="{{ url_for('signup') }}">Signup</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+<header>
+  <div class="logo">MyPackingBuddy</div>
+  <nav>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('destination') }}">Destination</a>
+    <a href="{{ url_for('books') }}">Books</a>
+    <a href="{{ url_for('saved_lists') }}">Your Trips</a>
+    <a href="{{ url_for('create_category') }}">Your Category</a>
+    <a href="{{ url_for('about') }}">About</a>
+    <a href="{{ url_for('contact') }}">Contact</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </nav>
+</header>
 
-    <!-- ---------------- Flash Messages ---------------- -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-messages">
-          {% for category, message in messages %}
-            <div class="flash {{ category }}">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
+<div class="content">
+  {% block content %}
+  <!-- Page-specific content will go here -->
+  {% endblock %}
+</div>
 
-    <!-- ---------------- Main Content ---------------- -->
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
 </body>
 </html>

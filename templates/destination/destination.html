@@ -1,404 +1,439 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MyPackingBuddy — Destination</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg-a: #dff6ff; /* soft sky */
-      --bg-b: #fff0ea; /* light peach */
-      --card:#ffffff;
-      --muted:#6b7280;
-      --accent:#7dd3fc; /* pastel teal */
-      --accent-2:#fbcfe8; /* pastel pink */
-      --accent-3:#f9d29d; /* pastel peach */
-      --glass: rgba(255,255,255,0.7);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    body{
-      background: linear-gradient(135deg,var(--bg-a) 0%, rgba(255,255,255,0.4) 40%, var(--bg-b) 100%);
-      color:#0f172a;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow:auto;
-    }
+{% extends 'main/base.html' %}
 
-    /* soft travel illustrations in background */
-    .bg-illustration{position:fixed;inset:0;pointer-events:none;z-index:0}
-    .bg-illustration svg{width:100%;height:100%;opacity:0.06}
+{% block title %}Destination{% endblock %}
 
-    /* Centering container vertically */
-    .viewport{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;position:relative;z-index:2}
-    .card-wrap{width:100%;max-width:1100px;background:linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.95));box-shadow:0 10px 30px rgba(2,6,23,0.08);border-radius:16px;padding:18px;backdrop-filter: blur(6px)}
+{% block content %}
+<style>
+:root{
+  --bg-a:#fdf6ff; --bg-b:#fffaf0; --card:#ffffff; --muted:#6b7280;
+  --accent:#a0e4ff; --accent-2:#fbcfe8; --accent-3:#fce5cd; --selected:#7dd3fc;
+}
+*{box-sizing:border-box;} html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,var(--bg-a),var(--bg-b));color:#0f172a;} a{text-decoration:none;color:inherit;}
 
-    header{display:flex;align-items:center;gap:14px}
-    header .logo{display:flex;flex-direction:column}
-    header strong{font-size:18px}
-    header .muted{color:var(--muted);font-size:13px}
+/* Header */
+.main-header{width:100%;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 10px rgba(0,0,0,0.08);} .logo{font-weight:600;font-size:20px;} .subtitle{font-size:12px;color:var(--muted);} .navbar a{margin-left:16px;font-weight:500;font-size:13px;color:#0f172a;} .navbar a:hover{color:var(--accent-2);} 
 
-    .hero{display:flex;gap:18px;align-items:center;padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(125,211,252,0.12), rgba(249,210,157,0.06));}
-    .place-img{width:96px;height:68px;border-radius:10px;object-fit:cover;box-shadow:0 8px 26px rgba(16,24,40,0.06)}
-    .hero h1{margin:0;font-size:20px}
-    .hero p{margin:6px 0 0;color:var(--muted)}
-    .weather{margin-left:auto;text-align:right}
-    .weather .temp{font-weight:600;font-size:18px}
+/* Main container */
+.viewport{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;} .card-wrap{width:100%;max-width:1000px;background:linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.95));box-shadow:0 10px 30px rgba(2,6,23,0.08);border-radius:16px;padding:16px;}
 
-    /* Form + packing layout */
-    .main-grid{display:grid;grid-template-columns:1fr 420px;gap:18px;margin-top:14px}
-    @media(max-width:980px){.main-grid{grid-template-columns:1fr}}
+/* Hero */
+.hero{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(160,228,255,0.15), rgba(252,229,205,0.08));margin-top:8px;} .place-img{width:70px;height:50px;border-radius:8px;object-fit:cover;} .hero h1{margin:0;font-size:16px;} .hero p{margin:2px 0 0;color:var(--muted); font-size:12px;} .weather{text-align:right;font-size:12px;} 
 
-    .form-card{background:var(--card);padding:16px;border-radius:12px}
-    .mini{font-size:13px;color:var(--muted)}
+/* Grid layout */
+.main-grid{display:grid;grid-template-columns:1fr 380px;gap:12px;margin-top:12px;} @media(max-width:880px){.main-grid{grid-template-columns:1fr}} 
 
-    /* Steps */
-    .form-step{display:none}
-    .form-step.active{display:block}
-    .options{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .option{padding:8px 12px;border-radius:999px;border:1px solid rgba(15,23,42,0.06);cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.96));transition:transform .14s ease, box-shadow .14s ease}
-    .option:hover{transform:translateY(-4px);box-shadow:0 8px 18px rgba(16,24,40,0.06)}
-    .option.selected{background:linear-gradient(90deg,var(--accent),#a7f3d0);color:#07203b;border-color:transparent}
+/* Form card */
+.form-card{background:var(--card);padding:12px;border-radius:12px;} input, select{padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);width:100%;font-size:13px;} .btn{padding:8px 12px;border-radius:8px;font-size:13px;cursor:pointer;border:none;background:var(--accent);color:#05202b;} .btn:hover{opacity:0.9;} .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.1);color:var(--muted);} .btn.coral{background:var(--accent-2);color:#401029;} .btn.peach{background:var(--accent-3);color:#4b2b05;} .options{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;} .option{padding:6px 10px;border-radius:999px;border:1px solid rgba(15,23,42,0.08);cursor:pointer;background:#fff;transition:all 0.2s ease;user-select:none;} .option.selected{background:var(--selected);color:#08202b;border-color:transparent;box-shadow:0 6px 16px rgba(125,211,252,0.12);} .form-step{display:none;} .form-step.active{display:block;} .progress{height:6px;background:rgba(2,6,23,0.04);border-radius:999px;overflow:hidden;margin-top:8px;} .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;}
 
-    input[type='text'], input[type='number'], select{padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);width:100%;font-size:14px}
-    .controls{display:flex;gap:8px;justify-content:space-between;margin-top:12px}
+/* Packing card */
+.packing-card{background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.99));padding:12px;border-radius:12px;min-height:300px;} .day-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;} .day-tab{padding:4px 8px;border-radius:999px;border:1px solid rgba(15,23,42,0.1);cursor:pointer;} .day-tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#08202b;} .items{display:grid;gap:6px;margin-top:8px;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+.item{padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.98));display:flex;justify-content:space-between;align-items:center;cursor:grab;}
+.suitcase-drop{min-height:220px;border-radius:12px;border:2px dashed rgba(15,23,42,0.1);padding:14px;background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));position:relative;overflow:hidden;}
+.suitcase-drop::before{content:'';position:absolute;left:50%;top:8px;transform:translateX(-50%);width:160px;height:100px;background:linear-gradient(180deg,#f2f7fb,#e6f3ff);border-radius:10px;box-shadow:inset 0 -6px 20px rgba(0,0,0,0.03);} 
+/* Designer suitcase visuals */
+.suitcase-body{position:absolute;left:50%;top:30px;transform:translateX(-50%);width:320px;height:150px;background:linear-gradient(180deg,#e9f7ff,#ffffff);border-radius:10px;border:6px solid #dbeffd;box-shadow:0 8px 30px rgba(2,6,23,0.08);}
+.suitcase-handle{position:absolute;left:50%;top:4px;transform:translateX(-50%);width:140px;height:18px;background:#dbeffd;border-radius:10px;border-bottom:3px solid rgba(0,0,0,0.05);} 
+.suitcase-inner{position:absolute;left:50%;top:60px;transform:translateX(-50%);width:300px;height:100px;padding:10px;display:flex;gap:8px;align-items:flex-start;justify-content:flex-start;}
+.suitcase-slot{flex:1;height:80px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,#fff,#f8fbff);padding:6px;overflow:auto}
+.hint{font-size:12px;color:var(--muted);margin-top:6px;} 
 
-    .btn{background:var(--accent);color:#05202b;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;box-shadow:0 6px 18px rgba(16,24,40,0.06);transition:transform .12s ease, box-shadow .12s ease}
-    .btn:hover{transform:translateY(-3px)}
-    .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.06);color:var(--muted)}
-    .btn.coral{background:var(--accent-2);color:#401029}
-    .btn.peach{background:var(--accent-3);color:#4b2b05}
+/* small screens adjustments */
+@media(max-width:480px){.suitcase-body{width:240px;height:120px}.suitcase-inner{width:220px}}
+</style>
 
-    .progress{height:8px;background:rgba(2,6,23,0.04);border-radius:999px;overflow:hidden;margin-top:12px}
-    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
+<div class="viewport"> 
+  <div class="card-wrap"> 
+    <!-- Hero -->
+    <div class="hero">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop" class="place-img" alt="place">
+      <div>
+        <h1 id="placeName">Choose a destination</h1>
+        <p id="placeTag">Pick a place and plan your packing list.</p>
+      </div>
+      <div class="weather">
+        <div class="temp" id="temp">--°C</div>
+        <div class="mini" id="cond">--</div>
+      </div>
+    </div>
 
-    /* Packing panel */
-    .packing-card{background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.99));padding:16px;border-radius:12px;min-height:360px}
-    .day-tabs{display:flex;flex-wrap:wrap;gap:8px}
-    .day-tab{padding:6px 10px;border-radius:999px;border:1px solid rgba(15,23,42,0.04);background:transparent}
-    .day-tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#08202b}
+    <!-- Main Grid -->
+    <div class="main-grid">
 
-    .items{display:grid;gap:10px;margin-top:12px}
-    .item{padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.98));display:flex;justify-content:space-between;align-items:center}
-
-    .suitcase-drop{min-height:220px;border-radius:12px;border:2px dashed rgba(15,23,42,0.06);padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4))}
-
-    .hint{font-size:13px;color:var(--muted);margin-top:8px}
-
-    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
-
-    /* subtle animations */
-    .slide-in{animation:slideUp .36s ease both}
-    @keyframes slideUp{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
-  </style>
-</head>
-<body>
-  <!-- Background illustrations -->
-  <div class="bg-illustration" aria-hidden="true">
-    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
-      <g fill="none" stroke-width="1">
-        <path d="M0 700 C200 600, 400 780, 800 700 C1200 620, 1400 820, 1600 700 L1600 900 L0 900 Z" fill="#fff" opacity="0.12"/>
-        <g transform="translate(1200,80) scale(1.2)">
-          <path d="M20 20 L80 20 L100 40 L80 60 L20 60 Z" fill="#fff" opacity="0.06"/>
-        </g>
-        <g transform="translate(80,40) scale(1)">
-          <path d="M10 50 Q60 10 120 50" stroke="#fff" stroke-width="8" opacity="0.04" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-      </g>
-    </svg>
-  </div>
-
-  <div class="viewport">
-    <div class="card-wrap slide-in">
-      <header>
-        <div class="logo">
-          <strong>MyPackingBuddy</strong>
-          <div class="muted">Smart packing, made delightful ✨</div>
+      <!-- Form Card -->
+      <section class="form-card">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <input id="username" placeholder="Your name (required)" style="flex:1;min-width:100px">
+          <input id="destinationInput" placeholder="Destination (required)" style="flex:2;min-width:150px">
+          <button class="btn" id="setDestBtn">Set</button>
         </div>
-        <div style="margin-left:auto;color:var(--muted);font-size:13px">Destination planner</div>
-      </header>
 
-      <main style="margin-top:12px">
-        <div class="hero">
-          <div style="display:flex;gap:12px;align-items:center">
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6c3f1d4f9a6f2b3b8f6b0a5f9a0d8a1c" alt="place" class="place-img" id="placeImg">
-            <div>
-              <h1 id="placeName">Choose a destination</h1>
-              <p id="placeTag">Pick a place and plan your packing list.</p>
+        <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+        <div id="formSteps" style="margin-top:8px">
+          <!-- Step 1 -->
+          <div class="form-step active" data-step="1">
+            <h4>How many days?</h4>
+            <input type="range" id="duration" min="1" max="30" value="3" oninput="durationVal.innerText=this.value">
+            <div><strong><span id="durationVal">3</span> days</strong></div>
+
+            <h4>Travel company (choose one)</h4>
+            <div class="options" id="companyOptions">
+              <div class="option" data-value="solo">Solo</div>
+              <div class="option" data-value="partner">Partner</div>
+              <div class="option" data-value="family">Family</div>
             </div>
           </div>
-          <div class="weather">
-            <div class="temp" id="temp">--°C</div>
-            <div class="mini" id="cond">--</div>
+
+          <!-- Step 2 -->
+          <div class="form-step" data-step="2">
+            <h4>Travel mode (choose one)</h4>
+            <div class="options" id="modeOptions">
+              <div class="option" data-value="flight">Flight</div>
+              <div class="option" data-value="train">Train</div>
+              <div class="option" data-value="road">Road Trip</div>
+            </div>
+
+            <h4>Activities (choose multiple)</h4>
+            <div class="options" id="activityOptions">
+              <div class="option" data-value="beach">Beach</div>
+              <div class="option" data-value="hiking">Hiking</div>
+              <div class="option" data-value="camping">Camping</div>
+              <div class="option" data-value="sightseeing">Sightseeing</div>
+              <div class="option" data-value="adventure">Adventure</div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="form-step" data-step="3">
+            <h4>Medical needs (choose up to 3, or "None")</h4>
+            <div class="options" id="medicalOptions">
+              <div class="option" data-value="none">None</div>
+              <div class="option" data-value="allergy">Allergy</div>
+              <div class="option" data-value="back">Back pain</div>
+              <div class="option" data-value="pregnant">Pregnant</div>
+              <div class="option" data-value="diabetes">Diabetes</div>
+            </div>
+
+            <h4>Work remotely? (choose one)</h4>
+            <div class="options" id="workOptions">
+              <div class="option" data-value="yes">Yes</div>
+              <div class="option" data-value="no">No</div>
+            </div>
+
+            <div id="digitalNomadSection" style="display:none">
+              <h4>Tech gear (choose multiple)</h4>
+              <div class="options" id="techOptions">
+                <div class="option" data-value="laptop">Laptop</div>
+                <div class="option" data-value="powerbank">Powerbank</div>
+                <div class="option" data-value="wifi">Wi-Fi</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Step 4 -->
+          <div class="form-step" data-step="4">
+            <h4>Profile</h4>
+            <select id="gender">
+              <option value="any">Prefer not to say</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            <input id="age" type="number" placeholder="Age">
+
+            <h4>Packing style (choose one)</h4>
+            <div class="options" id="styleOptions">
+              <div class="option" data-value="minimal">Minimalist</div>
+              <div class="option" data-value="comfort">Comfort</div>
+              <div class="option" data-value="luxury">Luxury</div>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="form-step" data-step="5">
+            <h4>All set!</h4>
+            <p class="mini">Click <strong>Generate Packing List</strong> to create your packing list and virtual suitcase.</p>
           </div>
         </div>
 
-        <div class="main-grid">
-          <section class="form-card">
-            <!-- top quick inputs -->
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <input id="username" placeholder="Your name (for greeting)" style="padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.04);flex:1;min-width:160px">
-              <input id="destinationInput" placeholder="Destination (e.g., Goa, Manali)" style="padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.04);flex:2;min-width:200px">
-              <button class="btn" id="setDestBtn">Set</button>
-            </div>
+        <div class="controls" style="display:flex;justify-content:space-between;margin-top:8px;">
+          <button class="btn ghost" id="prevBtn">Back</button>
+          <div>
+            <button class="btn" id="nextBtn">Next</button>
+            <button class="btn peach" id="generateBtn" style="display:none">Generate Packing List</button>
+          </div>
+        </div>
+      </section>
 
-            <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
-
-            <div id="formSteps" style="margin-top:12px">
-              <div class="form-step active" data-step="1">
-                <h3>How many days?</h3>
-                <input type="range" id="duration" min="1" max="30" value="3" oninput="durationVal.innerText=this.value">
-                <div style="display:flex;align-items:center;gap:8px;margin-top:8px"><strong><span id="durationVal">3</span> days</strong></div>
-
-                <h4 style="margin-top:12px">Who are you traveling with?</h4>
-                <div class="options" id="companyOptions">
-                  <div class="option" data-value="solo">Solo</div>
-                  <div class="option" data-value="partner">Partner</div>
-                  <div class="option" data-value="family">Family</div>
-                </div>
-              </div>
-
-              <div class="form-step" data-step="2">
-                <h3>How will you travel?</h3>
-                <div class="options" id="modeOptions">
-                  <div class="option" data-value="flight">Flight ✈️</div>
-                  <div class="option" data-value="train">Train 🚆</div>
-                  <div class="option" data-value="road">Road Trip 🚗</div>
-                </div>
-
-                <h4 style="margin-top:12px">Activities</h4>
-                <div class="options" id="activityOptions">
-                  <div class="option" data-value="beach">Beach 🏖️</div>
-                  <div class="option" data-value="hiking">Hiking 🥾</div>
-                  <div class="option" data-value="camping">Camping ⛺</div>
-                  <div class="option" data-value="sightseeing">Sightseeing 🏛️</div>
-                  <div class="option" data-value="adventure">Adventure 🪂</div>
-                </div>
-              </div>
-
-              <div class="form-step" data-step="3">
-                <h3>Medical & Remote Work</h3>
-                <div class="mini">Any medical needs?</div>
-                <div class="options" id="medicalOptions">
-                  <div class="option" data-value="none">None</div>
-                  <div class="option" data-value="allergy">Allergy</div>
-                  <div class="option" data-value="back">Back pain</div>
-                  <div class="option" data-value="pregnant">Pregnant</div>
-                </div>
-
-                <h4 style="margin-top:12px">Will you work remotely?</h4>
-                <div class="options" id="workOptions">
-                  <div class="option" data-value="yes">Yes — I work remotely</div>
-                  <div class="option" data-value="no">No</div>
-                </div>
-
-                <div id="digitalNomadSection" style="margin-top:12px;display:none">
-                  <h4>Choose tech gear</h4>
-                  <div class="options" id="techOptions">
-                    <div class="option" data-value="laptop">Laptop</div>
-                    <div class="option" data-value="tablet">Tablet</div>
-                    <div class="option" data-value="powerbank">Power bank</div>
-                    <div class="option" data-value="wifi">Portable Wi‑Fi</div>
-                    <div class="option" data-value="headphones">Headphones</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-step" data-step="4">
-                <h3>Profile</h3>
-                <div style="display:flex;gap:8px;align-items:center">
-                  <select id="gender" style="padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.04)">
-                    <option value="any">Prefer not to say</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                  <input id="age" type="number" placeholder="Age" style="padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.04);width:120px">
-                </div>
-
-                <h4 style="margin-top:12px">Packing style</h4>
-                <div class="options" id="styleOptions">
-                  <div class="option" data-value="minimal">Minimalist</div>
-                  <div class="option" data-value="comfort">Comfort</div>
-                  <div class="option" data-value="luxury">Luxury</div>
-                </div>
-              </div>
-
-              <div class="form-step" data-step="5">
-                <h3>All set!</h3>
-                <p class="mini">When you hit <strong>Generate Packing List</strong>, we'll create a personalized packing list with a day-wise plan and interactive suitcase. You can save it to your journal.</p>
-              </div>
-            </div>
-
-            <div class="controls">
-              <div>
-                <button class="btn ghost" id="prevBtn">Back</button>
-              </div>
-              <div style="display:flex;gap:8px">
-                <button class="btn" id="nextBtn">Next</button>
-                <button class="btn peach" id="generateBtn" style="display:none">Generate Packing List</button>
-              </div>
-            </div>
-          </section>
-
-          <aside class="packing-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-              <div>
-                <h4 id="greeting">Hey Traveller!</h4>
-                <div class="mini" id="tripSummary">Trip summary will appear here.</div>
-              </div>
-              <div style="text-align:right">
-                <button class="btn coral" id="saveTrip">Save</button>
-              </div>
-            </div>
-
-            <div style="margin-top:12px">
-              <div class="day-tabs" id="dayTabs"></div>
-              <div class="hint">Drag items into the suitcase. Tick items as you pack.</div>
-            </div>
-
-            <div style="margin-top:12px" id="itemsContainer" class="items"></div>
-
-            <div style="margin-top:12px">
-              <h5>Virtual Suitcase</h5>
-              <div id="suitcaseDrop" class="suitcase-drop"></div>
-              <div style="margin-top:10px">
-                <h5>Packed Items</h5>
-                <div id="packedList"></div>
-              </div>
-
-              <div style="display:flex;gap:8px;margin-top:12px">
-                <button class="btn ghost" id="exportBtn">Export</button>
-                <button class="btn ghost" id="clearBtn">Clear</button>
-              </div>
-            </div>
-          </aside>
+      <!-- Packing Card -->
+      <aside class="packing-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <h4 id="greeting">Hey Traveller!</h4>
+            <div class="mini" id="tripSummary">Trip summary will appear here.</div>
+          </div>
+          <button class="btn coral" id="saveTrip">Save</button>
         </div>
 
-        <footer>Tip: This demo saves trips locally in your browser for now.</footer>
-      </main>
+        <div class="day-tabs" id="dayTabs"></div>
+        <div class="items" id="itemsContainer" style="display:none;"></div>
+        
+         <div id="itemPagination" style="display:flex;justify-content:center;gap:8px;margin:8px 0;">
+  <button id="prevItem" class="btn ghost">Prev</button>
+  <button id="nextItem" class="btn ghost">Next</button>
+</div>
+        <div class="suitcase-drop" id="suitcaseDrop">
+          <div class="suitcase-handle"></div>
+          <div class="suitcase-body"></div>
+          <div class="suitcase-inner">
+            <div class="suitcase-slot" id="slotLeft"></div>
+            <div class="suitcase-slot" id="slotRight"></div>
+          </div>
+        </div>
+
+        <div class="hint">Drag items into suitcase. Tick items as you pack.</div>
+      </aside>
+
     </div>
   </div>
+</div>
 
-  <!-- SortableJS (drag-and-drop) -->
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <script>
-    /* === State === */
-    const state = { username:'Traveller', destination:'', duration:3, company:'solo', mode:'road', activities:[], medical:[], work:false, tech:[], gender:'any', age:null, style:'comfort', packingList:[] };
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+// State
+const state = {
+  username: '',
+  destination: '',
+  duration: 3,
+  company: '',
+  mode: '',
+  activities: [],
+  medical: [],
+  work: '',
+  tech: [],
+  gender: '',
+  age: null,
+  style: '',
+  packingList: []
+};
 
-    /* === Sample items DB === */
-    const ITEMS = [
-      {id:'shirt',name:'T-shirts (2/day)',tags:['any']},
-      {id:'shorts',name:'Shorts / Pants',tags:['beach','road','any']},
-      {id:'hiking_boots',name:'Hiking boots',tags:['hiking','camping','any']},
-      {id:'tent',name:'Compact tent',tags:['camping']},
-      {id:'sleeping_bag',name:'Sleeping bag',tags:['camping']},
-      {id:'swim',name:'Swimwear',tags:['beach']},
-      {id:'first_aid',name:'First aid kit',tags:['any']},
-      {id:'charger',name:'Phone charger',tags:['any']},
-      {id:'powerbank',name:'Power bank',tags:['digital_nomad','any']},
-      {id:'laptop',name:'Laptop',tags:['digital_nomad']},
-      {id:'adapter',name:'Travel adapter',tags:['flight','any']},
-      {id:'snacks',name:'Snacks & water',tags:['road','any']},
-      {id:'camera',name:'Camera',tags:['sightseeing','any']},
-      {id:'raincoat',name:'Rain jacket',tags:['any']},
-      {id:'mask',name:'Mask & sanitizer',tags:['any']},
-      {id:'pill',name:'Prescription medicines',tags:['medical']}
-    ];
+// Stepper
+const steps = Array.from(document.querySelectorAll('.form-step'));
+let currentStep = 0;
+const progressBar = document.getElementById('progressBar');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const generateBtn = document.getElementById('generateBtn');
 
-    /* === UI refs === */
-    const setDestBtn = document.getElementById('setDestBtn');
-    const destinationInput = document.getElementById('destinationInput');
-    const placeName = document.getElementById('placeName');
-    const tempEl = document.getElementById('temp');
-    const condEl = document.getElementById('cond');
+function showStep(i){
+  steps.forEach((s,idx)=>s.classList.toggle('active', idx===i));
+  currentStep = i;
+  progressBar.style.width = Math.round(((i+1)/steps.length)*100)+'%';
+  prevBtn.style.display = i===0 ? 'none' : 'inline-block';
+  nextBtn.style.display = i===steps.length-1 ? 'none' : 'inline-block';
+  generateBtn.style.display = i===steps.length-1 ? 'inline-block' : 'none';
+}
+showStep(0);
+prevBtn.onclick = ()=> showStep(Math.max(0, currentStep-1));
 
-    setDestBtn.onclick = async () => {
-      const d = destinationInput.value.trim();
-      const u = document.getElementById('username').value.trim();
-      if(!d){alert('Please type a destination');return}
-      state.destination = d; state.username = u || 'Traveller';
-      placeName.innerText = d; document.getElementById('placeTag').innerText = `Plan your trip to ${d}`;
-      await fetchWeatherForDemo(d);
+// Utility to toggle selection
+function makeSingleSelect(groupId){
+  const group = document.getElementById(groupId);
+  group.addEventListener('click', e=>{
+    if(!e.target.classList.contains('option')) return;
+    // single-select behavior
+    group.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+    e.target.classList.add('selected');
+  });
+}
+
+function makeMultiSelect(groupId){
+  const group = document.getElementById(groupId);
+  group.addEventListener('click', e=>{
+    if(!e.target.classList.contains('option')) return;
+    e.target.classList.toggle('selected');
+  });
+}
+
+// Medical special logic
+(function(){
+  const group = document.getElementById('medicalOptions');
+  group.addEventListener('click', e=>{
+    if(!e.target.classList.contains('option')) return;
+    const isNone = e.target.dataset.value === 'none';
+    const selected = Array.from(group.querySelectorAll('.option.selected'));
+
+    if(isNone){
+      // select none and clear others
+      group.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+      e.target.classList.add('selected');
+    } else {
+      // if none is selected, don't allow others
+      const noneEl = group.querySelector('.option[data-value="none"]');
+      if(noneEl.classList.contains('selected')){
+        noneEl.classList.remove('selected');
+      }
+      const selectedNow = Array.from(group.querySelectorAll('.option.selected'));
+      if(!e.target.classList.contains('selected')){
+        // selecting
+        if(selectedNow.length >= 3){
+          alert('You can select maximum 3 medical options.');
+          return;
+        }
+        e.target.classList.add('selected');
+      } else {
+        // unselecting
+        e.target.classList.remove('selected');
+      }
     }
+  });
+})();
 
-    async function fetchWeatherForDemo(place){
-      // Demo fake weather logic; replace with API call in production
-      const p = place.toLowerCase(); let temp=26, cond='Clear';
-      if(p.includes('manali')||p.includes('leh')||p.includes('mount')){temp=10;cond='Cold'}
-      if(p.includes('goa')||p.includes('beach')||p.includes('konkan')){temp=30;cond='Sunny'}
-      if(p.includes('srinagar')){temp=8;cond='Snow'}
-      updateWeather({main:{temp},weather:[{main:cond}]});
-    }
-    function updateWeather(data){ tempEl.innerText = Math.round(data.main.temp) + '°C'; condEl.innerText = data.weather[0].main; }
+// setup single/multi selects
+makeSingleSelect('companyOptions');
+makeSingleSelect('modeOptions');
+makeMultiSelect('activityOptions');
+makeSingleSelect('workOptions');
+makeMultiSelect('techOptions');
+makeSingleSelect('styleOptions');
 
-    /* === Stepper === */
-    const steps = Array.from(document.querySelectorAll('.form-step'));
-    let currentStep = 0; const progressBar = document.getElementById('progressBar');
-    const prevBtn = document.getElementById('prevBtn'); const nextBtn = document.getElementById('nextBtn'); const generateBtn = document.getElementById('generateBtn');
-    function showStep(i){ steps.forEach((s,idx)=> s.classList.toggle('active', idx===i)); currentStep=i; updateProgress(); prevBtn.style.display = i===0?'none':'inline-block'; nextBtn.style.display = i===steps.length-1?'none':'inline-block'; generateBtn.style.display = i===steps.length-1?'inline-block':'none'; }
-    function updateProgress(){ const pct = Math.round(((currentStep+1)/steps.length)*100); progressBar.style.width = pct + '%'; }
-    showStep(0);
-    prevBtn.onclick = ()=> showStep(Math.max(0,currentStep-1)); nextBtn.onclick = ()=> showStep(Math.min(steps.length-1,currentStep+1));
+// Digital nomad toggle show/hide tech options
+document.getElementById('workOptions').addEventListener('click', e=>{
+  if(!e.target.classList.contains('option')) return;
+  const val = e.target.dataset.value;
+  if(val === 'yes') document.getElementById('digitalNomadSection').style.display = 'block';
+  else document.getElementById('digitalNomadSection').style.display = 'none';
+});
 
-    /* === Options interactions === */
-    function makeOptionsInteractive(containerId, multiple=false){ const container = document.getElementById(containerId); if(!container) return; container.querySelectorAll('.option').forEach(el=>{ el.onclick = ()=>{ if(multiple){ el.classList.toggle('selected'); } else{ container.querySelectorAll('.option').forEach(o=>o.classList.remove('selected')); el.classList.add('selected'); } onOptionChange(containerId); } }) }
-    makeOptionsInteractive('companyOptions'); makeOptionsInteractive('modeOptions'); makeOptionsInteractive('activityOptions', true); makeOptionsInteractive('medicalOptions'); makeOptionsInteractive('workOptions'); makeOptionsInteractive('techOptions', true); makeOptionsInteractive('styleOptions');
-    function onOptionChange(containerId){ if(containerId==='workOptions'){ const yes = document.querySelector('#workOptions .option.selected')?.dataset?.value === 'yes'; document.getElementById('digitalNomadSection').style.display = yes ? 'block':'none'; } }
+// Set destination button (destination & username required to proceed)
+document.getElementById('setDestBtn').onclick = ()=>{
+  const name = document.getElementById('username').value.trim();
+  const dest = document.getElementById('destinationInput').value.trim();
+  if(!name || !dest){
+    alert('Please enter your name and destination before proceeding.');
+    return;
+  }
+  state.username = name;
+  state.destination = dest;
+  document.getElementById('placeName').innerText = dest;
+  document.getElementById('greeting').innerText = `Hey ${name}!`;
+  fetchWeather(dest);
+};
 
-    /* === Generate packing list === */
-    generateBtn.onclick = ()=>{
-      state.duration = Number(document.getElementById('duration').value);
-      state.company = document.querySelector('#companyOptions .option.selected')?.dataset?.value || 'solo';
-      state.mode = document.querySelector('#modeOptions .option.selected')?.dataset?.value || 'road';
-      state.activities = Array.from(document.querySelectorAll('#activityOptions .option.selected')).map(e=>e.dataset.value);
-      const medSel = document.querySelector('#medicalOptions .option.selected')?.dataset?.value || 'none'; state.medical = medSel==='none'?[]:[medSel];
-      state.work = document.querySelector('#workOptions .option.selected')?.dataset?.value === 'yes';
-      state.tech = Array.from(document.querySelectorAll('#techOptions .option.selected')).map(e=>e.dataset.value);
-      state.gender = document.getElementById('gender').value; state.age = Number(document.getElementById('age').value) || null; state.style = document.querySelector('#styleOptions .option.selected')?.dataset?.value || 'comfort'; state.username = document.getElementById('username').value.trim() || 'Traveller';
+// Duration
+const durationEl = document.getElementById('duration');
+durationEl.oninput = function(){ state.duration = parseInt(this.value); document.getElementById('durationVal').innerText = this.value; };
 
-      buildPackingList(); showPackingPreview();
-    }
+// Next button validation (disallow proceeding if required fields blank)
+nextBtn.onclick = ()=>{
+  // Step 0 validation: username & destination must be set (via Set button)
+  if(currentStep === 0){
+    if(!state.username || !state.destination){ alert('Please fill name and destination and click Set.'); return; }
+  }
 
-    function buildPackingList(){ const list = []; list.push(findItem('first_aid')); list.push(findItem('charger')); list.push(findItem('mask'));
-      if(state.mode==='flight') list.push(findItem('adapter')); if(state.mode==='road') list.push(findItem('snacks'));
-      state.activities.forEach(act=>{ ITEMS.forEach(it=>{ if(it.tags.includes(act)) list.push(it); }); });
-      if(state.activities.includes('camping')){ list.push(findItem('tent')); list.push(findItem('sleeping_bag')); }
-      if(state.activities.includes('hiking')){ list.push(findItem('hiking_boots')); }
-      if(state.work){ if(state.tech.includes('laptop')) list.push(findItem('laptop')); if(state.tech.includes('powerbank')) list.push(findItem('powerbank')); if(state.tech.includes('wifi')) list.push(findItem('powerbank')); }
-      if(state.medical.length>0) list.push(findItem('pill'));
-      list.push({id:'clothes',name:`Clothes: ~${state.duration} outfits (adjust as you like)`,tags:['any']});
-      const uniq=[]; const seen=new Set(); list.forEach(it=>{ if(!it) return; if(!seen.has(it.id)){uniq.push(it); seen.add(it.id);} }); state.packingList = uniq;
-    }
-    function findItem(id){ return ITEMS.find(i=>i.id===id); }
+  if(currentStep === 1){
+    // company required
+    if(!document.querySelector('#companyOptions .option.selected')){ alert('Please select travel company.'); return; }
+  }
 
-    function showPackingPreview(){ document.getElementById('greeting').innerText = `Hey ${state.username}!`; document.getElementById('tripSummary').innerText = `${state.duration} days • ${state.company} • ${state.mode} • ${state.activities.join(', ')}`;
-      // day tabs
-      const dayTabs = document.getElementById('dayTabs'); dayTabs.innerHTML=''; for(let d=1; d<=state.duration; d++){ const b=document.createElement('div'); b.className='day-tab'; b.innerText='Day '+d; b.dataset.day=d; b.onclick=()=> selectDay(d); dayTabs.appendChild(b); }
-      selectDay(1);
-      // items
-      const itemsContainer = document.getElementById('itemsContainer'); itemsContainer.innerHTML=''; state.packingList.forEach(it=>{ const el=document.createElement('div'); el.className='item'; el.draggable=true; el.dataset.id=it.id; el.innerHTML=`<div><strong>${it.name}</strong><div class='mini'>${it.tags.join(', ')}</div></div><div><input type='checkbox' class='packChk'></div>`; itemsContainer.appendChild(el); });
+  if(currentStep === 2){
+    if(!document.querySelector('#modeOptions .option.selected')){ alert('Please select travel mode.'); return; }
+    if(document.querySelectorAll('#activityOptions .option.selected').length === 0){ alert('Please choose at least one activity.'); return; }
+  }
 
-      // setup drag
-      if(window.sortableItems){ window.sortableItems.destroy(); window.sortableSuit.destroy(); }
-      window.sortableItems = Sortable.create(itemsContainer,{group:{name:'shared',pull:'clone',put:false},animation:160});
-      const suitcaseDrop=document.getElementById('suitcaseDrop');
-      window.sortableSuit = Sortable.create(suitcaseDrop,{group:'shared',animation:160,onAdd:evt=>{ const id=evt.item.dataset.id; markPacked(id, evt.item); }});
-      updatePackedCount();
-    }
+  if(currentStep === 3){
+    if(!document.querySelector('#workOptions .option.selected')){ alert('Please choose whether you will work remotely.'); return; }
+  }
 
-    function selectDay(d){ document.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active')); const tab=Array.from(document.querySelectorAll('.day-tab')).find(t=>Number(t.dataset.day)===d); if(tab) tab.classList.add('active'); }
+  if(currentStep === 4){
+    if(!document.querySelector('#styleOptions .option.selected')){ alert('Please choose packing style.'); return; }
+  }
 
-    function markPacked(id, itemEl){ itemEl.style.display='none'; const it=state.packingList.find(p=>p.id===id); if(!it) return; const packedList=document.getElementById('packedList'); const el=document.createElement('div'); el.style.padding='6px 0'; el.innerHTML=`<strong>${it.name}</strong>`; packedList.appendChild(el); updatePackedCount(); }
-    function updatePackedCount(){ const packedCount=document.getElementById('packedList').children.length; document.getElementById('greeting').innerText = `Hey ${state.username}! Packed ${packedCount}/${state.packingList.length}`; }
+  showStep(Math.min(steps.length-1, currentStep+1));
+};
 
-    document.getElementById('saveTrip').onclick = ()=>{ const trip={id:Date.now(),name:state.destination||'Trip',destination:state.destination,username:state.username,summary:{duration:state.duration,company:state.company,mode:state.mode,activities:state.activities},packing:state.packingList}; const stored=JSON.parse(localStorage.getItem('mpb_trips')||'[]'); stored.push(trip); localStorage.setItem('mpb_trips', JSON.stringify(stored)); alert('Saved to journal (local demo).'); }
-    document.getElementById('exportBtn').onclick = ()=>{ const data={user:state.username,destination:state.destination,packing:state.packingList}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='packing-list.json'; a.click(); URL.revokeObjectURL(url); }
-    document.getElementById('clearBtn').onclick = ()=>{ document.getElementById('suitcaseDrop').innerHTML=''; document.getElementById('packedList').innerHTML=''; updatePackedCount(); }
+// Weather fetch (keeps simple fallback)
+function fetchWeather(place){
+  // lightweight placeholder; keeps UI stable without relying on geocoding
+  document.getElementById('temp').innerText = '--°C';
+  document.getElementById('cond').innerText = 'Fetching...';
+  // attempt open-meteo with static coord fallback
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=20&longitude=78&current_weather=true')
+    .then(r=>r.json()).then(d=>{
+      document.getElementById('temp').innerText = d.current_weather?.temperature + '°C' || '--°C';
+      document.getElementById('cond').innerText = d.current_weather ? 'Clear' : '--';
+    }).catch(()=>{ document.getElementById('temp').innerText='--°C'; document.getElementById('cond').innerText='--'; });
+}
 
-    // small UX
-    document.querySelectorAll('.option').forEach(o=>o.addEventListener('click', ()=> o.classList.toggle('selected')));
-    document.getElementById('duration').addEventListener('input', (e)=> document.getElementById('durationVal').innerText = e.target.value );
-  </script>
-</body>
-</html>
+// Generate packing list
+generateBtn.onclick = ()=>{
+  // collect state from selections
+  state.company = document.querySelector('#companyOptions .option.selected')?.dataset.value || '';
+  state.mode = document.querySelector('#modeOptions .option.selected')?.dataset.value || '';
+  state.activities = Array.from(document.querySelectorAll('#activityOptions .option.selected')).map(el=>el.dataset.value);
+  state.medical = Array.from(document.querySelectorAll('#medicalOptions .option.selected')).map(el=>el.dataset.value);
+  state.work = document.querySelector('#workOptions .option.selected')?.dataset.value || '';
+  state.tech = Array.from(document.querySelectorAll('#techOptions .option.selected')).map(el=>el.dataset.value);
+  state.style = document.querySelector('#styleOptions .option.selected')?.dataset.value || '';
+  state.gender = document.getElementById('gender').value;
+  state.age = document.getElementById('age').value;
+
+  // final validation
+  if(!state.company || !state.mode || state.activities.length===0 || !state.work || !state.style){
+    alert('Please complete required selections before generating the packing list.');
+    return;
+  }
+
+  // build packingList
+  state.packingList = [];
+  for(let d=1; d<=state.duration; d++){
+    const dayItems = ['Shirts','Pants','Socks'];
+    state.activities.forEach(a=> dayItems.push(cap(a)));
+    if(state.work === 'yes') dayItems.push('Laptop','Charger');
+    if(state.medical.length) dayItems.push(...state.medical.map(m=>cap(m)+' meds'));
+    state.packingList.push({day:d, items: dayItems});
+  }
+  renderPacking();
+};
+
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+function renderPacking(){
+  const dayTabs = document.getElementById('dayTabs');
+  const itemsContainer = document.getElementById('itemsContainer');
+  dayTabs.innerHTML=''; itemsContainer.innerHTML='';
+  state.packingList.forEach(d=>{
+    const tab = document.createElement('div'); tab.className='day-tab'; tab.innerText='Day '+d.day; tab.onclick=()=>showDay(d.day-1); dayTabs.appendChild(tab);
+  });
+  if(state.packingList.length) showDay(0);
+}
+
+function showDay(i){
+  document.querySelectorAll('.day-tab').forEach((t,idx)=>t.classList.toggle('active', idx===i));
+  const itemsContainer = document.getElementById('itemsContainer'); itemsContainer.style.display='grid'; itemsContainer.innerHTML='';
+  state.packingList[i].items.forEach(it=>{
+    const div = document.createElement('div'); div.className='item'; div.innerText = it; itemsContainer.appendChild(div);
+  });
+}
+
+// Designer suitcase: already in markup with slots; use Sortable
+new Sortable(document.getElementById('itemsContainer'),{group:'pack',animation:150});
+new Sortable(document.getElementById('slotLeft'),{group:'pack',animation:150});
+new Sortable(document.getElementById('slotRight'),{group:'pack',animation:150});
+
+// simple save action (localStorage)
+document.getElementById('saveTrip').onclick = ()=>{
+  const payload = {state, savedAt: new Date().toISOString()};
+  localStorage.setItem('savedTrip', JSON.stringify(payload));
+  alert('Trip saved locally.');
+};
+
+// small UX: disable next if destination not set
+setInterval(()=>{
+  const disabled = !state.destination || !state.username;
+  document.getElementById('nextBtn').disabled = disabled;
+  document.getElementById('nextBtn').style.opacity = disabled?0.6:1;
+},300);
+</script>
+
+{% endblock %}

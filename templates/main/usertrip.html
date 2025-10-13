@@ -1,89 +1,113 @@
-{% extends "base.html" %}
+{% extends 'main/base.html' %}
 
-{% block title %}User Trips - MyPackingBuddy{% endblock %}
+{% block title %}Your Trips{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 800px; margin: auto;">
+<div class="viewport">
 
-    <div class="card p-5 mb-5" style="background: #ffffffcc; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-        <h2 class="text-center mb-4" style="color: #6a1b9a;">Share Your Experience</h2>
-
-        <!-- Experience Form -->
-        <form id="experienceForm">
-            <div class="mb-3">
-                <label for="experience" class="form-label">Your Experience</label>
-                <textarea class="form-control" id="experience" rows="4" placeholder="Write about your experience with MyPackingBuddy..." required></textarea>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn" style="background-color: #f8bbd0; color: white; border-radius: 10px; padding: 10px 20px;">Submit</button>
-            </div>
-        </form>
+  <!-- Trip Cards -->
+  <div class="trip-card" id="trip1">
+    <h3>Trip to Goa</h3>
+    <p>Duration: 5 days | Solo trip | Activities: Beach, Sightseeing</p>
+    <div class="trip-actions">
+      <textarea placeholder="Share your feedback & experience..." id="textarea-trip1"></textarea>
+      <input type="text" placeholder="Your Name" id="username-trip1" />
+      <button class="btn feedback" onclick="submitFeedback('trip1', 'Goa')">Submit Feedback</button>
     </div>
+    <div class="feedback-list" id="feedback-list-trip1"></div>
+  </div>
 
-    <!-- Display Experiences -->
-    <div id="experienceList">
-        <!-- Dynamic experience boxes appear here -->
+  <div class="trip-card" id="trip2" style="background: linear-gradient(135deg, #fef3e0, #e0f7fa, #fde7ff);">
+    <h3>Trip to Manali</h3>
+    <p>Duration: 3 days | Family trip | Activities: Hiking, Adventure</p>
+    <div class="trip-actions">
+      <textarea placeholder="Share your feedback & experience..." id="textarea-trip2"></textarea>
+      <input type="text" placeholder="Your Name" id="username-trip2" />
+      <button class="btn feedback" onclick="submitFeedback('trip2', 'Manali')">Submit Feedback</button>
     </div>
+    <div class="feedback-list" id="feedback-list-trip2"></div>
+  </div>
+
+  <div class="trip-card" id="trip3" style="background: linear-gradient(135deg, #d0f0ff, #fce7f3, #fffde0);">
+    <h3>Trip to Sri Lanka</h3>
+    <p>Duration: 7 days | Partner trip | Activities: Sightseeing, Adventure</p>
+    <div class="trip-actions">
+      <textarea placeholder="Share your feedback & experience..." id="textarea-trip3"></textarea>
+      <input type="text" placeholder="Your Name" id="username-trip3" />
+      <button class="btn feedback" onclick="submitFeedback('trip3', 'Sri Lanka')">Submit Feedback</button>
+    </div>
+    <div class="feedback-list" id="feedback-list-trip3"></div>
+  </div>
 
 </div>
 
+<style>
+.viewport { min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; }
+
+.trip-card {
+  width:90%; max-width:600px; padding:18px 25px; border-radius:20px; margin-bottom:20px; box-shadow:0 8px 25px rgba(0,0,0,0.15);
+}
+.trip-card h3 { margin-bottom:8px; color:#0f172a; }
+.trip-card p { margin-bottom:12px; color:#6b7280; font-size:14px; }
+
+textarea, input[type=text] {
+  width: 100%; padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.1); margin-bottom:6px;
+}
+
+.btn.feedback { padding:6px 12px; border:none; border-radius:8px; background:#a0e4ff; color:#05202b; cursor:pointer; }
+
+.feedback-list { margin-top:15px; border-top:1px dashed #ccc; padding-top:10px; }
+.feedback-item { background:#f9fafb; padding:8px 12px; border-radius:10px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
+.feedback-text { max-width: 80%; }
+.feedback-btns button { margin-left:5px; border:none; border-radius:6px; padding:4px 8px; font-size:12px; cursor:pointer; }
+.feedback-btns button:nth-child(1) { background:#fde68a; color:#4b2b05; } /* Edit */
+.feedback-btns button:nth-child(2) { background:#fecaca; color:#7f1d1d; } /* Delete */
+</style>
+
 <script>
-    const username = "{{ session['username'] if session['username'] else 'Anonymous' }}"; // auto-fetch username from Flask session
-    let experiences = [];
-    let editIndex = null;
+function submitFeedback(tripId, tripName) {
+  const textarea = document.getElementById('textarea-' + tripId);
+  const usernameInput = document.getElementById('username-' + tripId);
+  const feedback = textarea.value.trim();
+  const username = usernameInput.value.trim() || 'Anonymous';
 
-    const form = document.getElementById('experienceForm');
-    const experienceInput = document.getElementById('experience');
-    const experienceList = document.getElementById('experienceList');
+  if(!feedback) { alert('Enter feedback!'); return; }
 
-    // Add or Update Experience
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const text = experienceInput.value.trim();
-        if (text === "") return;
+  // Create feedback item
+  const item = document.createElement('div');
+  item.classList.add('feedback-item');
+  item.innerHTML = `
+    <div class="feedback-text">
+      <strong>${username}</strong> (${tripName}): ${feedback}
+    </div>
+    <div class="feedback-btns">
+      <button onclick="editFeedback(this)">Edit</button>
+      <button onclick="deleteFeedback(this)">Delete</button>
+    </div>
+  `;
 
-        if (editIndex !== null) {
-            experiences[editIndex].text = text;
-            editIndex = null;
-        } else {
-            experiences.push({ user: username, text });
-        }
+  const feedbackList = document.getElementById('feedback-list-' + tripId);
+  feedbackList.appendChild(item);
 
-        experienceInput.value = "";
-        renderExperiences();
-    });
+  // Remove textarea and username input after submission
+  textarea.remove();
+  usernameInput.remove();
+  document.querySelector(`#${tripId} .btn.feedback`).remove();
+}
 
-    // Render Experiences
-    function renderExperiences() {
-        experienceList.innerHTML = "";
-        experiences.forEach((exp, index) => {
-            const div = document.createElement('div');
-            div.className = "card p-4 mb-3";
-            div.style.cssText = "background:#ffffffcc; border-radius:20px; box-shadow:0 4px 15px rgba(0,0,0,0.05);";
-            div.innerHTML = `
-                <p><strong>${exp.user}:</strong> ${exp.text}</p>
-                <div class="text-end">
-                    <button class="btn btn-sm me-2" style="background-color:#64b5f6; color:white; border:none; border-radius:5px;" onclick="editExperience(${index})">Edit</button>
-                    <button class="btn btn-sm" style="background-color:#ef5350; color:white; border:none; border-radius:5px;" onclick="deleteExperience(${index})">Delete</button>
-                </div>
-            `;
-            experienceList.appendChild(div);
-        });
-    }
+function editFeedback(btn) {
+  const item = btn.closest('.feedback-item');
+  const textDiv = item.querySelector('.feedback-text');
+  const newText = prompt('Edit feedback:', textDiv.innerText);
+  if(newText) textDiv.innerText = newText.trim();
+}
 
-    // Edit Experience
-    function editExperience(index) {
-        experienceInput.value = experiences[index].text;
-        editIndex = index;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Delete Experience
-    function deleteExperience(index) {
-        if (confirm("Are you sure you want to delete this experience?")) {
-            experiences.splice(index, 1);
-            renderExperiences();
-        }
-    }
+function deleteFeedback(btn) {
+  if(confirm('Delete this feedback?')) {
+    const item = btn.closest('.feedback-item');
+    item.remove();
+  }
+}
 </script>
+
 {% endblock %}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect,jsonify, url_for, session, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -47,7 +47,7 @@ def login():
         if user:
             if check_password_hash(user['password'], password):
                 session['user_id'] = user['id']
-                session['username'] = user['username']
+                session['name'] = user['name']
                 flash('Logged in successfully!', 'success')
                 return redirect(url_for('home'))  # redirect to home instead of dashboard
             else:
@@ -121,7 +121,7 @@ def logout():
     session.pop('user_id', None)
     session.pop('username', None)
     flash('Logged out successfully!', 'success')
-    return redirect(url_for('auth/login'))
+    return redirect(url_for('login'))
 
 # ---------------------- HOME ----------------------
 @app.route('/home')
@@ -146,7 +146,26 @@ def books():
 @login_required
 def create_category():
     return render_template('destination/createcategory.html')
+#------------------------USER TRIPS ----------------------
+@app.route('/trips')
+def trips():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM feedbacks ORDER BY created_at DESC")
+    feedbacks = cur.fetchall()
+    cur.close()
+    return render_template('main/trips.html', feedbacks=feedbacks)
 
+@app.route('/add_feedback', methods=['POST'])
+def add_feedback():
+    trip_name = request.form['trip_name']
+    feedback_text = request.form['feedback']
+
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO feedbacks (trip_name, feedback_text) VALUES (%s, %s)", (trip_name, feedback_text))
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify({'status': 'success', 'trip': trip_name, 'feedback': feedback_text})
 # ---------------------- SAVED LISTS ----------------------
 @app.route('/saved_lists')
 @login_required
