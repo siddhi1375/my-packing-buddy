@@ -16,7 +16,7 @@ app.config['MYSQL_DB'] = 'my_packing_buddy'
 
 mysql = MySQL(app)
 
-# ---------------------- DECORATOR FOR PROTECTED ROUTES ----------------------
+# ------------------- DECORATOR FOR PROTECTED ROUTES -----------------
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -43,8 +43,9 @@ def login():
         cursor.execute("SELECT * FROM user WHERE email=%s", (email,))
         user = cursor.fetchone()
         cursor.close()
-
+        
         if user:
+
             if check_password_hash(user['password'], password):
                 session['user_id'] = user['id']
                 session['name'] = user['name']
@@ -58,9 +59,8 @@ def login():
     return render_template('auth/login.html')
 
 # ---------------------- SIGNUP ----------------------
+
 @app.route('/signup', methods=['GET', 'POST'])
-
-
 def signup():
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
@@ -68,9 +68,7 @@ def signup():
         password = request.form.get('password', '')
         age = request.form.get('age', '')
         gender = request.form.get('gender', '')
-
         errors = []
-
         # Name: 3-50 characters
         if not re.match(r'^.{3,50}$', name):
             errors.append("Name must be 3-50 characters long.")
@@ -92,16 +90,17 @@ def signup():
             errors.append("Age must be a number.")
 
         # Gender validation
+
         if gender not in ['Male','Female','Other']:
             errors.append("Gender invalid.")
-
         if errors:
             return render_template('signup.html', errors=errors)
-
+        
         # Hash the password
-        hashed_password = generate_password_hash(password)
 
+        hashed_password = generate_password_hash(password)
         # Insert user into database
+
         cursor = mysql.connection.cursor()
         cursor.execute(
             "INSERT INTO user (name, email, password, age, gender) VALUES (%s, %s, %s, %s, %s)",
@@ -109,11 +108,10 @@ def signup():
         )
         mysql.connection.commit()
         cursor.close()
-
         flash("Signup successful! Please login.", "success")
         return redirect(url_for('login'))
-
     return render_template('auth/signup.html')
+
 # ---------------------- LOGOUT ----------------------
 @app.route('/logout')
 @login_required
@@ -124,12 +122,14 @@ def logout():
     return redirect(url_for('login'))
 
 # ---------------------- HOME ----------------------
+
 @app.route('/home')
 @login_required
 def home():
     return render_template('destination/home.html')
 
 # ---------------------- DESTINATION ----------------------
+
 @app.route('/destination')
 @login_required
 def destination():
@@ -142,6 +142,7 @@ def books():
     return render_template('main/books.html')
 
 # ---------------------- CREATE CATEGORY ----------------------
+
 @app.route('/createcategory')
 @login_required
 def create_category():
@@ -154,18 +155,16 @@ def trips():
     feedbacks = cur.fetchall()
     cur.close()
     return render_template('main/trips.html', feedbacks=feedbacks)
-
 @app.route('/add_feedback', methods=['POST'])
 def add_feedback():
     trip_name = request.form['trip_name']
     feedback_text = request.form['feedback']
-
     cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO feedbacks (trip_name, feedback_text) VALUES (%s, %s)", (trip_name, feedback_text))
+    cur.execute("INSERT INTO feedbacks (trip_name, feedback_text) VALUES (%s, %s)",(trip_name,feedback_text))
     mysql.connection.commit()
     cur.close()
-
     return jsonify({'status': 'success', 'trip': trip_name, 'feedback': feedback_text})
+
 # ---------------------- SAVED LISTS ----------------------
 @app.route('/saved_lists')
 @login_required
@@ -186,4 +185,6 @@ def contact():
 
 # ---------------------- RUN APP ----------------------
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5003)
+
+
