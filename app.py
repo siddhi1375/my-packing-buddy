@@ -8,7 +8,7 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
 
-# ---------------------- MySQL CONFIG ----------------------
+# ---------------------- MySQL CONFIG ------------------------------- 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'siddhi'
 app.config['MYSQL_PASSWORD'] = 'mypackingbuddy'
@@ -186,5 +186,19 @@ def contact():
 # ---------------------- RUN APP ----------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5003)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
