@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Packing Planner</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+{% extends "main/base.html" %}
+
+{% block title %}Create Category{% endblock %}
+
+{% block content %}
 <style>
 :root {
     --bg:#fefefe;
@@ -15,30 +13,30 @@
     --selected:linear-gradient(90deg,#ff99ff,#cc99ff);
     --muted:#6b7280;
 }
-*{box-sizing:border-box;}
-html,body{
-    height:100%;
-    margin:0;
-    font-family:'Poppins',sans-serif;
-    /* Correct Flask static path for background */
-    background: url("{{ url_for('static', filename='wallpaper_doodle.png') }}") no-repeat center center fixed;
-    background-size: cover;
-    color:#0f172a;
-}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Poppins',sans-serif;background:#fefefe url('{{ url_for("static", filename="wallpaper-doodle.jpg") }}') no-repeat center center fixed;background-size:cover;color:#0f172a;}
 a{text-decoration:none;color:inherit;}
-.main-header{width:100%;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.8);box-shadow:0 4px 10px rgba(0,0,0,0.08);}
-.logo{font-weight:600;font-size:20px;} .navbar a{margin-left:16px;font-weight:500;font-size:13px;color:#0f172a;} .navbar a:hover{color:var(--accent-2);}
+
+/* Header (navbar inherited from base.html) */
+
+/* Card container */
 .viewport{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
 .card-wrap{width:100%;max-width:1100px;background:rgba(255,255,255,0.85);box-shadow:0 10px 30px rgba(2,6,23,0.08);border-radius:16px;padding:20px;}
-.hero{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,153,255,0.15), rgba(204,153,255,0.08));margin-bottom:12px;}
+
+/* Hero */
+.hero{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,153,255,0.15), rgba(204,153,255,0.08));margin-bottom:12px;flex-wrap:wrap;}
 .place-img{width:80px;height:60px;border-radius:8px;object-fit:cover;}
-.hero h1{margin:0;font-size:16px;} .hero p{margin:2px 0 0;color:var(--muted);font-size:12px;}
+.hero h1{margin:0;font-size:16px;} 
+.hero p{margin:2px 0 0;color:var(--muted);font-size:12px;}
 .weather{text-align:right;font-size:12px;}
-.form-card{background:var(--card);padding:16px;border-radius:12px;}
+
+/* Form card */
+.form-card{background:var(--card);padding:16px;border-radius:12px;flex:1;min-width:280px;}
 input, select{padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.1);width:100%;font-size:13px;}
 .btn{padding:8px 12px;border-radius:8px;font-size:13px;cursor:pointer;border:none;background:var(--accent);color:#05202b;}
 .btn:hover{opacity:0.9;}
 .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.1);color:var(--muted);}
+.btn.coral{background:var(--accent-2);color:#401029;}
 .btn.peach{background:var(--accent-3);color:#4b2b05;}
 .options{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .option{padding:6px 10px;border-radius:999px;border:1px solid rgba(15,23,42,0.08);cursor:pointer;background:#fff;transition:all 0.2s ease;display:flex;align-items:center;gap:4px;}
@@ -47,138 +45,135 @@ input, select{padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.1);
 .form-step.active{display:block;}
 .progress{height:6px;background:rgba(2,6,23,0.04);border-radius:999px;overflow:hidden;margin-top:8px;}
 .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;}
-.packing-card{background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.99));padding:16px;border-radius:12px;min-height:350px;position:relative;}
+.error-msg{color:red;font-size:12px;margin-top:4px;display:none;}
+
+/* Packing Card */
+.packing-card{background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.99));padding:16px;border-radius:12px;min-height:350px;position:relative;flex:1;min-width:300px;margin-top:16px;}
 .day-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
 .day-tab{padding:4px 8px;border-radius:999px;border:1px solid rgba(15,23,42,0.1);cursor:pointer;}
 .day-tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#08202b;}
 .items{display:grid;gap:6px;margin-top:8px;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));position:relative;}
 .item{padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.98));display:flex;align-items:center;gap:4px;cursor:grab;position:relative;z-index:1;}
-.suitcase-drop{min-height:250px;border-radius:16px;border:2px dashed rgba(15,23,42,0.1);padding:16px;background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));position:relative;perspective:1000px;}
-.suitcase-body{position:absolute;left:50%;top:30px;transform:translateX(-50%) rotateX(10deg);width:360px;height:180px;background:linear-gradient(180deg,#e9f7ff,#ffffff);border-radius:16px;border:2px solid #dbeffd;box-shadow:0 8px 30px rgba(2,6,23,0.15);}
-.suitcase-inner{position:absolute;left:50%;top:70px;transform:translateX(-50%) rotateX(5deg);width:340px;height:120px;padding:12px;display:flex;gap:8px;align-items:flex-start;justify-content:flex-start;}
+.suitcase-drop{min-height:250px;border-radius:16px;border:2px dashed rgba(15,23,42,0.1);padding:16px;background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));position:relative;perspective:1000px;margin-top:12px;}
+.suitcase-body{position:absolute;left:50%;top:30px;transform:translateX(-50%) rotateX(10deg);width:100%;max-width:360px;height:180px;background:linear-gradient(180deg,#e9f7ff,#ffffff);border-radius:16px;border:2px solid #dbeffd;box-shadow:0 8px 30px rgba(2,6,23,0.15);}
+.suitcase-inner{position:absolute;left:50%;top:70px;transform:translateX(-50%) rotateX(5deg);width:90%;max-width:340px;height:120px;padding:12px;display:flex;gap:8px;align-items:flex-start;justify-content:flex-start;}
 .suitcase-slot{flex:1;height:90px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,#fff,#f8fbff);padding:6px;overflow:auto;}
-.hint{font-size:12px;color:var(--muted);margin-top:6px;}
+.hint{font-size:12px;color:var(--muted);margin-top:6px;text-align:center;}
+
+/* Responsive */
+@media(max-width:768px){
+  .main-grid{flex-direction:column;}
+  .hero{flex-direction:column;align-items:flex-start;}
+  .place-img{width:100%;height:auto;}
+  .form-card,.packing-card{width:100%;}
+}
 </style>
-</head>
-<body>
+
 <div class="viewport">
-<div class="card-wrap">
-<div class="hero">
-<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop" class="place-img" alt="place">
-<div>
-<h1 id="placeName">Choose a destination</h1>
-<p id="placeTag">Pick a place and plan your packing list.</p>
+  <div class="card-wrap">
+    <!-- Hero -->
+    <div class="hero">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop" class="place-img" alt="place">
+      <div>
+        <h1 id="placeName">Choose a destination</h1>
+        <p id="placeTag">Pick a place and plan your packing list.</p>
+      </div>
+      <div class="weather">
+        <div class="temp" id="temp">--°C</div>
+        <div class="mini" id="cond">--</div>
+      </div>
+    </div>
+
+    <div class="main-grid" style="display:flex;gap:12px;flex-wrap:wrap;">
+      <!-- Form -->
+      <section class="form-card">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <input id="username" placeholder="Your name (required)" style="flex:1;min-width:100px">
+          <input id="destinationInput" placeholder="Destination (required)" style="flex:2;min-width:150px">
+          <button class="btn" id="setDestBtn">Set</button>
+        </div>
+
+        <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+        <div id="formSteps" style="margin-top:12px">
+          <div class="form-step active" data-step="1">
+            <h4>How many days? 🗓</h4>
+            <input type="range" id="duration" min="1" max="30" value="3" oninput="durationVal.innerText=this.value">
+            <div><strong><span id="durationVal">3</span> days</strong></div>
+
+            <h4>Travel company 👥</h4>
+            <div class="options" id="companyOptions">
+              <div class="option" data-value="solo">Solo</div>
+              <div class="option" data-value="partner">Partner</div>
+              <div class="option" data-value="family">Family</div>
+            </div>
+
+            <h4>Travel mode 🚗</h4>
+            <div class="options" id="modeOptions">
+              <div class="option" data-value="flight">Flight ✈️</div>
+              <div class="option" data-value="train">Train 🚆</div>
+              <div class="option" data-value="road">Road 🚗</div>
+            </div>
+          </div>
+
+          <div class="form-step" data-step="2">
+            <h4>Activities 🏖</h4>
+            <div class="options" id="activityOptions">
+              <div class="option" data-value="beach">Beach 🏖</div>
+              <div class="option" data-value="hiking">Hiking 🥾</div>
+              <div class="option" data-value="camping">Camping ⛺</div>
+              <div class="option" data-value="sightseeing">Sightseeing 🏰</div>
+              <div class="option" data-value="adventure">Adventure 🎢</div>
+            </div>
+
+            <h4>Medical needs ⚕️</h4>
+            <div class="options" id="medicalOptions">
+              <div class="option" data-value="none">None</div>
+              <div class="option" data-value="allergy">Allergy</div>
+              <div class="option" data-value="back">Back pain</div>
+              <div class="option" data-value="pregnant">Pregnant</div>
+              <div class="option" data-value="diabetes">Diabetes</div>
+            </div>
+          </div>
+
+          <div class="form-step" data-step="3">
+            <h4>All set! ✅</h4>
+            <p class="mini">Click <strong>Generate Packing List</strong> to create your packing list and virtual suitcase.</p>
+          </div>
+        </div>
+
+        <div class="controls" style="display:flex;justify-content:space-between;margin-top:8px;">
+          <button class="btn ghost" id="prevBtn">Back</button>
+          <div>
+            <button class="btn" id="nextBtn">Next</button>
+            <button class="btn peach" id="generateBtn" style="display:none">Generate Packing List</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Packing Card -->
+      <aside class="packing-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <h4 id="greeting">Hey Traveller!</h4>
+            <div class="mini" id="tripSummary">Trip summary will appear here.</div>
+          </div>
+        </div>
+        <div class="day-tabs" id="dayTabs"></div>
+        <div class="items" id="itemsContainer"></div>
+        <div class="suitcase-drop" id="suitcaseDrop">
+          <div class="suitcase-body"></div>
+          <div class="suitcase-inner">
+            <div class="suitcase-slot" id="slotLeft"></div>
+            <div class="suitcase-slot" id="slotRight"></div>
+          </div>
+        </div>
+        <div class="hint">Drag items into suitcase. Click items to pack.</div>
+      </aside>
+    </div>
+  </div>
 </div>
-<div class="weather">
-<div class="temp" id="temp">--°C</div>
-<div class="mini" id="cond">--</div>
-</div>
-</div>
-<div class="main-grid" style="display:flex;gap:12px;flex-wrap:wrap;">
-<section class="form-card" style="flex:1;min-width:300px;">
-<div style="display:flex;gap:6px;flex-wrap:wrap;">
-<input id="username" placeholder="Your name (required)" style="flex:1;min-width:100px">
-<input id="destinationInput" placeholder="Destination (required)" style="flex:2;min-width:150px">
-<button class="btn" id="setDestBtn">Set</button>
-</div>
-<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
-<div id="formSteps" style="margin-top:12px">
-<!-- Step 1 -->
-<div class="form-step active" data-step="1">
-<h4>How many days? 🗓</h4>
-<input type="range" id="duration" min="1" max="30" value="3" oninput="durationVal.innerText=this.value">
-<div><strong><span id="durationVal">3</span> days</strong></div>
-<h4>Travel company 👥</h4>
-<div class="options" id="companyOptions">
-<div class="option" data-value="solo">Solo</div>
-<div class="option" data-value="partner">Partner</div>
-<div class="option" data-value="family">Family</div>
-</div>
-<h4>Travel mode 🚗</h4>
-<div class="options" id="modeOptions">
-<div class="option" data-value="flight">Flight ✈️</div>
-<div class="option" data-value="train">Train 🚆</div>
-<div class="option" data-value="road">Road 🚗</div>
-</div>
-<h4>Activities 🏖</h4>
-<div class="options" id="activityOptions">
-<div class="option" data-value="beach">Beach 🏖</div>
-<div class="option" data-value="hiking">Hiking 🥾</div>
-<div class="option" data-value="camping">Camping ⛺</div>
-<div class="option" data-value="sightseeing">Sightseeing 🏰</div>
-<div class="option" data-value="adventure">Adventure 🎢</div>
-</div>
-<h4>Medical needs ⚕️</h4>
-<div class="options" id="medicalOptions">
-<div class="option" data-value="none">None</div>
-<div class="option" data-value="allergy">Allergy</div>
-<div class="option" data-value="back">Back pain</div>
-<div class="option" data-value="pregnant">Pregnant</div>
-<div class="option" data-value="diabetes">Diabetes</div>
-</div>
-</div>
-<!-- Step 2 -->
-<div class="form-step" data-step="2">
-<h4>Work remotely? 💻</h4>
-<div class="options" id="workOptions">
-<div class="option" data-value="yes">Yes</div>
-<div class="option" data-value="no">No</div>
-</div>
-<div id="digitalNomadSection" style="display:none">
-<h4>Tech gear 🖥️</h4>
-<div class="options" id="techOptions">
-<div class="option" data-value="laptop">Laptop 💻</div>
-<div class="option" data-value="powerbank">Powerbank 🔋</div>
-<div class="option" data-value="wifi">Wi-Fi 📶</div>
-</div>
-</div>
-<h4>Packing style 🎒</h4>
-<div class="options" id="styleOptions">
-<div class="option" data-value="minimal">Minimalist</div>
-<div class="option" data-value="comfort">Comfort</div>
-<div class="option" data-value="luxury">Luxury</div>
-</div>
-</div>
-<!-- Step 3 -->
-<div class="form-step" data-step="3">
-<h4>All set! ✅</h4>
-<p class="mini">Click <strong>Generate Packing List</strong> to create your packing list and virtual suitcase.</p>
-</div>
-</div>
-<div class="controls" style="display:flex;justify-content:space-between;margin-top:8px;">
-<button class="btn ghost" id="prevBtn">Back</button>
-<div>
-<button class="btn" id="nextBtn">Next</button>
-<button class="btn peach" id="generateBtn" style="display:none">Generate Packing List</button>
-</div>
-</div>
-</section>
-<aside class="packing-card" style="flex:1;min-width:320px;">
-<div style="display:flex;justify-content:space-between;align-items:center;">
-<div>
-<h4 id="greeting">Hey Traveller!</h4>
-<div class="mini" id="tripSummary">Trip summary will appear here.</div>
-</div>
-</div>
-<div class="day-tabs" id="dayTabs"></div>
-<div class="items" id="itemsContainer"></div>
-<div id="itemPagination" style="display:flex;justify-content:center;gap:8px;margin:8px 0;">
-<button id="prevItem" class="btn ghost">Prev</button>
-<span id="pageInfo" style="align-self:center;color:var(--muted)">Page 1/1</span>
-<button id="nextItem" class="btn ghost">Next</button>
-</div>
-<div class="suitcase-drop" id="suitcaseDrop">
-<div class="suitcase-body"></div>
-<div class="suitcase-inner">
-<div class="suitcase-slot" id="slotLeft"></div>
-<div class="suitcase-slot" id="slotRight"></div>
-</div>
-</div>
-<div class="hint">Drag items into suitcase. Click items to pack.</div>
-</aside>
-</div>
-</div>
-</div>
+
 <script>
 const API_KEY='05f85e36fd42f0d1f359f276caab551f';
 const state={username:'',destination:'',duration:3,company:'',mode:'',activities:[],medical:[],work:'',tech:[],style:'',packingList:[],currentPage:1,itemsPerPage:6};
@@ -209,83 +204,40 @@ function makeSingleSelect(groupId){
         e.target.classList.add('selected');
     });
 }
-function makeMultiSelect(groupId){
-    const group=document.getElementById(groupId);
-    group.addEventListener('click',e=>{
-        if(!e.target.classList.contains('option'))return;
-        if(e.target.dataset.value==='none'){group.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));e.target.classList.add('selected');}
-        else{e.target.classList.toggle('selected');const noneOpt=group.querySelector('[data-value="none"]');if(noneOpt)noneOpt.classList.remove('selected');}
-    });
-}
-['companyOptions','modeOptions','activityOptions','medicalOptions','workOptions','styleOptions'].forEach(makeSingleSelect);
-makeMultiSelect('techOptions');
-
-document.getElementById('workOptions').addEventListener('click',e=>{
-    state.work=e.target.dataset.value;
-    document.getElementById('digitalNomadSection').style.display=state.work==='yes'?'block':'none';
-});
+['companyOptions','modeOptions','activityOptions','medicalOptions'].forEach(makeSingleSelect);
 
 document.getElementById('setDestBtn').onclick=()=>{
-    const user=document.getElementById('username').value.trim();
-    const dest=document.getElementById('destinationInput').value.trim();
-    if(!user||!dest){alert('Enter name and destination');return;}
-    state.username=user;
-    state.destination=dest;
-    document.getElementById('placeName').innerText=dest;
-    fetchWeather(dest);
-};
-
-async function fetchWeather(place){
-    try{
-        const res=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${place}&units=metric&appid=${API_KEY}`);
-        const data=await res.json();
-        if(data.cod===200){
+    state.username=document.getElementById('username').value;
+    state.destination=document.getElementById('destinationInput').value;
+    document.getElementById('placeName').innerText=state.destination||'Choose a destination';
+    document.getElementById('greeting').innerText='Hey '+(state.username||'Traveller')+'!';
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${state.destination}&appid=${API_KEY}&units=metric`)
+    .then(res=>res.json()).then(data=>{
+        if(data.main){
             document.getElementById('temp').innerText=Math.round(data.main.temp)+'°C';
             document.getElementById('cond').innerText=data.weather[0].main;
-        } else {
-            document.getElementById('temp').innerText='N/A';
-            document.getElementById('cond').innerText='--';
         }
-    }catch(err){console.log(err);}
+    });
 }
-
 generateBtn.onclick=()=>{
-    const items=['T-shirt','Pants','Shorts','Jacket','Shoes','Sandals','Hat','Socks','Swimsuit','Toothbrush','Laptop','Charger','Camera','Sunglasses','Notebook','Water Bottle'];
-    state.packingList=items;
-    state.currentPage=1;
-    showPage();
-};
-
-function showPage(){
-    const start=(state.currentPage-1)*state.itemsPerPage;
-    const end=start+state.itemsPerPage;
-    const paged=state.packingList.slice(start,end);
-    const container=document.getElementById('itemsContainer');
-    container.innerHTML='';
-    paged.forEach(i=>{
+    const itemsContainer=document.getElementById('itemsContainer');
+    itemsContainer.innerHTML='';
+    for(let i=1;i<=state.duration*3;i++){
         const div=document.createElement('div');
         div.className='item';
-        div.innerText=i;
-        container.appendChild(div);
-        div.onclick=()=>{
-            const slot=document.getElementById('slotLeft');
-            const clone=div.cloneNode(true);
-            const rect=div.getBoundingClientRect();
-            clone.style.position='absolute';
-            clone.style.left=rect.left+'px';
-            clone.style.top=rect.top+'px';
-            clone.style.zIndex='1000';
-            clone.style.transition='all 0.8s ease-in-out';
-            document.body.appendChild(clone);
-            const target=slot.getBoundingClientRect();
-            setTimeout(()=>{clone.style.left=target.left+'px'; clone.style.top=target.top+'px'; clone.style.transform='scale(0.5)';},50);
-            setTimeout(()=>{slot.appendChild(clone); clone.style.position='static'; clone.style.transform='none'; clone.style.zIndex='1';},850);
-        };
-    });
-    document.getElementById('pageInfo').innerText=`Page ${state.currentPage}/${Math.ceil(state.packingList.length/state.itemsPerPage)}`;
-}
-document.getElementById('prevItem').onclick=()=>{state.currentPage=Math.max(1,state.currentPage-1);showPage();}
-document.getElementById('nextItem').onclick=()=>{state.currentPage=Math.min(Math.ceil(state.packingList.length/state.itemsPerPage),state.currentPage+1);showPage();}
+        div.innerText='Item '+i;
+        div.onclick=()=>alert(div.innerText+' packed!');
+        itemsContainer.appendChild(div);
+    }
+    const dayTabs=document.getElementById('dayTabs');
+    dayTabs.innerHTML='';
+    for(let i=1;i<=state.duration;i++){
+        const dayTab=document.createElement('div');
+        dayTab.className='day-tab'+(i===1?' active':'');
+        dayTab.innerText='Day '+i;
+        dayTab.onclick=()=>{document.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active'));dayTab.classList.add('active');};
+        dayTabs.appendChild(dayTab);
+    }
+};
 </script>
-</body>
-</html>
+{% endblock %}

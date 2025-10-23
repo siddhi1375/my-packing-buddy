@@ -3,30 +3,33 @@
 
 {% block content %}
 <style>
-/* Full-page setup */
-html, body {
-    height: 100%;
+/* Ensure navbar/header stays on top */
+body, html {
     margin: 0;
+    padding: 0;
+    height: 100%;
     font-family: "Poppins", sans-serif;
 }
 
-/* Background image */
+/* Background image always visible */
 body {
-    background-image: url('{{ url_for("static", filename="pngtree-traveling-on-vacation-background-picture-image_1787680.jpg") }}');
-    background-size: cover;      /* make it cover entire screen */
-    background-position: center; /* center image */
+    background-image: url('{{ url_for("static", filename="wallpaper-doodle.jpg") }}');
+    background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
+    min-height: 100vh;
 }
 
-/* Container for content */
+/* Center content container */
 .home-container {
-    background: rgba(255, 255, 255, 0.7); /* semi-transparent so text is readable */
+    background: rgba(255, 255, 255, 0.7);
     max-width: 750px;
-    margin: 100px auto; /* center with spacing from top */
+    width: 90%;
     padding: 50px 40px;
     border-radius: 20px;
     text-align: center;
     box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    margin: 100px auto 50px auto; /* push down slightly so navbar is visible */
 }
 
 /* Icon */
@@ -69,6 +72,27 @@ a.start-btn {
 a.start-btn:hover {
     background-color: #ff4f81;
     transform: translateY(-3px);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .home-container {
+        padding: 35px 25px;
+        margin-top: 80px;
+    }
+    .home-container h1 { font-size: 2.2rem; }
+    .home-container p { font-size: 1rem; }
+    a.start-btn { padding: 12px 28px; font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+    .home-container {
+        padding: 25px 15px;
+        margin-top: 60px;
+    }
+    .home-container h1 { font-size: 1.8rem; }
+    .home-container p { font-size: 0.95rem; }
+    a.start-btn { padding: 10px 22px; font-size: 0.95rem; }
 }
 </style>
 
