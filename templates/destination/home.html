@@ -3,48 +3,40 @@
 
 {% block content %}
 <style>
-/* 🌍 Page Setup */
+/* Full-page setup */
 html, body {
     height: 100%;
     margin: 0;
-    overflow: hidden; /* ❌ Disable scrolling */
     font-family: "Poppins", sans-serif;
 }
 
-/* 🌸 Background */
+/* Background image */
 body {
-    background: url('{{ url_for("static", filename="images/travel-bg.jpg") }}') no-repeat center center fixed;
-    background-size: cover;
+    background-image: url('{{ url_for("static", filename="pngtree-traveling-on-vacation-background-picture-image_1787680.jpg") }}');
+    background-size: cover;      /* make it cover entire screen */
+    background-position: center; /* center image */
+    background-repeat: no-repeat;
 }
 
-/* 🌈 Overlay (for readability) */
-.overlay {
-    background-color: rgba(255, 255, 255, 0.7);
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* ✨ Main Content */
+/* Container for content */
 .home-container {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.7); /* semi-transparent so text is readable */
+    max-width: 750px;
+    margin: 100px auto; /* center with spacing from top */
     padding: 50px 40px;
     border-radius: 20px;
     text-align: center;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    max-width: 750px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
 }
 
-/* ✈️ Icon */
+/* Icon */
 .airplane-icon {
     font-size: 3rem;
     color: #ff6f91;
     margin-bottom: 15px;
 }
 
-/* 🩷 Title */
+/* Title */
 .home-container h1 {
     font-size: 2.8rem;
     color: #ff6f91;
@@ -52,7 +44,7 @@ body {
     font-weight: 700;
 }
 
-/* 🪶 Paragraph */
+/* Paragraph */
 .home-container p {
     color: #333;
     font-size: 1.15rem;
@@ -61,7 +53,7 @@ body {
     margin: 0 auto 30px;
 }
 
-/* 🌺 Button */
+/* Button */
 a.start-btn {
     background-color: #ff6f91;
     color: white;
@@ -71,7 +63,7 @@ a.start-btn {
     font-size: 1.1rem;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 15px rgba(255, 111, 145, 0.3);
+    box-shadow: 0 6px 15px rgba(255,111,145,0.3);
 }
 
 a.start-btn:hover {
@@ -80,15 +72,13 @@ a.start-btn:hover {
 }
 </style>
 
-<div class="overlay">
-    <div class="home-container">
-        <div class="airplane-icon">✈️</div>
-        <h1>Welcome to My Packing Buddy</h1>
-        <p>
-            Plan your trips, pack smarter, and travel lighter — all in one place.  
-            Let’s make your next adventure perfectly organized and stress-free.
-        </p>
-        <a href="{{ url_for('destination') }}" class="start-btn">Start Your Journey</a>
-    </div>
+<div class="home-container">
+    <div class="airplane-icon">✈️</div>
+    <h1>Welcome to My Packing Buddy</h1>
+    <p>
+        Plan your trips, pack smarter, and travel lighter — all in one place.  
+        Let’s make your next adventure perfectly organized and stress-free.
+    </p>
+    <a href="{{ url_for('destination') }}" class="start-btn">Start Your Journey</a>
 </div>
 {% endblock %}

@@ -11,6 +11,7 @@
     --card:#ffffff;
     --accent:#ff99ff;
     --accent-2:#cc99ff;
+    --accent-3:#fce5cd;
     --selected:linear-gradient(90deg,#ff99ff,#cc99ff);
     --muted:#6b7280;
 }
@@ -19,36 +20,25 @@ html,body{
     height:100%;
     margin:0;
     font-family:'Poppins',sans-serif;
-    background: #fefefe url('https://i.ibb.co/8b5m5kq/doodle-bg.png') no-repeat center center fixed;
+    /* Correct Flask static path for background */
+    background: url("{{ url_for('static', filename='wallpaper_doodle.png') }}") no-repeat center center fixed;
     background-size: cover;
     color:#0f172a;
 }
 a{text-decoration:none;color:inherit;}
-
-/* Header */
 .main-header{width:100%;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.8);box-shadow:0 4px 10px rgba(0,0,0,0.08);}
-.logo{font-weight:600;font-size:20px;}
-.navbar a{margin-left:16px;font-weight:500;font-size:13px;color:#0f172a;}
-.navbar a:hover{color:var(--accent-2);}
-
-/* Card */
+.logo{font-weight:600;font-size:20px;} .navbar a{margin-left:16px;font-weight:500;font-size:13px;color:#0f172a;} .navbar a:hover{color:var(--accent-2);}
 .viewport{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
 .card-wrap{width:100%;max-width:1100px;background:rgba(255,255,255,0.85);box-shadow:0 10px 30px rgba(2,6,23,0.08);border-radius:16px;padding:20px;}
-
-/* Hero */
 .hero{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,153,255,0.15), rgba(204,153,255,0.08));margin-bottom:12px;}
 .place-img{width:80px;height:60px;border-radius:8px;object-fit:cover;}
-.hero h1{margin:0;font-size:16px;}
-.hero p{margin:2px 0 0;color:var(--muted);font-size:12px;}
+.hero h1{margin:0;font-size:16px;} .hero p{margin:2px 0 0;color:var(--muted);font-size:12px;}
 .weather{text-align:right;font-size:12px;}
-
-/* Form card */
 .form-card{background:var(--card);padding:16px;border-radius:12px;}
 input, select{padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.1);width:100%;font-size:13px;}
 .btn{padding:8px 12px;border-radius:8px;font-size:13px;cursor:pointer;border:none;background:var(--accent);color:#05202b;}
 .btn:hover{opacity:0.9;}
 .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.1);color:var(--muted);}
-.btn.coral{background:var(--accent-2);color:#401029;}
 .btn.peach{background:var(--accent-3);color:#4b2b05;}
 .options{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .option{padding:6px 10px;border-radius:999px;border:1px solid rgba(15,23,42,0.08);cursor:pointer;background:#fff;transition:all 0.2s ease;display:flex;align-items:center;gap:4px;}
@@ -57,9 +47,6 @@ input, select{padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.1);
 .form-step.active{display:block;}
 .progress{height:6px;background:rgba(2,6,23,0.04);border-radius:999px;overflow:hidden;margin-top:8px;}
 .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;}
-.error-msg{color:red;font-size:12px;margin-top:4px;display:none;}
-
-/* Packing Card */
 .packing-card{background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.99));padding:16px;border-radius:12px;min-height:350px;position:relative;}
 .day-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
 .day-tab{padding:4px 8px;border-radius:999px;border:1px solid rgba(15,23,42,0.1);cursor:pointer;}
@@ -297,13 +284,8 @@ function showPage(){
     });
     document.getElementById('pageInfo').innerText=`Page ${state.currentPage}/${Math.ceil(state.packingList.length/state.itemsPerPage)}`;
 }
-
-document.getElementById('prevItem').onclick=()=>{
-    if(state.currentPage>1){state.currentPage--;showPage();}
-};
-document.getElementById('nextItem').onclick=()=>{
-    if(state.currentPage<Math.ceil(state.packingList.length/state.itemsPerPage)){state.currentPage++;showPage();}
-};
+document.getElementById('prevItem').onclick=()=>{state.currentPage=Math.max(1,state.currentPage-1);showPage();}
+document.getElementById('nextItem').onclick=()=>{state.currentPage=Math.min(Math.ceil(state.packingList.length/state.itemsPerPage),state.currentPage+1);showPage();}
 </script>
 </body>
 </html>
