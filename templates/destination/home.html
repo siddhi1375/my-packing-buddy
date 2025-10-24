@@ -3,96 +3,96 @@
 
 {% block content %}
 <style>
-/* Ensure navbar/header stays on top */
-body, html {
-    margin: 0;
-    padding: 0;
+html, body {
     height: 100%;
+    margin: 0;
+    overflow: hidden;
     font-family: "Poppins", sans-serif;
 }
 
-/* Background image always visible */
+/* 🎨 Fullscreen Background */
 body {
-    background-image: url('{{ url_for("static", filename="wallpaper-doodle.jpg") }}');
+    background: url('{{ url_for("static", filename="home.jpg") }}') no-repeat center center fixed;
     background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
 }
 
-/* Center content container */
+/* Transparent Navbar */
+.navbar, .header, .top-header { 
+    background-color: transparent !important; 
+    box-shadow: none !important; 
+}
+
+/* 🏝 Centered Text Box */
 .home-container {
-    background: rgba(255, 255, 255, 0.7);
-    max-width: 750px;
-    width: 90%;
-    padding: 50px 40px;
-    border-radius: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-    margin: 100px auto 50px auto; /* push down slightly so navbar is visible */
+    padding: 40px 30px;
+    max-width: 700px;
+    color: #333;
+    text-shadow: 1px 1px 4px rgba(255,255,255,0.8);
+    background: rgba(255, 228, 236, 0.7); /* soft pastel pink overlay */
+    border-radius: 20px;
+    border: 2px solid rgba(255, 215, 200, 0.5); /* subtle pastel border */
 }
 
-/* Icon */
+/* ✈️ Icon */
 .airplane-icon {
     font-size: 3rem;
-    color: #ff6f91;
     margin-bottom: 15px;
 }
 
-/* Title */
+/* 🩷 Title */
 .home-container h1 {
     font-size: 2.8rem;
-    color: #ff6f91;
-    margin-bottom: 15px;
     font-weight: 700;
+    margin-bottom: 15px;
+    color: #ff6f91; /* pastel pinkish title */
 }
 
-/* Paragraph */
+/* 🪶 Paragraph */
 .home-container p {
-    color: #333;
-    font-size: 1.15rem;
-    line-height: 1.6;
-    max-width: 600px;
-    margin: 0 auto 30px;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    color: #6b4e4f; /* soft pastel brown for contrast */
 }
 
-/* Button */
+/* 🌺 Button */
 a.start-btn {
-    background-color: #ff6f91;
-    color: white;
-    padding: 14px 38px;
+    background-color: #ffe066; /* pastel yellow */
+    color: #333;
+    padding: 12px 35px;
     border-radius: 12px;
     font-weight: 600;
     font-size: 1.1rem;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 15px rgba(255,111,145,0.3);
+    box-shadow: 0 6px 15px rgba(255, 224, 102, 0.3);
 }
 
 a.start-btn:hover {
-    background-color: #ff4f81;
+    background-color: #ffd633;
     transform: translateY(-3px);
 }
 
-/* Mobile responsiveness */
+/* 📱 Responsive */
 @media (max-width: 768px) {
     .home-container {
-        padding: 35px 25px;
-        margin-top: 80px;
+        padding: 30px 20px;
     }
-    .home-container h1 { font-size: 2.2rem; }
-    .home-container p { font-size: 1rem; }
-    a.start-btn { padding: 12px 28px; font-size: 1rem; }
-}
-
-@media (max-width: 480px) {
-    .home-container {
-        padding: 25px 15px;
-        margin-top: 60px;
+    .home-container h1 {
+        font-size: 2rem;
     }
-    .home-container h1 { font-size: 1.8rem; }
-    .home-container p { font-size: 0.95rem; }
-    a.start-btn { padding: 10px 22px; font-size: 0.95rem; }
+    .home-container p {
+        font-size: 1rem;
+    }
+    a.start-btn {
+        padding: 10px 25px;
+        font-size: 1rem;
+    }
 }
 </style>
 
