@@ -12,54 +12,94 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#fefefe;
-      --card:rgba(255,255,255,0.85); /* semi-transparent white — shows wallpaper */
-      --card-soft-pink:rgba(255,182,193,0.08); /* subtle pink overlay inside suitcase area */
+      --card-bg: rgba(255,255,255,0.88); /* semi-transparent white so wallpaper shows */
+      --card-accent: rgba(255,182,193,0.08);
       --accent:#ff99ff;
       --accent-2:#cc99ff;
       --muted:#6b7280;
-      --shadow: 0 12px 30px rgba(2,6,23,0.12);
+      --shadow: 0 14px 40px rgba(2,6,23,0.12);
+      --max-card-w: 980px;
+      --nav-offset: 64px; /* expected navbar height in base.html */
     }
     *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
     html,body{
       height:100%;
       background: #fefefe url('{{ url_for("static", filename="wallpaper-doodle.webp") }}') no-repeat center center fixed;
       background-size:cover;
-      overflow:hidden; /* no page scroll per request */
+      overflow:hidden; /* page non-scrollable as requested */
       color:#0f172a;
     }
 
-    /* page wrapper (accounting for base.html nav height) */
-    .viewport{height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:18px;}
+    /* center card with margins so it doesn't touch header/footer */
+    .viewport {
+      height: calc(100vh - var(--nav-offset));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
     .card-wrap{
       width:100%;
-      max-width:1160px;
-      background:var(--card);
-      border-radius:14px;
+      max-width:var(--max-card-w);
+      min-width:320px;
+      max-height: calc(100vh - (var(--nav-offset) + 80px)); /* keep margin top/bottom */
+      background: var(--card-bg);
+      border-radius:12px;
       padding:18px;
       box-shadow:var(--shadow);
       display:flex;
       flex-direction:column;
       gap:12px;
       overflow:hidden;
+      margin: 10px auto; /* small vertical breathing room */
     }
 
     /* hero */
-    .hero{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,153,255,0.06), rgba(204,153,255,0.03));}
-    .place-img{width:72px;height:52px;border-radius:8px;object-fit:cover;}
+    .hero{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:10px;
+      border-radius:10px;
+      background: linear-gradient(90deg, rgba(255,153,255,0.04), rgba(204,153,255,0.02));
+    }
+    .place-img{width:72px;height:52px;border-radius:8px;object-fit:cover}
     .hero h1{font-size:18px;margin:0}
     .hero p{margin-top:4px;color:var(--muted);font-size:13px}
     .weather{text-align:right;font-size:13px;color:var(--muted)}
 
-    /* layout */
-    .main-grid{display:flex;gap:12px;flex:1;align-items:flex-start;}
-    .form-card{flex:1;min-width:320px;background:transparent;padding:8px;border-radius:10px;overflow:hidden}
-    .packing-card{width:420px;min-width:300px;background:transparent;padding:8px;border-radius:10px}
+    /* main grid - left form, right packing */
+    .main-grid{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      flex:1;
+      min-height:320px;
+    }
+    .form-card{
+      flex:1;
+      min-width:300px;
+      padding:10px;
+      border-radius:10px;
+      background:transparent;
+      overflow:auto;
+    }
+    .packing-card{
+      width:420px;
+      min-width:300px;
+      padding:10px;
+      border-radius:10px;
+      background:transparent;
+      overflow:auto;
+    }
 
-    /* inputs */
+    /* inputs/buttons */
     .input-row{display:flex;gap:8px;margin-bottom:8px}
-    .input-row input, .input-row select{flex:1;padding:9px;border-radius:8px;border:1px solid rgba(2,6,23,0.08);background:#fff}
-    .input-row .small{width:120px;flex:0 0 120px}
+    .input-row input, .input-row select{
+      flex:1;padding:9px;border-radius:8px;border:1px solid rgba(2,6,23,0.08);background:#fff;font-size:14px
+    }
+    .small{flex:0 0 120px;width:120px}
     .btn{padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:#05202b;cursor:pointer}
     .btn.ghost{background:transparent;border:1px solid rgba(2,6,23,0.08)}
     .btn.peach{background:var(--accent-2);color:#05202b}
@@ -68,44 +108,47 @@
     .progress{height:8px;background:rgba(2,6,23,0.04);border-radius:999px;overflow:hidden;margin:10px 0}
     .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
 
-    /* options */
+    /* options chips */
     .options{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .option{padding:8px 12px;border-radius:999px;border:1px solid rgba(2,6,23,0.06);cursor:pointer;background:#fff;user-select:none}
+    .option{
+      padding:8px 12px;border-radius:999px;border:1px solid rgba(2,6,23,0.06);cursor:pointer;background:#fff;user-select:none;font-size:14px
+    }
     .option.selected{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 10px 24px rgba(0,0,0,0.06)}
     .option.disabled{opacity:0.45;pointer-events:none}
 
     /* items & suitcase */
     .items{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:10px;max-height:260px;overflow:auto;padding-right:6px}
-    .item{padding:8px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);background:#fff;cursor:pointer;text-align:center}
+    .item{padding:8px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);background:#fff;cursor:pointer;text-align:center;font-size:13px}
     .item.added{opacity:0.45;pointer-events:none}
-    .suitcase-drop{margin-top:12px;padding:12px;border-radius:12px;border:2px dashed rgba(2,6,23,0.06);background:var(--card-soft-pink);min-height:240px;position:relative}
+    .suitcase-drop{margin-top:12px;padding:12px;border-radius:12px;border:2px dashed rgba(2,6,23,0.06);background:var(--card-accent);min-height:240px;position:relative}
     .suitcase-body{position:absolute;left:50%;top:22px;transform:translateX(-50%);width:360px;height:140px;border-radius:12px;background:linear-gradient(180deg,#eef9ff,#ffffff);border:1px solid rgba(0,0,0,0.04)}
     .suitcase-inner{position:absolute;left:50%;top:70px;transform:translateX(-50%);width:340px;padding:10px;display:flex;gap:8px}
     .suitcase-slot{flex:1;min-height:72px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:#fff;padding:6px;overflow:auto}
     .hint{color:var(--muted);font-size:13px;margin-top:8px;text-align:center}
 
-    /* final packing list */
+    /* final packing list style */
     .packing-list{margin-top:10px;display:flex;flex-direction:column;gap:8px}
     .packing-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.95);border:1px solid rgba(2,6,23,0.04)}
 
-    /* small screens */
+    /* responsiveness */
     @media(max-width:980px){
       .main-grid{flex-direction:column-reverse;align-items:stretch}
       .packing-card{width:100%}
-      .card-wrap{padding:14px}
+      .card-wrap{padding:12px}
       .hero{flex-wrap:wrap}
-      html,body{overflow:hidden}
+      .viewport{padding:12px}
     }
-    /* scrollbar tiny */
+
+    /* small scrollbar style */
     .items::-webkit-scrollbar{width:6px}
     .items::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:6px}
   </style>
 </head>
 <body>
-  <div class="viewport" role="main">
-    <div class="card-wrap" aria-live="polite">
+  <div class="viewport" role="main" aria-live="polite">
+    <div class="card-wrap" role="region" aria-label="Packing planner card">
       <!-- HERO -->
-      <div class="hero">
+      <div class="hero" role="banner">
         <img class="place-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop" alt="place">
         <div style="flex:1">
           <h1 id="placeName">Choose a destination</h1>
@@ -153,14 +196,14 @@
                 <div class="option" data-value="other">Other</div>
               </div>
 
-              <h4 style="font-size:15px;margin-top:10px">Travel company (choose one)</h4>
+              <h4 style="font-size:15px;margin-top:10px">Travel company (one)</h4>
               <div class="options" id="companyOptions" aria-label="Travel company">
                 <div class="option" data-value="solo">Solo</div>
                 <div class="option" data-value="partner">Partner</div>
                 <div class="option" data-value="family">Family</div>
               </div>
 
-              <h4 style="font-size:15px;margin-top:10px">Travel mode (choose one)</h4>
+              <h4 style="font-size:15px;margin-top:10px">Travel mode (one)</h4>
               <div class="options" id="modeOptions" aria-label="Travel mode">
                 <div class="option" data-value="flight">Flight ✈️</div>
                 <div class="option" data-value="train">Train 🚆</div>
@@ -236,7 +279,6 @@
           </div>
 
           <div id="packingArea">
-            <!-- before generating — show sample/paged items -->
             <div class="items" id="itemsContainer" aria-live="polite"></div>
 
             <div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
@@ -246,7 +288,6 @@
             </div>
           </div>
 
-          <!-- after generating: show the detailed list -->
           <div id="finalList" style="display:none" aria-live="polite">
             <div class="packing-list" id="generatedList"></div>
             <div style="margin-top:10px">
@@ -261,16 +302,15 @@
               <div class="hint">Click an item to move it into the suitcase. Each item only once.</div>
             </div>
           </div>
-
         </aside>
       </div>
     </div>
   </div>
 
-  <!-- JS logic -->
+  <!-- SCRIPT: All logic -->
   <script>
     /* ======= CONFIG ======= */
-    const API_KEY = '05f85e36fd42f0d1f359f276caab551f'; // keep for demo; for production move to server
+    const API_KEY = '05f85e36fd42f0d1f359f276caab551f';
 
     /* ======= STATE ======= */
     const state = {
@@ -285,8 +325,8 @@
       activities: [],
       medical: '',
       style: '',
-      allItems: [],      // array of item names (when browsing pre-generate)
-      generatedItems: [],// array of {name, qty}
+      allItems: [],
+      generatedItems: [],
       addedToSuitcase: new Set(),
       currentPage: 1,
       itemsPerPage: 8
@@ -318,8 +358,6 @@
     const greeting = document.getElementById('greeting');
     const tripSummary = document.getElementById('tripSummary');
     const formCard = document.getElementById('formCard');
-    const packingCard = document.getElementById('packingCard');
-    const itemsPerPage = state.itemsPerPage;
 
     /* ======= NAVIGATION (Next/Back) ======= */
     let currentStep = 0;
@@ -331,14 +369,17 @@
       prevBtn.style.display = i===0 ? 'none' : 'inline-block';
       nextBtn.style.display = i===steps.length-1 ? 'none' : 'inline-block';
       generateBtn.style.display = i===steps.length-1 ? 'inline-block' : 'none';
+      // ensure generate visible when at last step
+      if(i===steps.length-1) generateBtn.style.display = 'inline-block';
     }
     showStep(0);
     prevBtn.addEventListener('click', ()=> showStep(Math.max(0, currentStep-1)));
     nextBtn.addEventListener('click', ()=> showStep(Math.min(steps.length-1, currentStep+1)));
 
-    /* ======= Option selection helpers ======= */
+    /* ======= Option helpers ======= */
     function makeSingleSelect(id, onChange){
       const container = document.getElementById(id);
+      if(!container) return;
       container.addEventListener('click', e=>{
         const opt = e.target.closest('.option');
         if(!opt) return;
@@ -349,6 +390,7 @@
     }
     function makeLimitedMultiSelect(id, limit=4, stateArray){
       const container = document.getElementById(id);
+      if(!container) return;
       container.addEventListener('click', e=>{
         const opt = e.target.closest('.option');
         if(!opt) return;
@@ -359,9 +401,8 @@
           if(idx>-1) stateArray.splice(idx,1);
         } else {
           if(stateArray.length >= limit){
-            // little feedback animation
-            opt.style.transform='scale(0.98)';
-            setTimeout(()=>opt.style.transform='',120);
+            opt.style.transform = 'scale(0.98)';
+            setTimeout(()=> opt.style.transform = '', 120);
             return;
           }
           opt.classList.add('selected');
@@ -370,7 +411,6 @@
       });
     }
 
-    /* bind single selects */
     makeSingleSelect('genderOptions', v=> state.gender = v);
     makeSingleSelect('companyOptions', v=> state.company = v);
     makeSingleSelect('modeOptions', v=> state.mode = v);
@@ -378,17 +418,17 @@
     makeSingleSelect('styleOptions', v=> state.style = v);
     makeLimitedMultiSelect('activityOptions', 4, state.activities);
 
-    /* duration */
+    /* duration binding */
     durationEl.addEventListener('input', ()=>{
       state.duration = parseInt(durationEl.value,10);
       durationVal.innerText = durationEl.value;
     });
 
-    /* ======= Weather & Set Destination ======= */
+    /* ======= Set dest & weather ======= */
     setDestBtn.addEventListener('click', ()=>{
       const user = document.getElementById('username').value.trim();
       const dest = document.getElementById('destinationInput').value.trim();
-      if(!user || !dest){ alert('Enter your name and destination'); return; }
+      if(!user || !dest){ alert('Please enter your name and destination'); return; }
       state.username = user;
       state.destination = dest;
       placeName.innerText = dest;
@@ -408,98 +448,120 @@
           tempEl.innerText = 'N/A';
           condEl.innerText = '--';
         }
-      }catch(err){
-        console.log('weather error',err);
+      } catch(err){
+        console.log('weather err', err);
         tempEl.innerText = 'N/A';
         condEl.innerText = '--';
       }
     }
 
-    /* ======= Route suggestion (list ALL plausible modes) ======= */
+    /* ======= Route suggestions (show ALL plausible modes) ======= */
     routeBtn.addEventListener('click', ()=>{
       const from = fromInput.value.trim();
       const to = toInput.value.trim();
       state.from = from;
       state.to = to;
-      if(!from || !to){ routeSuggestion.innerText = 'Enter both From and To to get route suggestions.'; routeSmall.innerText=''; return; }
-
-      // Determine plausible transport modes. We always include Flight as possible,
-      // and add others when plausible: train, bus, car, ship.
-      const modes = new Set();
-      modes.add('Flight');
-
-      const isDomestic = isLikelyDomestic(from, to);
-      if(isDomestic){
-        modes.add('Train');
-        modes.add('Bus');
-        modes.add('Road (Car)');
-      } else {
-        // if either includes 'island' or 'sea' or 'port' or both coastal => include Ship
-        if(mayHaveSeaRoute(from, to)) modes.add('Ship');
-        // For medium distances, also include Train+Flight combos
-        modes.add('Train + Flight (if partial)');
+      if(!from || !to){
+        routeSuggestion.innerText = 'Enter both From and To to get route suggestions.';
+        routeSmall.innerText = '';
+        return;
       }
-
-      // Provide friendly list
-      const list = Array.from(modes);
-      routeSuggestion.innerHTML = `Possible: <strong>${list.join(' · ')}</strong>`;
-      routeSmall.innerText = `${from} → ${to} · ${list[0]}`;
+      const modes = determineAllModes(from, to);
+      routeSuggestion.innerHTML = `Possible: <strong>${modes.join(' · ')}</strong>`;
+      routeSmall.innerText = `${from} → ${to} · ${modes[0]}`;
     });
 
+    function determineAllModes(a,b){
+      const list = new Set();
+      // Always include Flight as a possible option
+      list.add('Flight');
+      const domestic = isLikelyDomestic(a,b);
+      if(domestic){
+        list.add('Train');
+        list.add('Bus');
+        list.add('Road (Car)');
+      } else {
+        // for international or long trips include Train+Flight combos and Ferry if coastal
+        list.add('Train + Flight (if partial)');
+        list.add('Road (Car)');
+        if(mayHaveSeaRoute(a,b)) list.add('Ship/Ferry');
+      }
+      return Array.from(list);
+    }
+
     function isLikelyDomestic(a,b){
-      // naive heuristic: if both are short single-word tokens and do not include country names, assume domestic
       const foreign = ['japan','usa','united states','canada','uk','germany','france','australia','china','singapore','brazil','russia','italy'];
       const lowA = a.toLowerCase(), lowB = b.toLowerCase();
       for(const f of foreign) if(lowA.includes(f) || lowB.includes(f)) return false;
-      // if both contain city-like names < 20 chars, probably domestic-ish
+      // If either contains a comma (city, country) with recognized country, treat as international
+      if(lowA.includes(',') || lowB.includes(',')) return false;
+      // short token heuristic
       if(a.length < 16 && b.length < 16) return true;
       return false;
     }
     function mayHaveSeaRoute(a,b){
-      const coastalHints = ['sea','island','port','coast','harbor','bay','isle'];
+      const hints = ['sea','island','port','coast','harbor','bay','isle'];
       const combined = (a + ' ' + b).toLowerCase();
-      for(const h of coastalHints) if(combined.includes(h)) return true;
+      for(const h of hints) if(combined.includes(h)) return true;
       return false;
     }
 
-    /* ======= Items generation rules (realistic quantities) ======= */
+    /* ======= Items generation logic (quantities based on duration/gender/activities) ======= */
     function generatePackingList(){
       const days = state.duration;
       const gender = state.gender;
-      const activities = state.activities.slice(); // copy
-      const mode = state.mode;
+      const activities = state.activities.slice();
+      const style = state.style;
 
-      // base daily items
-      const shirts = Math.max( Math.ceil(days * 1.0), 1 ); // 1 per day
-      const underwear = Math.max( Math.ceil(days * 1.0), 1 );
-      const socks = Math.max( Math.ceil(days * 1.0), 1 );
-      // jeans & shorts heuristics
-      const jeans = Math.max(1, Math.ceil(days / 4)); // one every 4 days
-      const shorts = Math.max(0, Math.ceil(days / 3)); // one every 3 days
+      // base logic
+      const shirts = Math.max(1, Math.ceil(days * 1.0)); // 1 per day
+      const underwear = Math.max(1, Math.ceil(days * 1.0));
+      const socks = Math.max(1, Math.ceil(days * 1.0));
+      const jeans = Math.max(1, Math.ceil(days / 4));
+      const shorts = Math.max(0, Math.ceil(days / 3));
       const pajamas = Math.max(1, Math.ceil(days / 7));
-      const jacket = (days > 5) ? 1 : (activities.includes('hiking') || activities.includes('ski') ? 1 : 0);
-      const shoes = 1 + (activities.includes('hiking') ? 1 : 0); // one pair normal, add hiking shoes
+      const jacket = (days > 5 || activities.includes('hiking') || activities.includes('ski')) ? 1 : 0;
+      const shoesPairs = 1 + (activities.includes('hiking') ? 1 : 0);
       const sandals = activities.includes('beach') ? 1 : 0;
       const swimsuit = activities.includes('beach') ? 1 : 0;
 
-      // electronics/essentials
-      let chargers = 1;
-      let camera = activities.includes('sightseeing') || activities.includes('adventure') ? 1 : 0;
-      let powerbank = 1;
-      let toiletries = 1;
-      let meds = state.medical !== 'none' ? 1 : 0;
+      // essentials
+      const toiletries = 1;
+      const meds = state.medical !== 'none' ? 1 : 0;
+      const charger = 1;
+      const powerbank = 1;
+      const camera = (activities.includes('sightseeing') || activities.includes('adventure')) ? 1 : 0;
 
-      // adjust for gender (non-stereotyping: allow modest adjustments for "different clothing needs")
-      let extras = [];
+      let list = [];
+      list.push({name:'T-shirts', qty: shirts});
+      if(jeans) list.push({name:'Jeans', qty: jeans});
+      if(shorts) list.push({name:'Shorts', qty: shorts});
+      list.push({name:'Underwear', qty: underwear});
+      list.push({name:'Socks', qty: socks});
+      if(pajamas) list.push({name:'Pajamas', qty: pajamas});
+      if(jacket) list.push({name:'Jacket', qty: jacket});
+      list.push({name:'Shoes (pairs)', qty: shoesPairs});
+      if(sandals) list.push({name:'Sandals', qty: sandals});
+      if(swimsuit) list.push({name:'Swimsuit', qty: swimsuit});
+
+      list.push({name:'Toiletries kit', qty: toiletries});
+      if(meds) list.push({name:'Medical kit / prescriptions', qty:1});
+      list.push({name:'Phone charger', qty:charger});
+      list.push({name:'Powerbank', qty:powerbank});
+      if(camera) list.push({name:'Camera', qty:camera});
+      list.push({name:'Water bottle', qty:1});
+      list.push({name:'Sunglasses', qty:1});
+      list.push({name:'Hat / Cap', qty:1});
+      list.push({name:'Notebook & pen', qty:1});
+
+      // gender adjustments (small and non-stereotypical)
       if(gender === 'female'){
-        // slightly higher chance of extra outfits / layering
-        extras.push({name:'Extra top/outfit', qty: Math.max(1, Math.ceil(days/5))});
+        list.push({name:'Extra top/outfit', qty: Math.max(1, Math.ceil(days/5))});
       } else if(gender === 'male'){
-        // no big change, maybe a couple more shirts for hot climates
-        if(days > 7) extras.push({name:'Extra shirt', qty: Math.ceil(days/7)});
+        if(days > 7) list.push({name:'Extra shirt', qty: Math.ceil(days/7)});
       }
 
-      // activity-specific additions
+      // activity extras
       const activityMap = {
         beach: [{name:'Beach towel', qty:1},{name:'Flip-flops', qty:1}],
         hiking: [{name:'Backpack', qty:1},{name:'Trekking shoes', qty:1}],
@@ -509,76 +571,39 @@
         ski: [{name:'Ski jacket', qty:1},{name:'Thermals', qty:1}],
         city: [{name:'Day bag', qty:1}]
       };
-
-      let list = [];
-
-      // push core items
-      list.push({name:'T-shirts', qty: shirts});
-      if(jeans>0) list.push({name:'Jeans', qty: jeans});
-      if(shorts>0) list.push({name:'Shorts', qty: shorts});
-      list.push({name:'Underwear', qty: underwear});
-      list.push({name:'Socks', qty: socks});
-      if(pajamas>0) list.push({name:'Pajamas', qty: pajamas});
-      if(jacket) list.push({name:'Jacket', qty: jacket});
-      list.push({name:'Shoes (pairs)', qty: shoes});
-      if(sandals) list.push({name:'Sandals', qty: sandals});
-      if(swimsuit) list.push({name:'Swimsuit', qty: swimsuit});
-
-      list.push({name:'Toiletries kit', qty: toiletries});
-      if(meds) list.push({name:'Medical kit / prescriptions', qty:1});
-      if(chargers) list.push({name:'Phone charger', qty: chargers});
-      if(powerbank) list.push({name:'Powerbank', qty: powerbank});
-      if(camera) list.push({name:'Camera', qty: camera});
-      list.push({name:'Water bottle', qty:1});
-      list.push({name:'Sunglasses', qty:1});
-      list.push({name:'Hat / Cap', qty:1});
-      list.push({name:'Notebook & pen', qty:1});
-
-      // include activity extras
       for(const act of activities){
-        const extrasForAct = activityMap[act] || [];
-        extrasForAct.forEach(e => {
-          // if item exists in list, increment qty
-          const found = list.find(x=>x.name === e.name);
+        const extras = activityMap[act] || [];
+        extras.forEach(e=>{
+          const found = list.find(x=>x.name===e.name);
           if(found) found.qty = Math.max(found.qty, e.qty);
           else list.push({name:e.name, qty:e.qty});
         });
       }
 
-      // style-based additions
-      if(state.style === 'luxury'){
+      // style
+      if(style === 'luxury'){
         list.push({name:'Evening outfit', qty: Math.max(1, Math.ceil(days/7))});
         list.push({name:'Evening shoes', qty:1});
-      } else if(state.style === 'minimal'){
-        // fewer items, use multi-use: reduce shirts a bit
+      } else if(style === 'minimal'){
         const shirtsItem = list.find(x=>x.name==='T-shirts');
-        if(shirtsItem) shirtsItem.qty = Math.max( Math.ceil(shirtsItem.qty*0.8), 1 );
+        if(shirtsItem) shirtsItem.qty = Math.max(1, Math.round(shirtsItem.qty * 0.85));
       }
 
-      // quantity sanity: round and ensure integers
-      list = list.map(x=>({name:x.name, qty: Math.max(1, Math.round(x.qty))}));
-
-      // merge extras
-      extras.forEach(e=>{
-        const found = list.find(x=>x.name===e.name);
-        if(found) found.qty += e.qty;
-        else list.push({name:e.name, qty:e.qty});
-      });
-
-      // final unique and sorted
+      // normalize and merge duplicates
       const uniq = {};
-      list.forEach(i=>{ if(uniq[i.name]) uniq[i.name] += i.qty; else uniq[i.name] = i.qty; });
+      list.forEach(i=>{
+        const key = i.name;
+        uniq[key] = (uniq[key] || 0) + Math.round(i.qty);
+      });
       const final = Object.keys(uniq).map(k=>({name:k, qty:uniq[k]})).sort((a,b)=>a.name.localeCompare(b.name));
-
       state.generatedItems = final;
       return final;
     }
 
-    /* ======= UI: pre-generate / sample items (before final) ======= */
+    /* ======= Pre-generate sample items (before final) ======= */
     function buildSampleItems(){
-      // small set to let user click & add before final generate if desired
-      const sample = ['T-shirt','Pants','Jacket','Shoes','Socks','Toothbrush','Sunglasses','Charger','Water Bottle','Hat','Notebook','Camera'];
-      state.allItems = sample;
+      const sample = ['T-shirt','Pants','Jacket','Shoes','Socks','Toothbrush','Sunglasses','Charger','Water Bottle','Hat','Notebook','Camera','Swimsuit','Flip-flops','Backpack'];
+      state.allItems = Array.from(new Set(sample));
       state.currentPage = 1;
       renderItemsPage();
     }
@@ -623,21 +648,17 @@
       else slotRight.appendChild(node);
     }
 
-    /* ======= Generate final packing list & change UI ======= */
+    /* ======= Generate final packing list and update UI ======= */
     generateBtn.addEventListener('click', ()=>{
-      // validate
       if(!state.username || !state.destination){
         alert('Please set your name and destination first.');
         return;
       }
-      // build list
       const final = generatePackingList();
-
-      // show final list UI, hide the left form (but keep navbar)
+      // hide form card to show final list only
       document.getElementById('formCard').style.display = 'none';
       document.getElementById('packingArea').style.display = 'none';
       document.getElementById('finalList').style.display = 'block';
-
       // populate generatedList
       const generatedList = document.getElementById('generatedList');
       generatedList.innerHTML = '';
@@ -650,18 +671,15 @@
         right.innerText = `${item.qty}`;
         row.appendChild(left);
         row.appendChild(right);
-        // make row clickable to add to suitcase
         row.style.cursor = 'pointer';
         row.addEventListener('click', ()=>{
           if(state.addedToSuitcase.has(item.name)) return;
           addToSuitcase(item.name);
-          // visual cue: mark row as added
           row.style.opacity = '0.5';
         });
         generatedList.appendChild(row);
       });
-
-      // hide next/back/generate controls completely
+      // hide controls
       prevBtn.style.display = 'none';
       nextBtn.style.display = 'none';
       generateBtn.style.display = 'none';
@@ -673,18 +691,15 @@
       buildSampleItems();
     })();
 
-    /* ======= small helpers & accessibility ======= */
-    document.getElementById('destinationInput').addEventListener('keypress', e=> { if(e.key==='Enter') setDestBtn.click(); });
-    fromInput.addEventListener('keypress', e=> { if(e.key==='Enter') routeBtn.click(); });
-    toInput.addEventListener('keypress', e=> { if(e.key==='Enter') routeBtn.click(); });
-
-    // keyboard activation for options
+    /* ======= accessibility & key handlers ======= */
+    document.getElementById('destinationInput').addEventListener('keypress', e=>{ if(e.key==='Enter') setDestBtn.click(); });
+    fromInput.addEventListener('keypress', e=>{ if(e.key==='Enter') routeBtn.click(); });
+    toInput.addEventListener('keypress', e=>{ if(e.key==='Enter') routeBtn.click(); });
     document.querySelectorAll('.options').forEach(group=>{
       group.addEventListener('keydown', (e)=>{
         if(e.key === 'Enter' && e.target.classList.contains('option')) e.target.click();
       });
     });
-
   </script>
 </body>
 </html>
