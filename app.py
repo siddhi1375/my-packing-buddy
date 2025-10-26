@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect,jsonify, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,11 +8,12 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
 
-# ---------------------- MySQL CONFIG ------------------------------- 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'siddhi'
-app.config['MYSQL_PASSWORD'] = 'mypackingbuddy'
-app.config['MYSQL_DB'] = 'my_packing_buddy'
+# ---------------------- MySQL CONFIG -------------------------------
+app.config['MYSQL_HOST'] = 'sql100.infinityfree.com'
+app.config['MYSQL_USER'] = 'if0_40246577'
+app.config['MYSQL_PASSWORD'] = '13SvserA1P'
+app.config['MYSQL_DB'] = 'if0_40246577_mypackingbuddy'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
@@ -36,30 +37,24 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT * FROM user WHERE email=%s", (email,))
-        user = cursor.fetchone()
-        cursor.close()
-        
-        if user:
-
-            if check_password_hash(user['password'], password):
-                session['user_id'] = user['id']
-                session['name'] = user['name']
-                flash('Logged in successfully!', 'success')
-                return redirect(url_for('home'))  # redirect to home instead of dashboard
+        username = request.form['username']
+        password = request.form['password']
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT * FROM user WHERE email=%s", (username,))
+            account = cursor.fetchone()
+            cursor.close()
+            if account and check_password_hash(account['password'], password):
+                session['user_id'] = account['id']
+                session['username'] = account['name']
+                return redirect(url_for('home'))
             else:
-                flash('Invalid password.', 'danger')
-        else:
-            flash('Invalid email.', 'danger')
-
+                flash("Incorrect email/password", "danger")
+        except Exception as e:
+            flash(f"Login error: {str(e)}", "danger")
     return render_template('auth/login.html')
 
 # ---------------------- SIGNUP ----------------------
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -69,38 +64,26 @@ def signup():
         age = request.form.get('age', '')
         gender = request.form.get('gender', '')
         errors = []
-        # Name: 3-50 characters
+
         if not re.match(r'^.{3,50}$', name):
             errors.append("Name must be 3-50 characters long.")
-
-        # Email: simple regex
         if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]{2,}$', email):
             errors.append("Email is invalid.")
-
-        # Password: min 8 characters
         if not re.match(r'^.{8,}$', password):
             errors.append("Password must be at least 8 characters long.")
-
-        # Age: 1-120
         try:
             age = int(age)
             if not (1 <= age <= 120):
                 errors.append("Age must be between 1 and 120.")
         except ValueError:
             errors.append("Age must be a number.")
-
-        # Gender validation
-
         if gender not in ['Male','Female','Other']:
             errors.append("Gender invalid.")
+
         if errors:
-            return render_template('signup.html', errors=errors)
-        
-        # Hash the password
+            return render_template('auth/signup.html', errors=errors)
 
         hashed_password = generate_password_hash(password)
-        # Insert user into database
-
         cursor = mysql.connection.cursor()
         cursor.execute(
             "INSERT INTO user (name, email, password, age, gender) VALUES (%s, %s, %s, %s, %s)",
@@ -122,32 +105,27 @@ def logout():
     return redirect(url_for('login'))
 
 # ---------------------- HOME ----------------------
-
 @app.route('/home')
 @login_required
 def home():
     return render_template('destination/home.html')
 
-# ---------------------- DESTINATION ----------------------
-
+# ---------------------- OTHER ROUTES ----------------------
 @app.route('/destination')
 @login_required
 def destination():
     return render_template('destination/destination.html')
 
-# ---------------------- BOOKS ----------------------
 @app.route('/books')
 @login_required
 def books():
     return render_template('main/books.html')
 
-# ---------------------- CREATE CATEGORY ----------------------
-
 @app.route('/createcategory')
 @login_required
 def create_category():
     return render_template('destination/createcategory.html')
-#------------------------USER TRIPS ----------------------
+
 @app.route('/trips')
 def trips():
     cur = mysql.connection.cursor()
@@ -155,6 +133,7 @@ def trips():
     feedbacks = cur.fetchall()
     cur.close()
     return render_template('main/trips.html', feedbacks=feedbacks)
+
 @app.route('/add_feedback', methods=['POST'])
 def add_feedback():
     trip_name = request.form['trip_name']
@@ -165,19 +144,16 @@ def add_feedback():
     cur.close()
     return jsonify({'status': 'success', 'trip': trip_name, 'feedback': feedback_text})
 
-# ---------------------- SAVED LISTS ----------------------
 @app.route('/saved_lists')
 @login_required
 def saved_lists():
     return render_template('main/usertrip.html')
 
-# ---------------------- ABOUT ----------------------
 @app.route('/about')
 @login_required
 def about():
     return render_template('main/about.html')
 
-# ---------------------- CONTACT ----------------------
 @app.route('/contact')
 @login_required
 def contact():
@@ -186,19 +162,3 @@ def contact():
 # ---------------------- RUN APP ----------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5003)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
