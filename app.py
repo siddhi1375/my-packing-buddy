@@ -32,27 +32,31 @@ def index():
     if session.get('user_id'):
         return redirect(url_for('home'))
     return redirect(url_for('login'))
+#------------------------- LOGIN----------------------------------
+import logging
 
-# ---------------------- LOGIN ----------------------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        email = request.form.get('email')
+        password = request.form.get('password')
+        app.logger.info(f"Received login form data: email={email}, password={'set' if password else 'not set'}")
         try:
             cursor = mysql.connection.cursor()
-            cursor.execute("SELECT * FROM user WHERE email=%s", (username,))
+            cursor.execute("SELECT * FROM user WHERE email=%s", (email,))
             account = cursor.fetchone()
             cursor.close()
             if account and check_password_hash(account['password'], password):
                 session['user_id'] = account['id']
                 session['username'] = account['name']
-                return redirect(url_for('home'))
+                return redirect(url_for('home'))   
             else:
                 flash("Incorrect email/password", "danger")
         except Exception as e:
+            app.logger.error(f"Login error: {str(e)}")
             flash(f"Login error: {str(e)}", "danger")
     return render_template('auth/login.html')
+
 
 # ---------------------- SIGNUP ----------------------
 @app.route('/signup', methods=['GET', 'POST'])
@@ -65,34 +69,45 @@ def signup():
         gender = request.form.get('gender', '')
         errors = []
 
+        # Validate name
         if not re.match(r'^.{3,50}$', name):
             errors.append("Name must be 3-50 characters long.")
+        # Validate email
         if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]{2,}$', email):
             errors.append("Email is invalid.")
+        # Validate password
         if not re.match(r'^.{8,}$', password):
             errors.append("Password must be at least 8 characters long.")
+        # Validate age
         try:
             age = int(age)
             if not (1 <= age <= 120):
                 errors.append("Age must be between 1 and 120.")
         except ValueError:
             errors.append("Age must be a number.")
-        if gender not in ['Male','Female','Other']:
+        # Validate gender
+        if gender not in ['Male', 'Female', 'Other']:
             errors.append("Gender invalid.")
 
         if errors:
             return render_template('auth/signup.html', errors=errors)
 
-        hashed_password = generate_password_hash(password)
-        cursor = mysql.connection.cursor()
-        cursor.execute(
-            "INSERT INTO user (name, email, password, age, gender) VALUES (%s, %s, %s, %s, %s)",
-            (name, email, hashed_password, age, gender)
-        )
-        mysql.connection.commit()
-        cursor.close()
-        flash("Signup successful! Please login.", "success")
-        return redirect(url_for('login'))
+        try:
+            hashed_password = generate_password_hash(password)
+            cursor = mysql.connection.cursor()
+            cursor.execute(
+                "INSERT INTO user (name, email, password, age, gender) VALUES (%s, %s, %s, %s, %s)",
+                (name, email, hashed_password, age, gender)
+            )
+            mysql.connection.commit()
+            cursor.close()
+            flash("Signup successful! Please login.", "success")
+            return redirect(url_for('login'))
+        except Exception as e:
+            app.logger.error(f"Signup DB error: {str(e)}")
+            flash(f"Signup error: {str(e)}", "danger")
+            return render_template('auth/signup.html')
+
     return render_template('auth/signup.html')
 
 # ---------------------- LOGOUT ----------------------
@@ -160,5 +175,17 @@ def contact():
     return render_template('main/contact.html')
 
 # ---------------------- RUN APP ----------------------
+import os
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5003)
+    port = int(os.environ.get('PORT', 5000))  # Use PORT env var or 5000 default
+    app.run(debug=True, host='0.0.0.0', port=port)
+
+
+
+
+
+
+
+
+

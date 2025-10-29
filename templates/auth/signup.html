@@ -1,150 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - MyPackingBuddy</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Signup - MyPackingBuddy</title>
     <style>
-        /* Full-screen background image */
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
-            background: url('/static/images/background.jpg') no-repeat center center fixed;
-            background-size: cover;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-
-        /* Centered pastel box */
-        .signup-box {
-            background: rgba(255, 255, 255, 0.85); /* soft pastel-white */
-            width: 350px;
-            margin: 80px auto;
+        .signup-container {
+            background: white;
             padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            width: 360px;
         }
-
-        .signup-box h2 {
+        h2 {
             text-align: center;
-            margin-bottom: 25px;
             color: #333;
+            margin-bottom: 25px;
         }
-
-        /* Form fields */
-        .signup-box input, .signup-box select {
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #555;
+            font-weight: bold;
+        }
+        input, select {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 6px;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
             border: 1px solid #ccc;
+            font-size: 14px;
             box-sizing: border-box;
         }
-
-        /* Submit button */
-        .signup-box button {
+        button {
+            margin-top: 20px;
             width: 100%;
-            padding: 12px;
-            margin-top: 15px;
-            background-color: #a0c4ff; /* soft blue pastel */
+            background-color: #5a9bf6;
             border: none;
-            border-radius: 6px;
+            padding: 12px;
+            color: white;
             font-size: 16px;
+            border-radius: 6px;
             cursor: pointer;
-            color: #fff;
         }
-
-        .signup-box button:hover {
-            background-color: #70a1ff;
+        button:hover {
+            background-color: #3c7ae0;
         }
-
-        /* Toggle password */
-        .password-container {
-            position: relative;
-        }
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #555;
-            font-size: 14px;
-            user-select: none;
-        }
-
-        /* Error messages */
-        .error {
+        .error-msg {
+            font-size: 13px;
             color: red;
-            font-size: 14px;
-            margin-top: -5px;
-        }
-
-        /* Flash message */
-        .flash-success {
-            color: green;
-            text-align: center;
-            margin-bottom: 10px;
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
-    <div class="signup-box">
-        <h2>Create Account</h2>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        {% if errors %}
-            <ul class="error">
-            {% for error in errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-
+    <div class="signup-container">
+        <h2>Create an Account</h2>
         <form method="POST" action="{{ url_for('signup') }}">
-            <input type="text" name="name" placeholder="Full Name" required
-                   pattern=".{3,50}" title="Name must be 3-50 characters">
-
-            <input type="email" name="email" placeholder="Email" required
-                   pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" title="Enter a valid email">
-
-            <div class="password-container">
-                <input type="password" name="password" placeholder="Password (min 8 chars)" id="password" required
-                       pattern=".{8,}" title="Password must be at least 8 characters">
-                <span class="toggle-password" onclick="togglePassword()">Show</span>
-            </div>
-
-            <input type="number" name="age" placeholder="Age" min="1" max="120" required
-                   pattern="\d+" title="Age must be between 1 and 120">
-
-            <select name="gender" required>
-                <option value="" disabled selected>Select Gender</option>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required
+                   pattern="^[a-zA-Z][a-zA-Z\s]{2,49}$"
+                   title="Name must start with a letter and be 3-50 characters, letters and spaces only." />
+            
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required
+                   pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$"
+                   title="Enter a valid email address." />
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required
+                   pattern=".{8,}"
+                   title="Password must be at least 8 characters." />
+            
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" required min="1" max="120"
+                   title="Age must be a number between 1 and 120." />
+            
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+                <option value="" disabled selected>Select gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
             </select>
-
-            <button type="submit">Create Account</button>
+            
+            <button type="submit">Sign Up</button>
         </form>
     </div>
-
-    <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggle = document.querySelector('.toggle-password');
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggle.textContent = "Hide";
-            } else {
-                passwordInput.type = "password";
-                toggle.textContent = "Show";
-            }
-        }
-    </script>
 </body>
 </html>
