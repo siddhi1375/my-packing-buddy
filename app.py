@@ -4,16 +4,21 @@ import MySQLdb.cursors
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from functools import wraps
+from dotenv import load_dotenv
+import os
+load_dotenv()  # Load environment variables from .env
+print("Loaded host:", os.getenv('MYSQL_HOST'))  # test line (temporary)
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here"
+app.secret_key = "6009c3ba565191435fac07e95589191f"
 
 # ---------------------- MySQL CONFIG -------------------------------
-app.config['MYSQL_HOST'] = 'sql100.infinityfree.com'
-app.config['MYSQL_USER'] = 'if0_40246577'
-app.config['MYSQL_PASSWORD'] = '13SvserA1P'
-app.config['MYSQL_DB'] = 'if0_40246577_mypackingbuddy'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
+app.config['MYSQL_CURSORCLASS'] = os.getenv('MYSQL_CURSORCLASS')
+app.secret_key = os.getenv('SECRET_KEY')
 
 mysql = MySQL(app)
 
