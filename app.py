@@ -19,7 +19,7 @@ app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT'))
 mysql = MySQL(app)
-
+cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
 
 # ------------------- DECORATOR FOR PROTECTED ROUTES -----------------
@@ -39,6 +39,7 @@ def index():
     return redirect(url_for('login'))
 #------------------------- LOGIN----------------------------------
 import logging
+from werkzeug.security import check_password_hash
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -47,19 +48,23 @@ def login():
         password = request.form.get('password')
         app.logger.info(f"Received login form data: email={email}, password={'set' if password else 'not set'}")
         try:
-            cursor = mysql.connection.cursor()
+            # Use DictCursor here
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute("SELECT * FROM user WHERE email=%s", (email,))
             account = cursor.fetchone()
             cursor.close()
+
             if account and check_password_hash(account['password'], password):
                 session['user_id'] = account['id']
                 session['username'] = account['name']
-                return redirect(url_for('home'))   
+                return redirect(url_for('home'))
             else:
-                flash("Incorrect email/password", "danger")
+                flash("Incorrect email or password", "danger")
+
         except Exception as e:
             app.logger.error(f"Login error: {str(e)}")
             flash(f"Login error: {str(e)}", "danger")
+
     return render_template('auth/login.html')
 
 
