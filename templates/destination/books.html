@@ -1,153 +1,34 @@
-{% extends 'main/base.html' %}
-
-{% block title %}Books{% endblock %}
+{% extends "main/base.html" %}
+{% block title %}Books — My Packing Buddy{% endblock %}
 
 {% block content %}
-<style>
-/* Container */
-.books-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 40px;
-  perspective: 1200px;
-  margin-top: 40px;
-}
+<section class="books-page" style="padding:32px; font-family: Poppins, sans-serif;">
+  <div style="max-width:1000px; margin:0 auto;">
+    <h1 style="font-size:28px; margin-bottom:8px;">📚 Travel Books & Guides</h1>
+    <p style="color:#6b6b6b; margin-bottom:20px;">
+      Hand-picked travel books, guides and resources to help you plan perfect trips.
+    </p>
 
-/* Flip Card */
-.book-card {
-  width: 200px;
-  height: 300px;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.8s;
-  cursor: pointer;
-}
-.book-card:hover {
-  transform: rotateY(180deg);
-}
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:18px;">
+      <!-- Sample book card (copy/duplicate for more) -->
+      <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+        <h3 style="margin:0 0 8px 0;">Lonely Planet — Best of Europe</h3>
+        <p style="margin:0 0 10px; color:#6b6b6b;">Compact guide with top sights, maps and local tips.</p>
+        <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
+      </div>
 
-/* Front + Back */
-.book-front, .book-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 20px;
-  backface-visibility: hidden;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-}
+      <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+        <h3 style="margin:0 0 8px 0;">How to Travel the World on $50 a Day</h3>
+        <p style="margin:0 0 10px; color:#6b6b6b;">Budget travel tips, booking hacks and savings ideas.</p>
+        <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
+      </div>
 
-/* Front Side */
-.book-front {
-  background-size: cover;
-  background-position: center;
-}
-
-/* Back Side */
-.book-back {
-  background: rgba(255,255,255,0.9);
-  transform: rotateY(180deg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 15px;
-  border: 2px solid #eee;
-}
-.book-back h3 {
-  margin-bottom: 10px;
-  color: #333;
-}
-.book-back p {
-  font-size: 14px;
-  color: #666;
-}
-.book-back button {
-  margin-top: 10px;
-  padding: 8px 15px;
-  border: none;
-  border-radius: 8px;
-  background: #ff8a65;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.book-back button:hover {
-  background: #ff7043;
-  transform: scale(1.1);
-}
-
-/* Random Height Variation */
-.book-card:nth-child(odd) {
-  transform: translateY(-20px);
-}
-.book-card:nth-child(even) {
-  transform: translateY(20px);
-}
-</style>
-
-<h1 style="text-align:center; color:#444; margin-top:20px;">📚 Travel & Adventure Books</h1>
-
-<div class="books-container">
-  <!-- Book 1 -->
-  <div class="book-card">
-    <div class="book-front" style="background-image:url('https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80');"></div>
-    <div class="book-back">
-      <h3>Into the Wild</h3>
-      <p>By Jon Krakauer</p>
-      <button>Read More</button>
+      <!-- Placeholder when no books from DB -->
+      <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+        <h3 style="margin:0 0 8px 0;">More coming soon</h3>
+        <p style="margin:0 0 10px; color:#6b6b6b;">You can add books to the template or fetch them from the DB.</p>
+      </div>
     </div>
   </div>
-
-  <!-- Book 2 -->
-  <div class="book-card">
-    <div class="book-front" style="background-image:url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=400&q=80');"></div>
-    <div class="book-back">
-      <h3>Eat, Pray, Love</h3>
-      <p>By Elizabeth Gilbert</p>
-      <button>Read More</button>
-    </div>
-  </div>
-
-  <!-- Book 3 -->
-  <div class="book-card">
-    <div class="book-front" style="background-image:url('https://images.unsplash.com/photo-1529655683826-aba9b3e77383?auto=format&fit=crop&w=400&q=80');"></div>
-    <div class="book-back">
-      <h3>The Alchemist</h3>
-      <p>By Paulo Coelho</p>
-      <button>Read More</button>
-    </div>
-  </div>
-
-  <!-- Book 4 -->
-  <div class="book-card">
-    <div class="book-front" style="background-image:url('https://images.unsplash.com/photo-1529655683826-aba9b3e77383?auto=format&fit=crop&w=400&q=80');"></div>
-    <div class="book-back">
-      <h3>Wild</h3>
-      <p>By Cheryl Strayed</p>
-      <button>Read More</button>
-    </div>
-  </div>
-
-  <!-- Book 5 -->
-  <div class="book-card">
-    <div class="book-front" style="background-image:url('https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=400&q=80');"></div>
-    <div class="book-back">
-      <h3>On the Road</h3>
-      <p>By Jack Kerouac</p>
-      <button>Read More</button>
-    </div>
-  </div>
-
-  <!-- Book 6 -->
-  <div class="book-card">
-    <div class="book-front" style="background-image:url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=400&q=80');"></div>
-    <div class="book-back">
-      <h3>The Beach</h3>
-      <p>By Alex Garland</p>
-      <button>Read More</button>
-    </div>
-  </div>
-</div>
+</section>
 {% endblock %}
