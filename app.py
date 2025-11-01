@@ -13,13 +13,16 @@ app = Flask(__name__)
 app.secret_key = "6009c3ba565191435fac07e95589191f"
 
 # ---------------------- MySQL CONFIG -------------------------------
+
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT'))
+
+print("Loaded host:", os.getenv('MYSQL_HOST'))
+
 mysql = MySQL(app)
-cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
 
 # ------------------- DECORATOR FOR PROTECTED ROUTES -----------------
@@ -32,12 +35,15 @@ def login_required(f):
     return decorated_function
 
 # ---------------------- INDEX REDIRECT ----------------------
+
 @app.route('/')
 def index():
     if session.get('user_id'):
         return redirect(url_for('home'))
     return redirect(url_for('login'))
+
 #------------------------- LOGIN----------------------------------
+
 import logging
 from werkzeug.security import check_password_hash
 
@@ -69,6 +75,7 @@ def login():
 
 
 # ---------------------- SIGNUP ----------------------
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -121,6 +128,7 @@ def signup():
     return render_template('auth/signup.html')
 
 # ---------------------- LOGOUT ----------------------
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -130,12 +138,14 @@ def logout():
     return redirect(url_for('login'))
 
 # ---------------------- HOME ----------------------
+
 @app.route('/home')
 @login_required
 def home():
     return render_template('destination/home.html')
 
 # ---------------------- OTHER ROUTES ----------------------
+
 @app.route('/destination')
 @login_required
 def destination():
@@ -185,6 +195,7 @@ def contact():
     return render_template('main/contact.html')
 
 # ---------------------- RUN APP ----------------------
+
 import os
 
 if __name__ == '__main__':
