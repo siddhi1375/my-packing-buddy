@@ -3,6 +3,10 @@
 
 {% block content %}
 
+<!-- ================================
+🌸 ABOUT PAGE — MyPackingBuddy
+================================= -->
+
 <!-- 🌸 Hero Section -->
 <section class="about-hero">
   <div class="hero-content">
@@ -15,7 +19,11 @@
 <section class="about-mission">
   <div class="mission-content">
     <h2>🌿 Our Mission</h2>
-    <p>At <strong>MyPackingBuddy</strong>, our goal is to simplify travel by offering personalized packing lists, curated travel tips, and a touch of inspiration for every journey. We believe travel should be stress-free, stylish, and sustainable.</p>
+    <p>
+      At <strong>MyPackingBuddy</strong>, our goal is to simplify travel by offering personalized packing lists,
+      curated travel tips, and a touch of inspiration for every journey.  
+      We believe travel should be stress-free, stylish, and sustainable.
+    </p>
   </div>
 </section>
 
@@ -23,59 +31,73 @@
 <section class="about-values">
   <h2>✨ Our Core Values</h2>
   <div class="values-grid">
+
+    <!-- Value Card: Creativity -->
     <div class="value-card">
-      <img src="https://img.icons8.com/emoji/48/000000/art-emoji.png" alt="Creativity"/>
+      <img src="https://img.icons8.com/emoji/48/000000/art-emoji.png" alt="Creativity">
       <h4>Creativity</h4>
       <p>Innovative ideas that make packing simple and fun.</p>
     </div>
 
+    <!-- Value Card: Reliability -->
     <div class="value-card">
-      <img src="https://img.icons8.com/emoji/48/000000/shield-emoji.png" alt="Reliability"/>
+      <img src="https://img.icons8.com/emoji/48/000000/shield-emoji.png" alt="Reliability">
       <h4>Reliability</h4>
       <p>Trusted guidance for travelers worldwide.</p>
     </div>
 
+    <!-- Value Card: Passion -->
     <div class="value-card">
-      <img src="https://img.icons8.com/emoji/48/000000/red-heart.png" alt="Passion"/>
+      <img src="https://img.icons8.com/emoji/48/000000/red-heart.png" alt="Passion">
       <h4>Passion</h4>
       <p>Built with love for travel and discovery.</p>
     </div>
 
+    <!-- Value Card: Sustainability -->
     <div class="value-card">
-      <img src="https://img.icons8.com/emoji/48/000000/seedling.png" alt="Sustainability"/>
+      <img src="https://img.icons8.com/emoji/48/000000/seedling.png" alt="Sustainability">
       <h4>Sustainability</h4>
       <p>Encouraging mindful and eco-friendly travel.</p>
     </div>
 
+    <!-- Value Card: Knowledge -->
     <div class="value-card">
-      <img src="https://img.icons8.com/emoji/48/000000/books.png" alt="Knowledge"/>
+      <img src="https://img.icons8.com/emoji/48/000000/books.png" alt="Knowledge">
       <h4>Knowledge</h4>
       <p>Sharing helpful insights and travel wisdom.</p>
     </div>
 
+    <!-- Value Card: Innovation -->
     <div class="value-card">
-      <img src="https://img.icons8.com/emoji/48/000000/sparkles.png" alt="Innovation"/>
+      <img src="https://img.icons8.com/emoji/48/000000/sparkles.png" alt="Innovation">
       <h4>Innovation</h4>
       <p>Constantly evolving to improve your experience.</p>
     </div>
+
   </div>
 </section>
 
-<!-- 🧳 CTA Section -->
+<!-- 🧳 Call-To-Action Section -->
 <section class="about-cta">
   <h2>Ready to Start Your Journey?</h2>
   <p>Discover smart packing tips, curated guides, and travel tools — all in one place.</p>
   <a href="{{ url_for('home') }}" class="cta-btn">Explore Now →</a>
 </section>
 
+<!-- ================================
+🌈 STYLES
+================================= -->
 <style>
+/* ===== Global Styles ===== */
 body {
   font-family: 'Poppins', sans-serif;
   color: #333;
   background: linear-gradient(135deg, #fffafc, #f0f9ff);
+  margin: 0;
+  padding: 0;
 }
 
-/* 🌸 Hero Section */
+/* ===== Hero Section ===== */
 .about-hero {
   text-align: center;
   padding: 80px 20px 60px;
@@ -98,9 +120,10 @@ body {
   color: #555;
   max-width: 700px;
   margin: 0 auto;
+  line-height: 1.6;
 }
 
-/* 🌍 Mission Section */
+/* ===== Mission Section ===== */
 .about-mission {
   text-align: center;
   padding: 60px 20px;
@@ -119,9 +142,11 @@ body {
   font-size: 16px;
   color: #444;
   line-height: 1.7;
+  max-width: 750px;
+  margin: 0 auto;
 }
 
-/* 💫 Core Values */
+/* ===== Core Values Section ===== */
 .about-values {
   text-align: center;
   padding: 70px 20px;
@@ -135,6 +160,8 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 25px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 .value-card {
   background: #fff;
@@ -154,13 +181,15 @@ body {
 .value-card h4 {
   font-size: 18px;
   margin-bottom: 6px;
+  color: #333;
 }
 .value-card p {
   color: #555;
   font-size: 14px;
+  line-height: 1.5;
 }
 
-/* 🧳 CTA Section */
+/* ===== CTA Section ===== */
 .about-cta {
   text-align: center;
   background: linear-gradient(135deg, #ffe4f0, #e0f7fa);
@@ -177,10 +206,12 @@ body {
 .about-cta p {
   color: #555;
   margin-bottom: 20px;
+  font-size: 16px;
 }
 .cta-btn {
+  display: inline-block;
   background: #b83280;
-  color: white;
+  color: #fff;
   padding: 12px 28px;
   border-radius: 10px;
   text-decoration: none;
@@ -192,10 +223,19 @@ body {
   transform: translateY(-2px);
 }
 
-/* Responsive */
-@media(max-width:768px){
-  .about-hero h1 {font-size: 32px;}
-  .about-mission h2, .about-values h2, .about-cta h2 {font-size: 24px;}
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .about-hero h1 {
+    font-size: 32px;
+  }
+  .about-mission h2,
+  .about-values h2,
+  .about-cta h2 {
+    font-size: 24px;
+  }
+  .values-grid {
+    gap: 20px;
+  }
 }
 </style>
 
