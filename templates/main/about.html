@@ -1,89 +1,201 @@
 {% extends 'main/base.html' %}
-
-{% block title %}About Us{% endblock %}
+{% block title %}About Us — MyPackingBuddy{% endblock %}
 
 {% block content %}
 
-<!-- Hero Section -->
+<!-- 🌸 Hero Section -->
 <section class="about-hero">
   <div class="hero-content">
-    <h1>About MyPackingBuddy</h1>
-    <p>Smart packing solutions, tips, and inspiration for every adventure.</p>
+    <h1>About <span>MyPackingBuddy</span></h1>
+    <p>Your travel companion for smart packing, simple planning, and endless adventures.</p>
   </div>
 </section>
 
-<!-- Mission Section -->
+<!-- 🌍 Mission Section -->
 <section class="about-mission">
-  <h2>Our Mission</h2>
-  <p>To empower travelers with smart packing solutions, helpful tips, and inspiration for every adventure, anywhere in the world.</p>
+  <div class="mission-content">
+    <h2>🌿 Our Mission</h2>
+    <p>At <strong>MyPackingBuddy</strong>, our goal is to simplify travel by offering personalized packing lists, curated travel tips, and a touch of inspiration for every journey. We believe travel should be stress-free, stylish, and sustainable.</p>
+  </div>
 </section>
 
-<!-- Core Values Section -->
+<!-- 💫 Core Values Section -->
 <section class="about-values">
-  <h2>Our Core Values</h2>
+  <h2>✨ Our Core Values</h2>
   <div class="values-grid">
-    <div class="value-card"><img src="https://img.icons8.com/emoji/48/000000/art-emoji.png"/><h4>Creativity</h4><p>Innovative packing ideas.</p></div>
-    <div class="value-card"><img src="https://img.icons8.com/emoji/48/000000/shield-emoji.png"/><h4>Reliability</h4><p>Trusted advice for every journey.</p></div>
-    <div class="value-card"><img src="https://img.icons8.com/emoji/48/000000/red-heart.png"/><h4>Passion</h4><p>Driven by love for travel.</p></div>
-    <div class="value-card"><img src="https://img.icons8.com/emoji/48/000000/seedling.png"/><h4>Sustainability</h4><p>Eco-friendly and responsible solutions.</p></div>
-    <div class="value-card"><img src="https://img.icons8.com/emoji/48/000000/books.png"/><h4>Knowledge</h4><p>Sharing insights and guides.</p></div>
-    <div class="value-card"><img src="https://img.icons8.com/emoji/48/000000/sparkles.png"/><h4>Innovation</h4><p>Improving tools & experiences.</p></div>
+    <div class="value-card">
+      <img src="https://img.icons8.com/emoji/48/000000/art-emoji.png" alt="Creativity"/>
+      <h4>Creativity</h4>
+      <p>Innovative ideas that make packing simple and fun.</p>
+    </div>
+
+    <div class="value-card">
+      <img src="https://img.icons8.com/emoji/48/000000/shield-emoji.png" alt="Reliability"/>
+      <h4>Reliability</h4>
+      <p>Trusted guidance for travelers worldwide.</p>
+    </div>
+
+    <div class="value-card">
+      <img src="https://img.icons8.com/emoji/48/000000/red-heart.png" alt="Passion"/>
+      <h4>Passion</h4>
+      <p>Built with love for travel and discovery.</p>
+    </div>
+
+    <div class="value-card">
+      <img src="https://img.icons8.com/emoji/48/000000/seedling.png" alt="Sustainability"/>
+      <h4>Sustainability</h4>
+      <p>Encouraging mindful and eco-friendly travel.</p>
+    </div>
+
+    <div class="value-card">
+      <img src="https://img.icons8.com/emoji/48/000000/books.png" alt="Knowledge"/>
+      <h4>Knowledge</h4>
+      <p>Sharing helpful insights and travel wisdom.</p>
+    </div>
+
+    <div class="value-card">
+      <img src="https://img.icons8.com/emoji/48/000000/sparkles.png" alt="Innovation"/>
+      <h4>Innovation</h4>
+      <p>Constantly evolving to improve your experience.</p>
+    </div>
   </div>
+</section>
+
+<!-- 🧳 CTA Section -->
+<section class="about-cta">
+  <h2>Ready to Start Your Journey?</h2>
+  <p>Discover smart packing tips, curated guides, and travel tools — all in one place.</p>
+  <a href="{{ url_for('home') }}" class="cta-btn">Explore Now →</a>
 </section>
 
 <style>
-body {font-family: 'Poppins', sans-serif; color:#333;}
+body {
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  background: linear-gradient(135deg, #fffafc, #f0f9ff);
+}
 
-/* Hero Section */
+/* 🌸 Hero Section */
 .about-hero {
-  background:#fde7ff;
-  text-align:center;
-  padding:60px 20px;
-  border-radius:15px;
-  margin:40px auto;
-  max-width:1000px;
+  text-align: center;
+  padding: 80px 20px 60px;
+  background: linear-gradient(120deg, #fde2ff, #e0f7fa);
+  border-radius: 20px;
+  margin: 40px auto;
+  max-width: 1000px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
-.about-hero h1 {font-size:36px; margin-bottom:10px;}
-.about-hero p {font-size:16px; color:#555;}
+.about-hero h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.about-hero h1 span {
+  color: #b83280;
+}
+.about-hero p {
+  font-size: 18px;
+  color: #555;
+  max-width: 700px;
+  margin: 0 auto;
+}
 
-/* Mission Section */
+/* 🌍 Mission Section */
 .about-mission {
-  background:#e0f7fa;
-  text-align:center;
-  padding:50px 20px;
-  border-radius:15px;
-  margin:40px auto;
-  max-width:900px;
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff;
+  border-radius: 18px;
+  margin: 60px auto;
+  max-width: 900px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.06);
 }
-.about-mission h2 {font-size:28px; margin-bottom:20px;}
-.about-mission p {font-size:16px; color:#555; max-width:700px; margin:0 auto;}
+.about-mission h2 {
+  font-size: 30px;
+  color: #0077b6;
+  margin-bottom: 20px;
+}
+.about-mission p {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.7;
+}
 
-/* Core Values */
-.about-values {text-align:center; padding:50px 20px;}
-.about-values h2 {font-size:28px; margin-bottom:30px;}
+/* 💫 Core Values */
+.about-values {
+  text-align: center;
+  padding: 70px 20px;
+}
+.about-values h2 {
+  font-size: 30px;
+  margin-bottom: 40px;
+  color: #4a4a4a;
+}
 .values-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:20px;
-  justify-items:center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
 }
 .value-card {
-  background:#fff;
-  border-radius:12px;
-  padding:20px;
-  text-align:center;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
-  transition:transform 0.3s;
+  background: #fff;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
 }
-.value-card:hover {transform:translateY(-5px);}
-.value-card img {width:48px; margin-bottom:10px;}
-.value-card h4 {margin-bottom:5px;}
-.value-card p {font-size:14px; color:#555;}
+.value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
+.value-card img {
+  width: 48px;
+  margin-bottom: 12px;
+}
+.value-card h4 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+.value-card p {
+  color: #555;
+  font-size: 14px;
+}
+
+/* 🧳 CTA Section */
+.about-cta {
+  text-align: center;
+  background: linear-gradient(135deg, #ffe4f0, #e0f7fa);
+  border-radius: 16px;
+  padding: 60px 20px;
+  margin: 60px auto;
+  max-width: 900px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+}
+.about-cta h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+.about-cta p {
+  color: #555;
+  margin-bottom: 20px;
+}
+.cta-btn {
+  background: #b83280;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.cta-btn:hover {
+  background: #a0286d;
+  transform: translateY(-2px);
+}
 
 /* Responsive */
-@media(max-width:900px){
-  .about-hero h1{font-size:28px;}
-  .about-mission h2, .about-values h2{font-size:24px;}
+@media(max-width:768px){
+  .about-hero h1 {font-size: 32px;}
+  .about-mission h2, .about-values h2, .about-cta h2 {font-size: 24px;}
 }
 </style>
 
