@@ -1,7 +1,5 @@
 {% extends 'main/base.html' %}
-
 {% block title %}Destination{% endblock %}
-
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +11,7 @@
 <style>
 :root{
   --bg:#fefefe;
-  --card:rgba(255,255,255,0.85);
+  --card:rgba(255,255,255,0.9);
   --card-soft-pink:rgba(255,182,193,0.08);
   --accent:#ff99ff;
   --accent-2:#cc99ff;
@@ -21,40 +19,223 @@
   --shadow:0 12px 30px rgba(2,6,23,0.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-html,body{height:100%;background:#fefefe url('{{ url_for("static", filename="wallpaper-doodle.png") }}') no-repeat center center fixed;background-size:cover;overflow:hidden;color:#0f172a}
-.viewport{height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:18px}
-.card-wrap{width:100%;max-width:1160px;background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;overflow:hidden}
-.hero{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,153,255,0.06), rgba(204,153,255,0.03))}
-.place-img{width:72px;height:52px;border-radius:8px;object-fit:cover}
-.hero h1{font-size:18px;margin:0}
+html,body{
+  height:100%;
+  background:#fefefe url('{{ url_for("static", filename="wallpaper-doodle.png") }}') no-repeat center center fixed;
+  background-size:cover;
+  overflow:auto;
+  color:#0f172a;
+}
+
+/* Overall Layout */
+.viewport{
+  min-height:calc(100vh - 120px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 18px;
+}
+
+/* Card Layout */
+.card-wrap{
+  width:100%;
+  max-width:1160px;
+  background:var(--card);
+  border-radius:16px;
+  padding:24px;
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  overflow:hidden;
+}
+
+/* Hero Section */
+.hero{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  padding:12px;
+  border-radius:10px;
+  background:linear-gradient(90deg, rgba(255,153,255,0.06), rgba(204,153,255,0.04));
+}
+.place-img{
+  width:80px;
+  height:60px;
+  border-radius:8px;
+  object-fit:cover;
+}
+.hero h1{font-size:20px;margin:0}
 .hero p{margin-top:4px;color:var(--muted);font-size:13px}
 .weather{text-align:right;font-size:13px;color:var(--muted)}
-.main-grid{display:flex;gap:12px;flex:1;align-items:flex-start}
-.form-card{flex:1;min-width:320px;background:transparent;padding:8px;border-radius:10px;overflow:hidden}
-.packing-card{width:420px;min-width:300px;background:transparent;padding:8px;border-radius:10px}
+
+/* Main Content */
+.main-grid{
+  display:flex;
+  gap:16px;
+  flex:1;
+  align-items:flex-start;
+  flex-wrap:wrap;
+}
+.form-card{
+  flex:1;
+  min-width:320px;
+  background:transparent;
+  padding:8px;
+  border-radius:10px;
+  overflow:hidden;
+}
+.packing-card{
+  width:420px;
+  min-width:300px;
+  background:transparent;
+  padding:8px;
+  border-radius:10px;
+}
+
+/* Inputs and Buttons */
 .input-row{display:flex;gap:8px;margin-bottom:8px}
-.input-row input,.input-row select{flex:1;padding:9px;border-radius:8px;border:1px solid rgba(2,6,23,0.08);background:#fff}
-.input-row .small{width:120px;flex:0 0 120px}
-.btn{padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:#05202b;cursor:pointer}
-.btn.ghost{background:transparent;border:1px solid rgba(2,6,23,0.08)}
-.btn.peach{background:var(--accent-2);color:#05202b}
-.progress{height:8px;background:rgba(2,6,23,0.04);border-radius:999px;overflow:hidden;margin:10px 0}
-.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
-.options{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.option{padding:8px 12px;border-radius:999px;border:1px solid rgba(2,6,23,0.06);cursor:pointer;background:#fff;user-select:none}
-.option.selected{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 10px 24px rgba(0,0,0,0.06)}
-.option.disabled{opacity:0.45;pointer-events:none}
-.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:10px;max-height:260px;overflow:auto;padding-right:6px}
-.item{padding:8px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);background:#fff;cursor:pointer;text-align:center}
+.input-row input,.input-row select{
+  flex:1;
+  padding:9px;
+  border-radius:8px;
+  border:1px solid rgba(2,6,23,0.08);
+  background:#fff;
+}
+.btn{
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  background:var(--accent);
+  color:#05202b;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.btn:hover{opacity:0.9;transform:translateY(-1px)}
+.btn.ghost{
+  background:transparent;
+  border:1px solid rgba(2,6,23,0.08);
+}
+.btn.peach{
+  background:var(--accent-2);
+  color:#05202b;
+}
+
+/* Progress Bar */
+.progress{
+  height:8px;
+  background:rgba(2,6,23,0.04);
+  border-radius:999px;
+  overflow:hidden;
+  margin:10px 0;
+}
+.progress>i{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  width:0%;
+  transition:width 0.3s ease;
+}
+
+/* Options Styling */
+.options{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:8px;
+}
+.option{
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(2,6,23,0.06);
+  cursor:pointer;
+  background:#fff;
+  user-select:none;
+  transition:all 0.2s ease;
+}
+.option:hover{transform:scale(1.05)}
+.option.selected{
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 10px 24px rgba(0,0,0,0.06);
+}
+
+/* Packing Items */
+.items{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:8px;
+  margin-top:10px;
+  max-height:260px;
+  overflow:auto;
+  padding-right:6px;
+}
+.item{
+  padding:8px;
+  border-radius:8px;
+  border:1px solid rgba(2,6,23,0.06);
+  background:#fff;
+  cursor:pointer;
+  text-align:center;
+  transition:transform 0.15s ease;
+}
+.item:hover{transform:scale(1.05)}
 .item.added{opacity:0.45;pointer-events:none}
-.suitcase-drop{margin-top:12px;padding:12px;border-radius:12px;border:2px dashed rgba(2,6,23,0.06);background:var(--card-soft-pink);min-height:240px;position:relative}
-.suitcase-body{position:absolute;left:50%;top:22px;transform:translateX(-50%);width:360px;height:140px;border-radius:12px;background:linear-gradient(180deg,#eef9ff,#ffffff);border:1px solid rgba(0,0,0,0.04)}
-.suitcase-inner{position:absolute;left:50%;top:70px;transform:translateX(-50%);width:340px;padding:10px;display:flex;gap:8px}
-.suitcase-slot{flex:1;min-height:72px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:#fff;padding:6px;overflow:auto}
-.hint{color:var(--muted);font-size:13px;margin-top:8px;text-align:center}
-.packing-list{margin-top:10px;display:flex;flex-direction:column;gap:8px}
-.packing-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.95);border:1px solid rgba(2,6,23,0.04)}
-@media(max-width:980px){.main-grid{flex-direction:column-reverse;align-items:stretch}.packing-card{width:100%}.card-wrap{padding:14px}.hero{flex-wrap:wrap}html,body{overflow:hidden}}
+
+/* Suitcase */
+.suitcase-drop{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  border:2px dashed rgba(2,6,23,0.06);
+  background:var(--card-soft-pink);
+  min-height:240px;
+  position:relative;
+}
+.suitcase-body{
+  position:absolute;
+  left:50%;
+  top:22px;
+  transform:translateX(-50%);
+  width:360px;
+  height:140px;
+  border-radius:12px;
+  background:linear-gradient(180deg,#eef9ff,#ffffff);
+  border:1px solid rgba(0,0,0,0.04);
+}
+.suitcase-inner{
+  position:absolute;
+  left:50%;
+  top:70px;
+  transform:translateX(-50%);
+  width:340px;
+  padding:10px;
+  display:flex;
+  gap:8px;
+}
+.suitcase-slot{
+  flex:1;
+  min-height:72px;
+  border-radius:8px;
+  border:1px solid rgba(0,0,0,0.04);
+  background:#fff;
+  padding:6px;
+  overflow:auto;
+}
+.hint{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:8px;
+  text-align:center;
+}
+
+/* Responsive */
+@media(max-width:980px){
+  .main-grid{flex-direction:column-reverse;align-items:stretch}
+  .packing-card{width:100%}
+  .card-wrap{padding:14px}
+}
 .items::-webkit-scrollbar{width:6px}
 .items::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:6px}
 </style>
@@ -62,137 +243,139 @@ html,body{height:100%;background:#fefefe url('{{ url_for("static", filename="wal
 <body>
 <div class="viewport" role="main">
 <div class="card-wrap" aria-live="polite">
-<div class="hero">
-<img class="place-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop" alt="place">
-<div style="flex:1">
-<h1 id="placeName">Choose a destination</h1>
-<p id="placeTag">Smart packing generated by duration, gender & activities.</p>
+  <div class="hero">
+    <img class="place-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop" alt="place">
+    <div style="flex:1">
+      <h1 id="placeName">Choose a destination</h1>
+      <p id="placeTag">Smart packing generated by duration, gender & activities.</p>
+    </div>
+    <div class="weather">
+      <div id="temp">--°C</div>
+      <div id="cond">--</div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <!-- LEFT: FORM -->
+    <section class="form-card" id="formCard">
+      <div class="input-row">
+        <input id="fromInput" placeholder="From (city)">
+        <input id="toInput" placeholder="To (city/country)">
+        <button class="btn" id="routeBtn">How to go</button>
+      </div>
+      <div id="routeSuggestion" style="margin-bottom:8px;color:var(--muted);font-size:13px"></div>
+      <div class="input-row">
+        <input id="username" placeholder="Your name (required)">
+        <input id="destinationInput" placeholder="Destination (required)">
+        <button class="btn" id="setDestBtn">Set</button>
+      </div>
+      <div class="progress"><i id="progressBar"></i></div>
+      <div id="formSteps">
+        <div class="form-step active" data-step="1">
+          <h4>How many days?</h4>
+          <input type="range" id="duration" min="1" max="30" value="3" oninput="durationVal.innerText=this.value">
+          <div><strong><span id="durationVal">3</span> days</strong></div>
+          <h4>Gender</h4>
+          <div class="options" id="genderOptions">
+            <div class="option" data-value="unspecified">Unspecified</div>
+            <div class="option" data-value="male">Male</div>
+            <div class="option" data-value="female">Female</div>
+            <div class="option" data-value="other">Other</div>
+          </div>
+          <h4 style="margin-top:10px">Travel company</h4>
+          <div class="options" id="companyOptions">
+            <div class="option" data-value="solo">Solo</div>
+            <div class="option" data-value="partner">Partner</div>
+            <div class="option" data-value="family">Family</div>
+          </div>
+          <h4 style="margin-top:10px">Travel mode</h4>
+          <div class="options" id="modeOptions">
+            <div class="option" data-value="flight">Flight ✈️</div>
+            <div class="option" data-value="train">Train 🚆</div>
+            <div class="option" data-value="road">Road 🚗</div>
+            <div class="option" data-value="bus">Bus 🚌</div>
+            <div class="option" data-value="ship">Ship 🚢</div>
+          </div>
+        </div>
+        <div class="form-step" data-step="2">
+          <h4>Activities (up to 4)</h4>
+          <div class="options" id="activityOptions">
+            <div class="option" data-value="beach">Beach 🏖</div>
+            <div class="option" data-value="hiking">Hiking 🥾</div>
+            <div class="option" data-value="camping">Camping ⛺</div>
+            <div class="option" data-value="sightseeing">Sightseeing 🏰</div>
+            <div class="option" data-value="adventure">Adventure 🎢</div>
+            <div class="option" data-value="city">City life 🏙️</div>
+            <div class="option" data-value="ski">Skiing ⛷️</div>
+          </div>
+          <h4 style="margin-top:10px">Medical needs</h4>
+          <div class="options" id="medicalOptions">
+            <div class="option" data-value="none">None</div>
+            <div class="option" data-value="allergy">Allergy</div>
+            <div class="option" data-value="back">Back pain</div>
+            <div class="option" data-value="diabetes">Diabetes</div>
+          </div>
+          <h4 style="margin-top:10px">Packing style</h4>
+          <div class="options" id="styleOptions">
+            <div class="option" data-value="minimal">Minimalist</div>
+            <div class="option" data-value="comfort">Comfort</div>
+            <div class="option" data-value="luxury">Luxury</div>
+          </div>
+        </div>
+        <div class="form-step" data-step="3">
+          <h4>All set! ✅</h4>
+          <p style="color:var(--muted);margin-top:6px">
+            Click <strong>Generate Packing List</strong> to create your packing list and virtual suitcase.
+          </p>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <button class="btn ghost" id="prevBtn">Back</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn" id="nextBtn">Next</button>
+          <button class="btn peach" id="generateBtn" style="display:none">Generate Packing List</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: PACKING AREA -->
+    <aside class="packing-card" id="packingCard">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h4 id="greeting">Hey Traveller!</h4>
+          <div id="tripSummary" style="color:var(--muted)">Trip summary appears here</div>
+        </div>
+        <div style="text-align:right;color:var(--muted);font-size:13px">
+          <div id="routeSmall"></div>
+        </div>
+      </div>
+      <div id="packingArea">
+        <div class="items" id="itemsContainer"></div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
+          <button id="prevItem" class="btn ghost">Prev</button>
+          <div id="pageInfo" style="align-self:center;color:var(--muted)">Page 1/1</div>
+          <button id="nextItem" class="btn ghost">Next</button>
+        </div>
+      </div>
+      <div id="finalList" style="display:none">
+        <div class="packing-list" id="generatedList"></div>
+        <div style="margin-top:10px">
+          <strong>Suitcase</strong>
+          <div class="suitcase-drop" id="suitcaseDrop">
+            <div class="suitcase-body"></div>
+            <div class="suitcase-inner">
+              <div class="suitcase-slot" id="slotLeft"></div>
+              <div class="suitcase-slot" id="slotRight"></div>
+            </div>
+          </div>
+          <div class="hint">Click an item to move it into the suitcase. Each item only once.</div>
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>
-<div class="weather" aria-hidden="false">
-<div id="temp">--°C</div>
-<div id="cond">--</div>
 </div>
-</div>
-<div class="main-grid">
-<section class="form-card" id="formCard" aria-label="Trip configuration">
-<div class="input-row">
-<input id="fromInput" placeholder="From (city)" aria-label="From">
-<input id="toInput" placeholder="To (city/country)" aria-label="To">
-<button class="btn" id="routeBtn" title="Suggest routes">How to go</button>
-</div>
-<div id="routeSuggestion" style="margin-bottom:8px;color:var(--muted);font-size:13px"></div>
-<div class="input-row">
-<input id="username" placeholder="Your name (required)" aria-label="Your name">
-<input id="destinationInput" placeholder="Destination (required)" aria-label="Destination">
-<button class="btn" id="setDestBtn">Set</button>
-</div>
-<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
-<div id="formSteps">
-<div class="form-step active" data-step="1" aria-live="polite">
-<h4 style="font-size:15px;margin-bottom:6px">How many days?</h4>
-<input type="range" id="duration" min="1" max="30" value="3" oninput="durationVal.innerText=this.value" aria-label="Duration">
-<div style="margin:6px 0"><strong><span id="durationVal">3</span> days</strong></div>
-<h4 style="font-size:15px;margin-top:8px">Gender</h4>
-<div class="options" id="genderOptions" aria-label="Gender">
-<div class="option" data-value="unspecified">Unspecified</div>
-<div class="option" data-value="male">Male</div>
-<div class="option" data-value="female">Female</div>
-<div class="option" data-value="other">Other</div>
-</div>
-<h4 style="font-size:15px;margin-top:10px">Travel company (choose one)</h4>
-<div class="options" id="companyOptions" aria-label="Travel company">
-<div class="option" data-value="solo">Solo</div>
-<div class="option" data-value="partner">Partner</div>
-<div class="option" data-value="family">Family</div>
-</div>
-<h4 style="font-size:15px;margin-top:10px">Travel mode (choose one)</h4>
-<div class="options" id="modeOptions" aria-label="Travel mode">
-<div class="option" data-value="flight">Flight ✈️</div>
-<div class="option" data-value="train">Train 🚆</div>
-<div class="option" data-value="road">Road 🚗</div>
-<div class="option" data-value="bus">Bus 🚌</div>
-<div class="option" data-value="ship">Ship 🚢</div>
-</div>
-</div>
-<div class="form-step" data-step="2">
-<h4 style="font-size:15px">Activities (up to 4)</h4>
-<div class="options" id="activityOptions" aria-label="Activities">
-<div class="option" data-value="beach">Beach 🏖</div>
-<div class="option" data-value="hiking">Hiking 🥾</div>
-<div class="option" data-value="camping">Camping ⛺</div>
-<div class="option" data-value="sightseeing">Sightseeing 🏰</div>
-<div class="option" data-value="adventure">Adventure 🎢</div>
-<div class="option" data-value="city">City life 🏙️</div>
-<div class="option" data-value="ski">Skiing ⛷️</div>
-</div>
-<h4 style="font-size:15px;margin-top:10px">Medical needs (one)</h4>
-<div class="options" id="medicalOptions">
-<div class="option" data-value="none">None</div>
-<div class="option" data-value="allergy">Allergy</div>
-<div class="option" data-value="back">Back pain</div>
-<div class="option" data-value="diabetes">Diabetes</div>
-</div>
-<h4 style="font-size:15px;margin-top:10px">Packing style (one)</h4>
-<div class="options" id="styleOptions">
-<div class="option" data-value="minimal">Minimalist</div>
-<div class="option" data-value="comfort">Comfort</div>
-<div class="option" data-value="luxury">Luxury</div>
-</div>
-</div>
-<div class="form-step" data-step="3">
-<h4 style="font-size:15px">All set! ✅</h4>
-<p style="color:var(--muted);margin-top:6px">Click <strong>Generate Packing List</strong> to create your packing list and virtual suitcase.</p>
-</div>
-</div>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-<button class="btn ghost" id="prevBtn">Back</button>
-<div style="display:flex;gap:8px">
-<button class="btn" id="nextBtn">Next</button>
-<button class="btn peach" id="generateBtn" style="display:none">Generate Packing List</button>
-</div>
-</div>
-</section>
-<aside class="packing-card" id="packingCard" aria-label="Packing area">
-<div style="display:flex;justify-content:space-between;align-items:center;">
-<div>
-<h4 id="greeting">Hey Traveller!</h4>
-<div class="mini" id="tripSummary" style="color:var(--muted)">Trip summary appears here</div>
-</div>
-<div style="text-align:right;color:var(--muted);font-size:13px">
-<div id="routeSmall"></div>
-</div>
-</div>
-<div class="day-tabs" id="dayTabs" style="margin-top:10px;display:none"></div>
-<div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
-<strong>Packing list</strong>
-<div style="font-size:13px;color:var(--muted)">Click to pack</div>
-</div>
-<div id="packingArea">
-<div class="items" id="itemsContainer" aria-live="polite"></div>
-<div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
-<button id="prevItem" class="btn ghost">Prev</button>
-<div id="pageInfo" style="align-self:center;color:var(--muted)">Page 1/1</div>
-<button id="nextItem" class="btn ghost">Next</button>
-</div>
-</div>
-<div id="finalList" style="display:none" aria-live="polite">
-<div class="packing-list" id="generatedList"></div>
-<div style="margin-top:10px">
-<strong>Suitcase</strong>
-<div class="suitcase-drop" id="suitcaseDrop">
-<div class="suitcase-body"></div>
-<div class="suitcase-inner">
-<div class="suitcase-slot" id="slotLeft" aria-live="polite"></div>
-<div class="suitcase-slot" id="slotRight" aria-live="polite"></div>
-</div>
-</div>
-<div class="hint">Click an item to move it into the suitcase. Each item only once.</div>
-</div>
-</div>
-</aside>
-</div>
-</div>
-</div>
+
 <script>
 const API_KEY='05f85e36fd42f0d1f359f276caab551f';
 const state={username:'',destination:'',from:'',to:'',duration:3,gender:'unspecified',company:'',mode:'',activities:[],medical:'',style:'',allItems:[],generatedItems:[],addedToSuitcase:new Set(),currentPage:1,itemsPerPage:8};
@@ -201,48 +384,141 @@ const progressBar=document.getElementById('progressBar');
 const prevBtn=document.getElementById('prevBtn');
 const nextBtn=document.getElementById('nextBtn');
 const generateBtn=document.getElementById('generateBtn');
-const durationEl=document.getElementById('duration');
-const durationVal=document.getElementById('durationVal');
 const itemsContainer=document.getElementById('itemsContainer');
-const pageInfo=document.getElementById('pageInfo');
-const prevItem=document.getElementById('prevItem');
-const nextItem=document.getElementById('nextItem');
 const slotLeft=document.getElementById('slotLeft');
 const slotRight=document.getElementById('slotRight');
 const setDestBtn=document.getElementById('setDestBtn');
-const fromInput=document.getElementById('fromInput');
-const toInput=document.getElementById('toInput');
-const routeBtn=document.getElementById('routeBtn');
-const routeSuggestion=document.getElementById('routeSuggestion');
-const routeSmall=document.getElementById('routeSmall');
 const placeName=document.getElementById('placeName');
 const tempEl=document.getElementById('temp');
 const condEl=document.getElementById('cond');
-const greeting=document.getElementById('greeting');
 const tripSummary=document.getElementById('tripSummary');
 let currentStep=0;
-function showStep(i){steps.forEach((s,idx)=>s.classList.toggle('active',idx===i));currentStep=i;const pct=Math.round(((i+1)/steps.length)*100);progressBar.style.width=pct+'%';prevBtn.style.display=i===0?'none':'inline-block';nextBtn.style.display=i===steps.length-1?'none':'inline-block';generateBtn.style.display=i===steps.length-1?'inline-block':'none'}
+
+function showStep(i){
+  steps.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+  currentStep=i;
+  const pct=Math.round(((i+1)/steps.length)*100);
+  progressBar.style.width=pct+'%';
+  prevBtn.style.display=i===0?'none':'inline-block';
+  nextBtn.style.display=i===steps.length-1?'none':'inline-block';
+  generateBtn.style.display=i===steps.length-1?'inline-block':'none';
+}
 showStep(0);
+
 prevBtn.addEventListener('click',()=>showStep(Math.max(0,currentStep-1)));
 nextBtn.addEventListener('click',()=>showStep(Math.min(steps.length-1,currentStep+1)));
-function makeSingleSelect(id,onChange){const container=document.getElementById(id);container.addEventListener('click',e=>{const opt=e.target.closest('.option');if(!opt)return;container.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));opt.classList.add('selected');if(onChange)onChange(opt.dataset.value)})}
-function makeLimitedMultiSelect(id,limit=4,stateArray){const container=document.getElementById(id);container.addEventListener('click',e=>{const opt=e.target.closest('.option');if(!opt)return;const val=opt.dataset.value;if(opt.classList.contains('selected')){opt.classList.remove('selected');const idx=stateArray.indexOf(val);if(idx>-1)stateArray.splice(idx,1)}else{if(stateArray.length>=limit){opt.style.transform='scale(0.98)';setTimeout(()=>opt.style.transform='',120);return}opt.classList.add('selected');stateArray.push(val)}})}
+
+function makeSingleSelect(id,onChange){
+  const c=document.getElementById(id);
+  c.addEventListener('click',e=>{
+    const opt=e.target.closest('.option');
+    if(!opt)return;
+    c.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+    opt.classList.add('selected');
+    if(onChange)onChange(opt.dataset.value);
+  });
+}
+function makeLimitedMultiSelect(id,limit=4,stateArr){
+  const c=document.getElementById(id);
+  c.addEventListener('click',e=>{
+    const opt=e.target.closest('.option');
+    if(!opt)return;
+    const val=opt.dataset.value;
+    if(opt.classList.contains('selected')){
+      opt.classList.remove('selected');
+      const i=stateArr.indexOf(val);
+      if(i>-1)stateArr.splice(i,1);
+    }else{
+      if(stateArr.length>=limit)return;
+      opt.classList.add('selected');
+      stateArr.push(val);
+    }
+  });
+}
 makeSingleSelect('genderOptions',v=>state.gender=v);
 makeSingleSelect('companyOptions',v=>state.company=v);
 makeSingleSelect('modeOptions',v=>state.mode=v);
 makeSingleSelect('medicalOptions',v=>state.medical=v);
 makeSingleSelect('styleOptions',v=>state.style=v);
 makeLimitedMultiSelect('activityOptions',4,state.activities);
-durationEl.addEventListener('input',()=>state.duration=parseInt(durationEl.value));
-setDestBtn.addEventListener('click',()=>{state.username=document.getElementById('username').value.trim();state.destination=document.getElementById('destinationInput').value.trim();if(!state.username||!state.destination){alert('Fill name & destination');return}placeName.innerText=state.destination;fetchWeather();updateTripSummary();showStep(currentStep+1)});
-routeBtn.addEventListener('click',()=>{const f=fromInput.value.trim(),t=toInput.value.trim();if(!f||!t){alert('Enter from & to');return}state.from=f;state.to=t;routeSuggestion.innerText=`Suggested: ${f} → ${t} via Flight/Train/Bus`;routeSmall.innerText=routeSuggestion.innerText})
-function fetchWeather(){if(!state.destination)return;fetch(`https://api.openweathermap.org/data/2.5/weather?q=${state.destination}&units=metric&appid=${API_KEY}`).then(r=>r.json()).then(d=>{tempEl.innerText=d.main?.temp??'--';condEl.innerText=d.weather?.[0]?.main??'--'})}
-function updateTripSummary(){tripSummary.innerText=`${state.duration} days, ${state.gender}, ${state.company||'unknown company'}, ${state.mode||'unknown mode'}, activities: ${state.activities.join(', ') || 'none'}`} 
-function generateItems(){state.allItems=['T-shirts','Jeans','Jackets','Socks','Shoes','Hat','Sunglasses','Toiletries','Passport','Charger','Camera','Swimwear','Shorts','Skirt','Dress','Hoodie','Laptop','Notebook','Pen','Book','Umbrella','Raincoat','Boots','Sandals','Snacks','Water Bottle','First Aid Kit','Medicines','Travel Pillow','Earphones','Powerbank','Mask','Hand Sanitizer'];state.generatedItems=[...state.allItems];state.currentPage=1;renderItems()}
-function renderItems(){const start=(state.currentPage-1)*state.itemsPerPage;const end=start+state.itemsPerPage;itemsContainer.innerHTML='';state.generatedItems.slice(start,end).forEach(item=>{const div=document.createElement('div');div.className='item';div.innerText=item;div.addEventListener('click',()=>addToSuitcase(item,div));itemsContainer.appendChild(div)});pageInfo.innerText=`Page ${state.currentPage}/${Math.ceil(state.generatedItems.length/state.itemsPerPage)}`}
-prevItem.addEventListener('click',()=>{if(state.currentPage>1){state.currentPage--;renderItems()}});nextItem.addEventListener('click',()=>{if(state.currentPage<Math.ceil(state.generatedItems.length/state.itemsPerPage)){state.currentPage++;renderItems()}})
-function addToSuitcase(item,el){if(state.addedToSuitcase.has(item))return;state.addedToSuitcase.add(item);el.classList.add('added');const slot=slotLeft.children.length<=slotRight.children.length?slotLeft:slotRight;const div=document.createElement('div');div.className='item';div.innerText=item;slot.appendChild(div)}
-generateBtn.addEventListener('click',()=>{document.getElementById('formCard').style.display='none';document.getElementById('finalList').style.display='block';generateItems();})
+
+setDestBtn.addEventListener('click',()=>{
+  const user=document.getElementById('username').value.trim();
+  const dest=document.getElementById('destinationInput').value.trim();
+  if(!user||!dest)return alert('Please enter name and destination.');
+  state.username=user;state.destination=dest;
+  placeName.textContent=dest;
+  document.getElementById('greeting').textContent=`Hey ${user}!`;
+  fetchWeather(dest);
+});
+
+async function fetchWeather(city){
+  try{
+    const r=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
+    const d=await r.json();
+    if(d.main){tempEl.textContent=Math.round(d.main.temp)+'°C';condEl.textContent=d.weather[0].main;}
+  }catch(e){console.error(e);}
+}
+
+generateBtn.addEventListener('click',()=>{
+  if(!state.destination)return alert('Set destination first!');
+  const all=[];
+  if(state.activities.includes('beach'))all.push('Swimwear','Sunscreen','Flip-flops','Beach towel');
+  if(state.activities.includes('hiking'))all.push('Hiking boots','Backpack','Water bottle','Trail snacks');
+  if(state.activities.includes('city'))all.push('Casual outfits','Sneakers','Powerbank','Map');
+  if(state.activities.includes('adventure'))all.push('GoPro','Sports shoes','Energy bars');
+  if(state.gender==='female')all.push('Makeup kit','Hairbrush');
+  if(state.medical!=='none'&&state.medical)all.push('Medical kit');
+  if(all.length===0)all.push('T-shirts','Jeans','Toothbrush','Shoes');
+  state.generatedItems=[...new Set(all)];
+  state.currentPage=1;
+  renderItems();
+  tripSummary.textContent=`${state.duration}-day ${state.style||'basic'} trip to ${state.destination}`;
+  document.getElementById('finalList').style.display='block';
+});
+
+function renderItems(){
+  const start=(state.currentPage-1)*state.itemsPerPage;
+  const end=start+state.itemsPerPage;
+  const items=state.generatedItems.slice(start,end);
+  itemsContainer.innerHTML=items.map(it=>`<div class="item" data-item="${it}">${it}</div>`).join('');
+  const totalPages=Math.ceil(state.generatedItems.length/state.itemsPerPage)||1;
+  document.getElementById('pageInfo').textContent=`Page ${state.currentPage}/${totalPages}`;
+}
+document.getElementById('nextItem').addEventListener('click',()=>{
+  const totalPages=Math.ceil(state.generatedItems.length/state.itemsPerPage)||1;
+  if(state.currentPage<totalPages){state.currentPage++;renderItems();}
+});
+document.getElementById('prevItem').addEventListener('click',()=>{
+  if(state.currentPage>1){state.currentPage--;renderItems();}
+});
+itemsContainer.addEventListener('click',e=>{
+  const it=e.target.closest('.item');
+  if(!it)return;
+  const val=it.dataset.item;
+  if(state.addedToSuitcase.has(val))return;
+  state.addedToSuitcase.add(val);
+  it.classList.add('added');
+  const slotL=slotLeft.querySelectorAll('div').length;
+  const slotR=slotRight.querySelectorAll('div').length;
+  (slotL<=slotR?slotLeft:slotRight).innerHTML+=`<div>${val}</div>`;
+});
+
+document.getElementById('routeBtn').addEventListener('click',()=>{
+  const from=document.getElementById('fromInput').value.trim();
+  const to=document.getElementById('toInput').value.trim();
+  if(!from||!to)return alert('Please fill both From and To.');
+  state.from=from;state.to=to;
+  const routes=[
+    {mode:'Flight ✈️',time:'2-3 hrs'},
+    {mode:'Train 🚆',time:'6-10 hrs'},
+    {mode:'Bus 🚌',time:'8-12 hrs'},
+    {mode:'Road 🚗',time:'Depends on distance'}
+  ];
+  const chosen=routes[Math.floor(Math.random()*routes.length)];
+  document.getElementById('routeSuggestion').textContent=`Best route from ${from} to ${to}: ${chosen.mode}, approx ${chosen.time}.`;
+  document.getElementById('routeSmall').textContent=`${from} → ${to}`;
+});
 </script>
 </body>
 </html>
