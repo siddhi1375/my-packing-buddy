@@ -5,29 +5,58 @@
 <section class="books-page" style="padding:32px; font-family: Poppins, sans-serif;">
   <div style="max-width:1000px; margin:0 auto;">
     <h1 style="font-size:28px; margin-bottom:8px;">📚 Travel Books & Guides</h1>
-    <p style="color:#6b6b6b; margin-bottom:20px;">
-      Hand-picked travel books, guides and resources to help you plan perfect trips.
-    </p>
+
+    {% if session.destination %}
+      <p style="color:#6b6b6b; margin-bottom:20px;">
+        Suggested reads for your <strong>{{ session.destination|title }}</strong> trip ✈️
+      </p>
+    {% else %}
+      <p style="color:#6b6b6b; margin-bottom:20px;">
+        Hand-picked travel books and guides to inspire your next adventure.
+      </p>
+    {% endif %}
 
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:18px;">
-      <!-- Sample book card (copy/duplicate for more) -->
-      <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-        <h3 style="margin:0 0 8px 0;">Lonely Planet — Best of Europe</h3>
-        <p style="margin:0 0 10px; color:#6b6b6b;">Compact guide with top sights, maps and local tips.</p>
-        <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
-      </div>
+      
+      {% if session.destination == "Goa" %}
+        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+          <h3>Lonely Planet — Goa & Mumbai</h3>
+          <p>Complete beach and city travel guide with maps and local tips.</p>
+          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
+        </div>
 
-      <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-        <h3 style="margin:0 0 8px 0;">How to Travel the World on $50 a Day</h3>
-        <p style="margin:0 0 10px; color:#6b6b6b;">Budget travel tips, booking hacks and savings ideas.</p>
-        <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
-      </div>
+        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+          <h3>Goa Travel Guide by Rough Guides</h3>
+          <p>Explore hidden beaches, vibrant markets and nightlife.</p>
+          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
+        </div>
 
-      <!-- Placeholder when no books from DB -->
-      <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-        <h3 style="margin:0 0 8px 0;">More coming soon</h3>
-        <p style="margin:0 0 10px; color:#6b6b6b;">You can add books to the template or fetch them from the DB.</p>
-      </div>
+      {% elif session.destination == "Paris" %}
+        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+          <h3>Rick Steves Paris</h3>
+          <p>Essential travel tips and walking tours of iconic landmarks.</p>
+          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
+        </div>
+
+        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+          <h3>Lonely Planet Paris</h3>
+          <p>Discover art, culture and cuisine with easy maps.</p>
+          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
+        </div>
+
+      {% else %}
+        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+          <h3>How to Travel the World on $50 a Day</h3>
+          <p>Budget travel secrets and money-saving tips.</p>
+          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
+        </div>
+
+        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+          <h3>Vagabonding by Rolf Potts</h3>
+          <p>Philosophy and practical guide to long-term travel.</p>
+          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
+        </div>
+      {% endif %}
     </div>
   </div>
 </section>
