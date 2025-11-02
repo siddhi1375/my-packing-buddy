@@ -234,6 +234,55 @@ def add_feedback():
 def saved_lists():
     return render_template('main/usertrip.html')
 
+@app.route('/save_list', methods=['POST'])
+def save_list():
+    try:
+        category = request.form.get('category')
+        list_items = request.form.get('list_items')
+
+        cursor = mysql.connection.cursor()
+        cursor.execute(
+            "INSERT INTO saved_lists (category, list_items) VALUES (%s, %s)",
+            (category, list_items)
+        )
+        mysql.connection.commit()
+        cursor.close()
+        flash("Packing list saved successfully!", "success")
+        return redirect(url_for('your_category'))
+    except Exception as e:
+        flash(f"Error saving list: {str(e)}", "danger")
+        return redirect(url_for('your_category'))
+
+
+@app.route('/save_list', methods=['POST'])
+def save_list():
+    try:
+        category = request.form.get('category')
+        list_items = request.form.get('list_items')
+
+        cursor = mysql.connection.cursor()
+        cursor.execute(
+            "INSERT INTO saved_lists (category, list_items) VALUES (%s, %s)",
+            (category, list_items)
+        )
+        mysql.connection.commit()
+        cursor.close()
+        flash("Packing list saved successfully!", "success")
+        return redirect(url_for('your_category'))
+    except Exception as e:
+        flash(f"Error saving list: {str(e)}", "danger")
+        return redirect(url_for('your_category'))
+
+@app.route('/delete_list/<int:id>', methods=['POST'])
+def delete_list(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM saved_lists WHERE id = %s", (id,))
+    mysql.connection.commit()
+    cursor.close()
+    flash("List deleted successfully!", "info")
+    return redirect(url_for('your_category'))
+
+
 @app.route('/about')
 @login_required
 def about():

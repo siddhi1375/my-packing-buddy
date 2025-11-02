@@ -1,180 +1,121 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Create Category | My Packing Buddy{% endblock %}
+{% block title %}Your Saved Packing Lists | My Packing Buddy{% endblock %}
 
 {% block content %}
 <style>
-/* 🌿 Form */
-.category-form{
-  background:rgba(255,255,255,0.9);
-  border-radius:25px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-  padding:35px;
-  width:380px;
-  text-align:center;
-  transition:0.3s;
-  margin: auto;
-}
-.category-form:hover{transform:translateY(-3px);}
-.category-form h2{font-size:1.5rem;margin-bottom:20px;color:#333;}
-.category-form input,
-.category-form textarea{
-  width:100%;
-  padding:12px 15px;
-  border:1.5px solid #ddd;
-  border-radius:12px;
-  font-size:1rem;
-  margin-bottom:12px;
-  outline:none;
-  transition:0.3s;
-}
-.category-form input:focus,
-.category-form textarea:focus{
-  border-color:#81d4fa;
-  box-shadow:0 0 0 3px rgba(129,212,250,0.3);
-}
-.category-form button{
-  background:linear-gradient(135deg,#b39ddb,#81d4fa);
-  border:none;
-  color:white;
-  font-weight:600;
-  padding:12px 20px;
-  border-radius:12px;
-  cursor:pointer;
-  transition:0.3s;
-}
-.category-form button:hover{
-  background:linear-gradient(135deg,#9575cd,#4fc3f7);
-  transform:translateY(-2px);
+/* 🌿 Container */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  font-family: "Poppins", sans-serif;
 }
 
-/* 🧺 Category Cards */
-.category-container{
-  display:flex;
-  flex-wrap:wrap;
-  gap:18px;
-  width:100%;
-  max-width:700px;
-  margin-top:30px;
-  justify-content:center;
+/* ✨ Heading */
+h2 {
+  color: #333;
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.8rem;
 }
-.category-card{
-  background:rgba(255,255,255,0.95);
-  border-radius:18px;
-  padding:18px;
-  width:270px;
-  min-height:150px;
-  word-wrap:break-word;
-  overflow-wrap:break-word;
-  box-shadow:0 8px 25px rgba(0,0,0,0.1);
-  transition:transform 0.2s ease;
+
+/* 🧺 Saved List Cards */
+.category-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 800px;
 }
-.category-card:hover{transform:translateY(-4px);}
-.category-card h3{
-  font-size:1.05rem;
-  font-weight:600;
-  color:#374151;
-  margin-bottom:10px;
-  word-break:break-word;
+
+.category-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
+  padding: 18px;
+  width: 280px;
+  min-height: 160px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
 }
-.category-card p{
-  font-size:0.9rem;
-  color:#6b7280;
-  line-height:1.4;
-  max-height:5em;
-  overflow:hidden;
-  white-space:normal;
+.category-card:hover { transform: translateY(-4px); }
+
+.category-card h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 10px;
 }
-.category-actions{
-  margin-top:10px;
-  display:flex;
-  gap:8px;
+
+.category-card p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.4;
+  max-height: 6em;
+  overflow: hidden;
+  white-space: normal;
 }
-.category-actions button{
-  flex:1;
-  border:none;
-  padding:7px;
-  border-radius:10px;
-  font-size:0.85rem;
-  cursor:pointer;
-  transition:0.2s;
+
+/* ⚙️ Actions */
+.category-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
 }
-.category-actions .edit{background:#a7f3d0;}
-.category-actions .delete{background:#fecaca;}
-.category-actions button:hover{
-  opacity:0.9;
-  transform:scale(1.03);
+.category-actions button {
+  flex: 1;
+  border: none;
+  padding: 7px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
 }
+.category-actions .edit { background: #a7f3d0; }
+.category-actions .delete { background: #fecaca; }
+.category-actions button:hover { opacity: 0.9; transform: scale(1.03); }
 
 /* 🌟 Responsive */
-@media(max-width:900px){
-  .category-container{width:90%;justify-content:center;}
+@media(max-width: 900px) {
+  .category-container { width: 90%; justify-content: center; }
 }
 </style>
 
 <div class="main-content">
-  <!-- Form Box -->
-  <div class="category-form">
-    <h2>Create Your Packing Category ✨</h2>
-    <input type="text" id="categoryName" placeholder="Category Name" required>
-    <textarea id="categoryItems" placeholder="Enter items (comma-separated)" rows="3" required></textarea>
-    <button onclick="addCategory()">Create</button>
+  <h2>🌸 Your Saved Packing Lists</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="category-container">
+    {% if lists %}
+      {% for item in lists %}
+      <div class="category-card">
+        <h3>{{ item.category }}</h3>
+        <p>{{ item.list_items }}</p>
+        <div class="category-actions">
+          <form action="/delete_list/{{ item.id }}" method="POST" style="flex:1;">
+            <button type="submit" class="delete">Delete</button>
+          </form>
+          <form action="/edit_list/{{ item.id }}" method="GET" style="flex:1;">
+            <button type="submit" class="edit">Edit</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p style="color:#555;">No saved lists yet 🌿</p>
+    {% endif %}
   </div>
-
-  <!-- Category Cards -->
-  <div class="category-container" id="categoryContainer"></div>
 </div>
-
-<script>
-let categories = [];
-
-function addCategory() {
-  const name = document.getElementById('categoryName').value.trim();
-  const items = document.getElementById('categoryItems').value.trim();
-  if (!name || !items) { alert("Please fill all fields!"); return; }
-  const category = { id: Date.now(), name, items };
-  categories.push(category);
-  displayCategories();
-  document.getElementById('categoryName').value = '';
-  document.getElementById('categoryItems').value = '';
-}
-
-function displayCategories() {
-  const container = document.getElementById('categoryContainer');
-  container.innerHTML = '';
-  categories.forEach(cat => {
-    const div = document.createElement('div');
-    div.classList.add('category-card');
-    div.innerHTML = `
-      <h3>${cat.name}</h3>
-      <p>${cat.items}</p>
-      <div class="category-actions">
-        <button onclick="editCategory(${cat.id})" class="edit">Edit</button>
-        <button onclick="deleteCategory(${cat.id})" class="delete">Delete</button>
-      </div>`;
-    container.appendChild(div);
-  });
-}
-
-function deleteCategory(id) {
-  categories = categories.filter(c => c.id !== id);
-  displayCategories();
-}
-
-function editCategory(id) {
-  const cat = categories.find(c => c.id === id);
-  if (!cat) return;
-  const newName = prompt("Edit category name:", cat.name);
-  const newItems = prompt("Edit items:", cat.items);
-  if (newName && newItems) {
-    cat.name = newName;
-    cat.items = newItems;
-    displayCategories();
-  }
-}
-</script>
 {% endblock %}
-
-
-
-
