@@ -1,46 +1,156 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Contact Us{% endblock %}
+{% block title %}Contact Us - MyPackingBuddy{% endblock %}
 
 {% block content %}
-<div class="viewport" style="display:flex; justify-content:center; align-items:center; min-height:90vh; padding:20px;">
-  <div class="card-wrap" style="max-width:700px; width:100%; padding:30px; display:flex; flex-direction:column; gap:25px; background: linear-gradient(135deg, #f8e9f9, #e0f7fa); border-radius:20px; box-shadow:0 15px 35px rgba(0,0,0,0.15);">
+<section class="contact-section">
+  <div class="contact-container">
+    <div class="contact-info">
+      <h1>Contact Us</h1>
+      <p>We’d love to hear from you! Whether you have questions, feedback, or collaboration ideas — just reach out.</p>
 
-    <h1 style="text-align:center; margin-bottom:5px; color:#401029;">Contact Us</h1>
-    <p style="text-align:center; color:var(--muted); font-size:15px;">We’d love to hear from you! Fill out the form and we’ll get back to you promptly.</p>
-
-    <!-- Form Section -->
-    <form style="display:flex; flex-direction:column; gap:15px;">
-      <input type="text" placeholder="Your Name" required style="padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.1); font-size:14px; transition:0.3s;">
-      <input type="email" placeholder="Your Email" required style="padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.1); font-size:14px; transition:0.3s;">
-      <input type="text" placeholder="Subject" style="padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.1); font-size:14px; transition:0.3s;">
-      <textarea placeholder="Your Message" rows="6" style="padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.1); font-size:14px; transition:0.3s;"></textarea>
-      <button type="submit" class="btn" style="margin-top:10px; background:var(--accent); color:#05202b; border-radius:10px; padding:12px; font-size:15px;">Send Message</button>
-    </form>
-
-    <!-- Contact Info Section -->
-    <div style="display:flex; flex-direction:column; gap:12px; text-align:center; margin-top:15px;">
-      <div style="display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; color:var(--muted);">
-        <span>📧</span> <a href="mailto:email.siddhi@gmail.com" style="color:var(--muted); text-decoration:none;">email.siddhi@gmail.com</a>
-      </div>
-      <div style="display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; color:var(--muted);">
-        <span>📞</span> 1234567890
-      </div>
-      <div style="display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; color:var(--muted);">
-        <span>📍</span> 123 Travel Street, Goa, India
+      <div class="info-details">
+        <p>📧 <a href="mailto:email.siddhi@gmail.com">email.siddhi@gmail.com</a></p>
+        <p>📞 +91 12345 67890</p>
+        <p>📍 123 Travel Street, Goa, India</p>
       </div>
     </div>
+
+    <div class="contact-form">
+      <form method="POST" action="#">
+        <label for="name">Your Name</label>
+        <input id="name" type="text" name="name" placeholder="Enter your name" required>
+
+        <label for="email">Your Email</label>
+        <input id="email" type="email" name="email" placeholder="Enter your email" required>
+
+        <label for="subject">Subject</label>
+        <input id="subject" type="text" name="subject" placeholder="Enter subject">
+
+        <label for="message">Your Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Type your message..." required></textarea>
+
+        <button type="submit" class="send-btn">Send Message</button>
+      </form>
+    </div>
   </div>
-</div>
+</section>
 
 <style>
-/* Hover/focus animation on inputs */
-form input, form textarea {
-  outline:none;
+body {
+  font-family: "Poppins", sans-serif;
+  background: #fefcff;
+  color: #333;
 }
-form input:focus, form textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 4px 15px rgba(160, 228, 255, 0.4);
+
+.contact-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+}
+
+.contact-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  background: linear-gradient(135deg, #f9e8ff, #e0f7fa);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  padding: 50px;
+  max-width: 1000px;
+  width: 100%;
+}
+
+/* Left Side - Info */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+.contact-info h1 {
+  font-size: 32px;
+  color: #401029;
+  margin-bottom: 10px;
+}
+.contact-info p {
+  color: #555;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.info-details {
+  margin-top: 25px;
+}
+.info-details p {
+  margin: 8px 0;
+  font-size: 15px;
+}
+.info-details a {
+  color: #007b7f;
+  text-decoration: none;
+}
+.info-details a:hover {
+  text-decoration: underline;
+}
+
+/* Right Side - Form */
+.contact-form {
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+.contact-form label {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 5px;
+  display: block;
+}
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #a8e2ff;
+  box-shadow: 0 4px 12px rgba(160, 228, 255, 0.4);
+  outline: none;
+}
+
+.send-btn {
+  background: linear-gradient(135deg, #b16bff, #5ee7df);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 0;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.send-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-container {
+    padding: 30px 20px;
+  }
+  .contact-info h1 {
+    text-align: center;
+  }
+  .contact-info p, .info-details {
+    text-align: center;
+  }
 }
 </style>
 {% endblock %}
