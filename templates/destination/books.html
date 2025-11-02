@@ -2,62 +2,126 @@
 {% block title %}Books — My Packing Buddy{% endblock %}
 
 {% block content %}
-<section class="books-page" style="padding:32px; font-family: Poppins, sans-serif;">
-  <div style="max-width:1000px; margin:0 auto;">
-    <h1 style="font-size:28px; margin-bottom:8px;">📚 Travel Books & Guides</h1>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(120deg, #fdf2f8, #f0f9ff);
+    min-height: 100vh;
+  }
 
-    {% if session.destination %}
-      <p style="color:#6b6b6b; margin-bottom:20px;">
-        Suggested reads for your <strong>{{ session.destination|title }}</strong> trip ✈️
-      </p>
-    {% else %}
-      <p style="color:#6b6b6b; margin-bottom:20px;">
-        Hand-picked travel books and guides to inspire your next adventure.
-      </p>
-    {% endif %}
+  .books-section {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 0 24px;
+    text-align: center;
+  }
 
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:18px;">
-      
-      {% if session.destination == "Goa" %}
-        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-          <h3>Lonely Planet — Goa & Mumbai</h3>
-          <p>Complete beach and city travel guide with maps and local tips.</p>
-          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
-        </div>
+  .books-header h1 {
+    font-size: 36px;
+    color: #222;
+    margin-bottom: 8px;
+  }
 
-        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-          <h3>Goa Travel Guide by Rough Guides</h3>
-          <p>Explore hidden beaches, vibrant markets and nightlife.</p>
-          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
-        </div>
+  .books-header p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
 
-      {% elif session.destination == "Paris" %}
-        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-          <h3>Rick Steves Paris</h3>
-          <p>Essential travel tips and walking tours of iconic landmarks.</p>
-          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
-        </div>
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+  }
 
-        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-          <h3>Lonely Planet Paris</h3>
-          <p>Discover art, culture and cuisine with easy maps.</p>
-          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
-        </div>
+  .book-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    padding: 20px;
+    text-align: left;
+    transition: all 0.3s ease;
+  }
 
-      {% else %}
-        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-          <h3>How to Travel the World on $50 a Day</h3>
-          <p>Budget travel secrets and money-saving tips.</p>
-          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
-        </div>
+  .book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+  }
 
-        <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-          <h3>Vagabonding by Rolf Potts</h3>
-          <p>Philosophy and practical guide to long-term travel.</p>
-          <a href="#" style="text-decoration:none; font-weight:600;">Learn more →</a>
-        </div>
-      {% endif %}
+  .book-cover {
+    width: 100%;
+    border-radius: 12px;
+    height: 180px;
+    object-fit: cover;
+    margin-bottom: 15px;
+  }
+
+  .book-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #222;
+  }
+
+  .book-card p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .book-card a {
+    color: #0077b6;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .book-card a:hover {
+    text-decoration: underline;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .books-header h1 {
+      font-size: 28px;
+    }
+  }
+</style>
+
+<section class="books-section">
+  <div class="books-header">
+    <h1>📚 Travel Books & Guides</h1>
+    <p>Explore inspiring travel reads and guides to make your journeys unforgettable.</p>
+  </div>
+
+  <div class="book-grid">
+
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d" alt="Lonely Planet" class="book-cover">
+      <h3>Lonely Planet — Best of Europe</h3>
+      <p>Compact guide packed with must-see destinations, maps, and local secrets.</p>
+      <a href="#">Learn more →</a>
     </div>
+
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66" alt="Budget Travel" class="book-cover">
+      <h3>How to Travel the World on $50 a Day</h3>
+      <p>Master the art of smart travel, saving money, and exploring like a local.</p>
+      <a href="#">Learn more →</a>
+    </div>
+
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Beach Travel" class="book-cover">
+      <h3>The Art of Travel — Alain de Botton</h3>
+      <p>A thoughtful reflection on why we travel and how to truly enjoy the journey.</p>
+      <a href="#">Learn more →</a>
+    </div>
+
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1533550907043-c1c1076b4315" alt="Adventure Book" class="book-cover">
+      <h3>Wild — Cheryl Strayed</h3>
+      <p>An inspiring memoir of adventure, courage, and rediscovering life through travel.</p>
+      <a href="#">Learn more →</a>
+    </div>
+
   </div>
 </section>
 {% endblock %}
