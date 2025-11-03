@@ -65,20 +65,25 @@ h2 {
 .category-actions {
   margin-top: 12px;
   display: flex;
-  gap: 8px;
+  justify-content: center;
+}
+.category-actions form {
+  width: 100%;
 }
 .category-actions button {
-  flex: 1;
+  width: 100%;
   border: none;
-  padding: 7px;
+  padding: 8px;
   border-radius: 10px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   cursor: pointer;
+  background: #fecaca;
   transition: 0.2s;
 }
-.category-actions .edit { background: #a7f3d0; }
-.category-actions .delete { background: #fecaca; }
-.category-actions button:hover { opacity: 0.9; transform: scale(1.03); }
+.category-actions button:hover {
+  opacity: 0.9;
+  transform: scale(1.03);
+}
 
 /* 🌟 Responsive */
 @media(max-width: 900px) {
@@ -104,28 +109,15 @@ h2 {
         <h3>{{ item.category }}</h3>
         <p>{{ item.list_items }}</p>
         <div class="category-actions">
-          <form action="/delete_list/{{ item.id }}" method="POST" style="flex:1;">
-            <button type="submit" class="delete">Delete</button>
-          </form>
-          <form action="/edit_list/{{ item.id }}" method="GET" style="flex:1;">
-            <button type="submit" class="edit">Edit</button>
+          <form action="/delete_list/{{ item.id }}" method="POST">
+            <button type="submit" class="delete">🗑 Delete</button>
           </form>
         </div>
       </div>
       {% endfor %}
     {% else %}
-      <p style="color:#555;">No saved lists yet 🌿</p>
+      <p style="color:#555;">No saved packing lists yet 🌿</p>
     {% endif %}
   </div>
 </div>
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
