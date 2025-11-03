@@ -283,6 +283,7 @@ def delete_list(id):
     return redirect(url_for('your_category'))
 
 
+
 @app.route('/about')
 @login_required
 def about():
