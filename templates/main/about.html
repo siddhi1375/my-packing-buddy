@@ -32,42 +32,36 @@
   <h2>✨ Our Core Values</h2>
   <div class="values-grid">
 
-    <!-- Value Card: Creativity -->
     <div class="value-card">
       <img src="https://img.icons8.com/emoji/48/000000/art-emoji.png" alt="Creativity">
       <h4>Creativity</h4>
       <p>Innovative ideas that make packing simple and fun.</p>
     </div>
 
-    <!-- Value Card: Reliability -->
     <div class="value-card">
       <img src="https://img.icons8.com/emoji/48/000000/shield-emoji.png" alt="Reliability">
       <h4>Reliability</h4>
       <p>Trusted guidance for travelers worldwide.</p>
     </div>
 
-    <!-- Value Card: Passion -->
     <div class="value-card">
       <img src="https://img.icons8.com/emoji/48/000000/red-heart.png" alt="Passion">
       <h4>Passion</h4>
       <p>Built with love for travel and discovery.</p>
     </div>
 
-    <!-- Value Card: Sustainability -->
     <div class="value-card">
       <img src="https://img.icons8.com/emoji/48/000000/seedling.png" alt="Sustainability">
       <h4>Sustainability</h4>
       <p>Encouraging mindful and eco-friendly travel.</p>
     </div>
 
-    <!-- Value Card: Knowledge -->
     <div class="value-card">
       <img src="https://img.icons8.com/emoji/48/000000/books.png" alt="Knowledge">
       <h4>Knowledge</h4>
       <p>Sharing helpful insights and travel wisdom.</p>
     </div>
 
-    <!-- Value Card: Innovation -->
     <div class="value-card">
       <img src="https://img.icons8.com/emoji/48/000000/sparkles.png" alt="Innovation">
       <h4>Innovation</h4>
@@ -77,18 +71,10 @@
   </div>
 </section>
 
-<!-- 🧳 Call-To-Action Section -->
-<section class="about-cta">
-  <h2>Ready to Start Your Journey?</h2>
-  <p>Discover smart packing tips, curated guides, and travel tools — all in one place.</p>
-  <a href="{{ url_for('home') }}" class="cta-btn">Explore Now →</a>
-</section>
-
 <!-- ================================
 🌈 STYLES
 ================================= -->
 <style>
-/* ===== Global Styles ===== */
 body {
   font-family: 'Poppins', sans-serif;
   color: #333;
@@ -189,48 +175,13 @@ body {
   line-height: 1.5;
 }
 
-/* ===== CTA Section ===== */
-.about-cta {
-  text-align: center;
-  background: linear-gradient(135deg, #ffe4f0, #e0f7fa);
-  border-radius: 16px;
-  padding: 60px 20px;
-  margin: 60px auto;
-  max-width: 900px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.06);
-}
-.about-cta h2 {
-  font-size: 28px;
-  margin-bottom: 10px;
-}
-.about-cta p {
-  color: #555;
-  margin-bottom: 20px;
-  font-size: 16px;
-}
-.cta-btn {
-  display: inline-block;
-  background: #b83280;
-  color: #fff;
-  padding: 12px 28px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-.cta-btn:hover {
-  background: #a0286d;
-  transform: translateY(-2px);
-}
-
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
   .about-hero h1 {
     font-size: 32px;
   }
   .about-mission h2,
-  .about-values h2,
-  .about-cta h2 {
+  .about-values h2 {
     font-size: 24px;
   }
   .values-grid {
