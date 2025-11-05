@@ -28,14 +28,17 @@
     app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
     app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
     app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
-    app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT', 3306))
-    app.secret_key = os.getenv('FLASK_SECRET_KEY')
+    
 
     # Port might be missing in env; default to 3306 if not provided
     try:
         app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT', 3306))
     except ValueError:
         app.config['MYSQL_PORT'] = 3306
+
+
+    # Secret key (for session)
+    app.secret_key = os.getenv('FLASK_SECRET_KEY', "fallback_secret_key")
 
     # Log the loaded config keys (do NOT print secrets)
     logger.info(f"MYSQL_HOST loaded: {app.config['MYSQL_HOST']}")
