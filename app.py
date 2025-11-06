@@ -313,21 +313,13 @@ def about():
 def contact():
         return render_template('main/contact.html')
 
-    # ---------------------- RUN APP ------------------------------------
+    
 if __name__ == '__main__':
         port = int(os.environ.get('PORT', 5000))
         # Debug True only for local development. On Render, gunicorn runs the app.
         app.run(debug=True, host='0.0.0.0', port=port)
 
 
-#rt might be missing in env; default to 3306 if not provided
-try:
-        app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT', 3306))
-except ValueError:
-        app.config['MYSQL_PORT'] = 3306
-
-
-    # Secret key (for session)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', "fallback_secret_key")
 
     # Log the loaded config keys (do NOT print secrets)
