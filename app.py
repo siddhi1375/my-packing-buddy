@@ -78,12 +78,18 @@ def internal_server_error(e):
 def ping():
     return jsonify({'status': 'ok', 'service': 'my-packing-buddy'})
 
-# ---------------------- home----------------------------------------
+# ---------------------- index ----------------------------------------
 @app.route('/')
 def index():
     if session.get('user_id'):
         return redirect(url_for('home'))
     return redirect(url_for('login'))
+
+# ---------------------- HOME ------------------------------------------
+@app.route('/home')
+@login_required
+def home():
+    return render_template('destination/home.html')
 
 # ---------------------- LOGIN -----------------------------------------
 @app.route('/login', methods=['GET', 'POST'])
@@ -166,11 +172,6 @@ def logout():
     flash('Logged out successfully!', 'success')
     return redirect(url_for('login'))
 
-# ---------------------- HOME ------------------------------------------
-@app.route('/home')
-@login_required
-def home():
-    return render_template('destination/home.html')
 
 # ---------------------- OTHER ROUTES ----------------------------------
 @app.route('/destination')
