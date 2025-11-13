@@ -371,11 +371,6 @@ def internal_server_error(e):
         traceback.print_exc()
         return "Internal Server Error. Check server logs.", 500
 
-    # ---------------------- Health route -------------------------------
-@app.route('/ping')
-def ping():
-        return jsonify({'status': 'ok', 'service': 'my-packing-buddy'})
-
     # ---------------------- INDEX REDIRECT ------------------------------
 @app.route('/')
 def index():
@@ -548,7 +543,6 @@ def delete_list(id):
         cursor.close()
         flash("List deleted successfully!", "info")
         return redirect(url_for('your_category'))
-
 
 
 @app.route('/about')
