@@ -80,7 +80,7 @@ def ping():
 
 # ---------------------- INDEX -----------------------------------------
 @app.route('/')
-def index():
+def home():
     if session.get('user_id'):
         return redirect(url_for('home'))
     return redirect(url_for('login'))
