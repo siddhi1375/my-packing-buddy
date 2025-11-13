@@ -78,9 +78,9 @@ def internal_server_error(e):
 def ping():
     return jsonify({'status': 'ok', 'service': 'my-packing-buddy'})
 
-# ---------------------- INDEX -----------------------------------------
+# ---------------------- home----------------------------------------
 @app.route('/')
-def home():
+def index():
     if session.get('user_id'):
         return redirect(url_for('home'))
     return redirect(url_for('login'))
