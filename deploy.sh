@@ -1,37 +1,40 @@
-#!/bin/bash
 
-APP_NAME="MyPackingBuddy"
-APP_DIR="$HOME/Documents/my-packing-buddy"
+APP_DIR="/home/ubuntu/my-packing-buddy"
 VENV_DIR="$APP_DIR/venv"
-BRANCH="main"
+SOCK_FILE="$APP_DIR/myproject.sock"
+GUNICORN_WORKERS=3
+GUNICORN_APP="wsgi:app"
+NGINX_SITE_CONF="/etc/nginx/sites-available/my-packing-buddy"
 
-echo "Starting deployment for $APP_NAME..."
+echo "Activating virtual environment"
+source "$VENV_DIR/bin/activate"
 
-if [ -d "$APP_DIR" ]; then
-  echo "Navigating to project directory..."
-  cd $APP_DIR
-else
-  echo "Project directory not found at $APP_DIR"
-  exit 1
-fi
 
-echo "Pulling latest changes from Git..."
-git pull origin $BRANCH
+ Step 2: Kill any old Gunicorn processes
 
-if [ ! -d "$VENV_DIR" ]; then
-  echo "Creating virtual environment..."
-  python3 -m venv $VENV_DIR
-fi
-source $VENV_DIR/bin/activate
+echo "Stopping old Gunicorn processes"
+pkill gunicorn || true
 
-echo "Installing dependencies..."
-pip install --upgrade pip
-pip install -r requirements.txt
+echo "Starting Gunicorn"
+$VENV_DIR/bin/gunicorn --workers $GUNICORN_WORKERS --bind unix:$SOCK_FILE $GUNICORN_APP &
 
-echo "Restarting Gunicorn service..."
-sudo systemctl stop mypackingbuddy.service 2>/dev/null
-sudo systemctl start mypackingbuddy.service
-sudo systemctl enable mypackingbuddy.service
+sleep 3
 
-echo "Deployment complete! App should be live on port 8000."
+echo "Fixing permissions"
+chmod 777 "$SOCK_FILE"
+chmod +x /home/ubuntu
+chmod +x "$APP_DIR"
+
+
+echo "Testing Nginx configuration"
+sudo nginx -t
+
+
+echo "Restarting Nginx..."
+sudo systemctl restart nginx
+ Step 7: Test local connection
+echo "Testing application via localhost"
+curl -I http://localhost
+
+echo "Deployment script finished!"
 
