@@ -1,38 +1,44 @@
-1. Copy your app to the server
 
-From your local machine:
+1. Copy project to server
+
+(Local machine)
 
 scp -r /path/to/my-packing-buddy ubuntu@your_droplet_ip:/home/ubuntu/
 
-
--r → copies directories recursively
-
-Make sure the venv is on the server, or you’ll create a new one there.
-
-2. SSH into the server
+2. SSH into server
 ssh ubuntu@your_droplet_ip
-cd /home/ubuntu/my-packing-buddy
-----------------------------------
+cd ~/my-packing-buddy
+
+3. Set up virtual environment
+
+This is correct:
+
 sudo apt update
 sudo apt install python3.12-venv -y
---------------------------------------
-3. Set up virtual environment (if not copied)
+
 python3 -m venv venv
 source venv/bin/activate
-sudo apt update
-sudo apt install pkg-config default-libmysqlclient-dev build-essential -y
 
+
+Install MySQL build tools:
+
+sudo apt install pkg-config default-libmysqlclient-dev build-essential -y
 pip install -r requirements.txt
 
-----------------------------------------------------------------------------------------------
-1. Gunicorn systemd service
-gunicorn --bind 0.0.0.0:5000 wsgi:app
-Create a systemd service file:
+4. Test Gunicorn
 
-gunicorn --bind 0.0.0.0:5000 wsgi:app(to test that booting works)
+Good:
+
+gunicorn --bind 0.0.0.0:5000 wsgi:app
+
+5. Create systemd service
+
+Your service is correct.
 
 sudo nano /etc/systemd/system/my-packing-buddy.service
- this:
+
+
+Paste:
 
 [Unit]
 Description=Gunicorn instance to serve my-packing-buddy
@@ -50,16 +56,19 @@ ExecStart=/home/ubuntu/my-packing-buddy/venv/bin/gunicorn \
 WantedBy=multi-user.target
 
 
-Enable & start it:
+Enable:
 
 sudo systemctl daemon-reload
 sudo systemctl start my-packing-buddy
 sudo systemctl enable my-packing-buddy
 sudo systemctl status my-packing-buddy
 
-2. Nginx Configuration
+6. Nginx Configuration
+sudo apt update
+sudo apt install nginx -y
 
-Create Nginx site config:
+
+Create:
 
 sudo nano /etc/nginx/sites-available/my-packing-buddy
 
@@ -68,7 +77,7 @@ Paste:
 
 server {
     listen 80;
-    server_name your_domain_or_IP;
+    server_name YOUR_IP;
 
     location / {
         include proxy_params;
@@ -77,26 +86,53 @@ server {
 }
 
 
-Enable the site:
+Enable:
 
 sudo ln -s /etc/nginx/sites-available/my-packing-buddy /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 
-3. Permissions (safer than 777)
-sudo chown -R ubuntu:www-data /home/ubuntu/my-packing-buddy
-sudo chmod 750 /home/ubuntu/my-packing-buddy
-sudo chmod 660 /home/ubuntu/my-packing-buddy/myproject.sock
+7. Permissions
 
-4.Firewall
+Here you made small mistakes. Let me correct it.
+
+You wrote:
+
+sudo chmod 750 /home/ubuntu/my-packing-buddy
+sudo chmod 660 myproject.sock
+
+
+These are NOT correct for Gunicorn + Nginx.
+
+Use this instead:
+sudo chown -R ubuntu:www-data /home/ubuntu/my-packing-buddy
+sudo chmod 755 /home/ubuntu/my-packing-buddy
+sudo chmod 766 /home/ubuntu/my-packing-buddy/myproject.sock
+
+
+Why?
+
+Nginx (www-data) must enter the folder → needs execute bit (x).
+
+The socket must be readable/writable.
+
+8. If 502 Bad Gateway error comes
+
+Yes, parent directory permissions often cause it:
+
+sudo chmod o+x /home
+sudo chmod o+x /home/ubuntu
+sudo chmod o+x /home/ubuntu/my-packing-buddy
+
+
+This solves:
+
+connect() to unix:/home/...myproject.sock failed (13: Permission denied)
+
+9. Firewall
+
+Correct:
+
 sudo ufw allow 'Nginx Full'
 sudo ufw enable
 sudo ufw status
-
-5. Optional: SSL (HTTPS)
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d your_domain.com
-
-6. Testing
-curl -I http://localhost
-curl -I http://your_domain_or_IP
