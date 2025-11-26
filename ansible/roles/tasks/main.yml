@@ -1,0 +1,145 @@
+---
+
+# 1. Install required system packages
+- name: Update apt and install required packages
+  apt:
+    name:
+      - python3.12-venv
+      - pkg-config
+      - default-libmysqlclient-dev
+      - build-essential
+      - nginx
+      - rsync
+    state: present
+    update_cache: yes
+  become: yes
+
+# 2. Ensure project directory exists
+- name: Ensure project directory exists
+  file:
+    path: /home/ubuntu/my-packing-buddy
+    state: directory
+    owner: ubuntu
+    group: www-data
+    mode: '0755'
+  become: yes
+
+# 3. Copy project using rsync
+- name: Copy project from local machine to server
+  synchronize:
+    src: my-packing-buddy/
+    dest: /home/ubuntu/my-packing-buddy/
+    rsync_opts:
+      - "--delete"
+  delegate_to: localhost
+  become: no
+
+# 4. Create python virtual environment
+- name: Create python virtual environment
+  command: python3 -m venv /home/ubuntu/my-packing-buddy/venv
+  args:
+    creates: /home/ubuntu/my-packing-buddy/venv/bin/activate
+  become: yes
+  become_user: ubuntu
+
+# 5. Install python requirements
+- name: Install python requirements inside venv
+  pip:
+    requirements: /home/ubuntu/my-packing-buddy/requirements.txt
+    virtualenv: /home/ubuntu/my-packing-buddy/venv
+    virtualenv_command: /usr/bin/python3 -m venv
+  become: yes
+  become_user: ubuntu
+
+# 6. Copy systemd service file
+- name: Deploy systemd service
+  template:
+    src: my-packing-buddy.service.j2
+    dest: /etc/systemd/system/my-packing-buddy.service
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart my-packing-buddy
+  become: yes
+
+# 7. Fix folder permissions
+- name: Fix folder permissions so nginx can access project
+  file:
+    path: /home/ubuntu/my-packing-buddy
+    owner: ubuntu
+    group: www-data
+    recurse: yes
+    mode: '0755'
+  become: yes
+
+# 8. Ensure /home and /home/ubuntu have execute permissions
+- name: Ensure parent directories are accessible
+  file:
+    path: "{{ item }}"
+    mode: '0755'
+  with_items:
+    - /home
+    - /home/ubuntu
+  become: yes
+
+# 9. Wait for Gunicorn socket
+- name: Wait for gunicorn socket to appear
+  wait_for:
+    path: /home/ubuntu/my-packing-buddy/myproject.sock
+    state: present
+    timeout: 30
+  register: socket_wait
+  ignore_errors: yes
+
+# 10. Fix socket permissions
+- name: Fix socket permissions if exists
+  file:
+    path: /home/ubuntu/my-packing-buddy/myproject.sock
+    mode: '0776'
+    owner: ubuntu
+    group: www-data
+  when: socket_wait is succeeded
+  become: yes
+
+# 11. Copy nginx configuration
+- name: Copy nginx configuration
+  template:
+    src: nginx.j2
+    dest: /etc/nginx/sites-available/my-packing-buddy
+    mode: '0644'
+  become: yes
+
+# 12. Enable nginx site
+- name: Enable nginx site
+  file:
+    src: /etc/nginx/sites-available/my-packing-buddy
+    dest: /etc/nginx/sites-enabled/my-packing-buddy
+    state: link
+  become: yes
+
+# 13. Test nginx config
+- name: Test nginx configuration
+  command: nginx -t
+  register: nginx_test
+  failed_when: nginx_test.rc != 0
+  changed_when: false
+  become: yes
+
+# 14. Restart nginx
+- name: Restart nginx
+  systemd:
+    name: nginx
+    state: restarted
+  when: nginx_test.rc == 0
+  become: yes
+
+# 15. Allow firewall (UFW)
+- name: Allow Nginx in UFW
+  command: ufw allow 'Nginx Full'
+  become: yes
+
+# 16. Enable UFW
+- name: Enable UFW
+  command: ufw --force enable
+  ignore_errors: yes
+  become: yes

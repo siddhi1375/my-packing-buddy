@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve my-packing-buddy
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/my-packing-buddy
+Environment="PATH=/home/ubuntu/my-packing-buddy/venv/bin"
+ExecStart=/home/ubuntu/my-packing-buddy/venv/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/my-packing-buddy/myproject.sock wsgi:app
+
+[Install]
+WantedBy=multi-user.target

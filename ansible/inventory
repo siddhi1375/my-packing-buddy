@@ -1,0 +1,4 @@
+[servers]
+YOUR_SERVER_IP ansible_user=ubuntu
+[servers]
+54.91.222.38 ansible_user=ubuntu

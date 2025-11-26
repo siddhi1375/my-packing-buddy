@@ -1,0 +1,104 @@
+name: Deploy to Droplet
+
+on:
+push:
+branches: [ main ]
+workflow_dispatch:
+
+permissions:
+contents: read
+
+jobs:
+deploy:
+name: Deploy to server
+runs-on: ubuntu-latest                 
+
+steps:
+name: Checkout repo
+uses: actions/checkout@v4
+
+name: Start ssh-agent and add key
+uses: webfactory/ssh-agent@v0.8.1
+with:
+ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+name: Copy project to server
+env:
+SSH_USER: ${{ secrets.SSH_USER }}
+SERVER_IP: ${{ secrets.SERVER_IP }}
+run: |
+scp -r -o StrictHostKeyChecking=no . "${SSH_USER}@${SERVER_IP}:/home/${SSH_USER}/my-packing-buddy"
+
+name: Run remote deploy commands
+env:
+SSH_USER: ${{ secrets.SSH_USER }}
+SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SERVER_IP}" bash -s <<'SSH_EOF'
+set -euo pipefail
+
+cd /home/${SSH_USER}/my-packing-buddy
+
+sudo apt-get update -y
+sudo apt-get install -y python3.12-venv pkg-config default-libmysqlclient-dev build-essential nginx ufw
+
+python3 -m venv venv
+source venv/bin/activate
+python -m pip install --upgrade pip
+if [ -f requirements.txt ]; then
+pip install -r requirements.txt
+fi
+
+# ---------- Systemd Service ----------
+cat > /tmp/my-packing-buddy.service <<'SERVICE'
+[Unit]
+Description=Gunicorn instance to serve my-packing-buddy
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/my-packing-buddy
+Environment="PATH=/home/ubuntu/my-packing-buddy/venv/bin"
+ExecStart=/home/ubuntu/my-packing-buddy/venv/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/my-packing-buddy/myproject.sock wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+sudo mv /tmp/my-packing-buddy.service /etc/systemd/system/my-packing-buddy.service
+sudo systemctl daemon-reload
+sudo systemctl restart my-packing-buddy || sudo systemctl start my-packing-buddy
+sudo systemctl enable my-packing-buddy
+
+# ---------- Nginx Config ----------
+cat > /tmp/my-packing-buddy.nginx <<NGINX
+server {
+listen 80;
+server_name ${SERVER_IP};
+
+location / {
+include proxy_params;
+proxy_pass http://unix:/home/ubuntu/my-packing-buddy/myproject.sock;}
+}
+NGINX
+sudo mv /tmp/my-packing-buddy.nginx /etc/nginx/sites-available/my-packing-buddy
+sudo ln -sf /etc/nginx/sites-available/my-packing-buddy /etc/nginx/sites-enabled/my-packing-buddy
+sudo nginx -t
+sudo systemctl restart nginx
+
+# ---------- Permissions ----------
+sudo chown -R ubuntu:www-data /home/ubuntu/my-packing-buddy
+sudo chmod 755 /home/ubuntu/my-packing-buddy
+sudo chmod 766 /home/ubuntu/my-packing-buddy/myproject.sock || true
+
+sudo chmod o+x /home || true
+sudo chmod o+x /home/ubuntu || true
+sudo chmod o+x /home/ubuntu/my-packing-buddy || true
+
+# ---------- Firewall ----------
+sudo ufw allow 'Nginx Full' || true
+sudo ufw --force enable || true
+sudo ufw status verbose || true
+
+echo "DEPLOY COMPLETE"SSH_EOF

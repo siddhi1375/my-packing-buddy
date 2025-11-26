@@ -1,0 +1,11 @@
+
+
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/ubuntu/my-packing-buddy/myproject.sock;
+    }
+}
